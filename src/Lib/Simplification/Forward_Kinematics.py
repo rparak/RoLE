@@ -1,22 +1,14 @@
 # System (Default)
 import sys
+#   Add access if it is not in the system path.
+sys.path.append('../..')
 # Time (Time access and conversions)
 import time
 # Sympy (Symbolic mathematics) [pip3 install sympy]
 import sympy as sp
-# Platform (Platform identification data)
-import platform
-# System (Default)
-import sys
-if platform.system() == 'Windows':
-    # Windows Path.
-    sys.path.append('..\\..\\..\\..')
-else:
-    # Linux (Ubuntu) Path.
-    sys.path.append('../../../..' + 'src') 
 # Custom Script:
 #   ../Lib/Manipulator/Parameters
-import Lib.Manipulator.Parameters as Parameters
+import Lib.Parameters.Robot as Parameters
 
 def __DH_Modified(theta: float, a: float, d: float, alpha: float) -> sp.Matrix:
     """
@@ -35,7 +27,7 @@ def __DH_Modified(theta: float, a: float, d: float, alpha: float) -> sp.Matrix:
                       [sp.sin(theta)*sp.sin(alpha), sp.cos(theta)*sp.sin(alpha),        sp.cos(alpha),        sp.cos(alpha)*d],
                       [                        0.0,                         0.0,                  0.0,                    1.0]])
 
-def Forward_Kinematics_Modified(theta: sp.symbols, Robot_Parameters_Str: Parameters.Robot_Parameters_Structure) -> sp.Matrix:
+def Forward_Kinematics_Modified(theta: sp.symbols, Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> sp.Matrix:
     """
     Description:
         Calculation of forward kinematics using the modified Denavit-Hartenberg (DH) method.
@@ -46,7 +38,7 @@ def Forward_Kinematics_Modified(theta: sp.symbols, Robot_Parameters_Str: Paramet
 
     Args:
         (1) theta [Vector<sympy>]: Desired absolute joint position as a symbols.
-        (2) Robot_Parameters_Str [Robot_Parameters_Structure(object)]: The structure of the main parameters of the robot.
+        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:
         (1) parameter [Matrix<sympy> 4x4]: Homogeneous end-effector transformation matrix.
@@ -65,14 +57,21 @@ def Forward_Kinematics_Modified(theta: sp.symbols, Robot_Parameters_Str: Paramet
     return sp.simplify(T_i)
 
 def main():
+    """
+    Description:
+        A program to simplify the solution of forward kinematics (FK). The results of the simplification will be used to calculate 
+        the FK faster.
+    """
+
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.Universal_Robots_UR3_Structure
+    Robot_Str = Parameters.Universal_Robots_UR3_Str
 
     # Initialize a string containing the symbol assigned with the variable.
     theta = [sp.symbols(f'theta[{i}]') for i in range(len(Robot_Str.Theta.Name))]
 
     print('[INFO] The calculation is in progress.')
     t_0 = time.time()
+
     """
     Description:
         Calculation of forward kinematics simplification using the modified Denavit-Hartenberg (DH) method.

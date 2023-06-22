@@ -27,10 +27,11 @@ CONST_FILE_NAME = 'tool0_workspace_data'
 def main():
     """
     Description:
-        A simple script for visualization the workspace of an individual robot structure.
+        A program for visualization the workspace of an individual robot structure.
 
         Note:
-            The robots are defined in the script ../Parameters.py.
+            The structures of the robot are defined below:
+                ../Parameters/Robot.py
     """
 
     # Locate the path to the project folder.

@@ -98,7 +98,7 @@ def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: P
             # Identification of joint type: P - Prismatic
             T_i = T_i @ __DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
 
-        # Check that the desired absolute position of the joint is not out of limit.
+        # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
 
     # th_limit_err[], T_Base @ T_n @ T_EE
@@ -164,7 +164,7 @@ def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: P
             # Identification of joint type: P - Prismatic
             T_i = T_i @ __DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
 
-        # Check that the desired absolute position of the joint is out of limit.
+        # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
 
     # th_limit_err[], T_Base @ T_n @ T_EE
@@ -229,7 +229,7 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
             # Identification of joint type: P - Prismatic
             T_i = T_i @ __DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
 
-        # Check that the desired absolute position of the joint is out of limit.
+        # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
 
         # Addition of a homogeneous matrix configuration in the current 
@@ -275,7 +275,7 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
             # Identification of joint type: P - Prismatic
             T_i = T_i @ __DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
 
-        # Check that the desired absolute position of the joint is out of limit.
+        # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = True if th_i_limit[0] <= th_i <= th_i_limit[1] else False
         
         # Addition of a homogeneous matrix configuration in the current 

@@ -1,37 +1,45 @@
-# Numpy (Array computing) [pip3 install numpy]
-import numpy as np
-# Platform (Platform identification data)
-import platform
 # System (Default)
 import sys
-if platform.system() == 'Windows':
-    # Windows Path.
-    sys.path.append('..\\..\\..\\..')
-else:
-    # Linux (Ubuntu) Path.
-    sys.path.append('../../../..' + 'src') 
+#   Add access if it is not in the system path.
+sys.path.append('../../..')
+# OS (Operating system interfaces)
+import os
+# Numpy (Array computing) [pip3 install numpy]
+import numpy as np
 # Functools (Operation of other functions)
 import functools
 # Operator (Standard operators as functions)
 import operator
 # Custom Library:
-#   ../Lib/Manipulator/Parameters (The main parameters of the manipulator)
-import Lib.Manipulator.Parameters as Parameters
-#   ../Lib/Manipulator/Workspace/Core
-import Lib.Manipulator.Workspace.Core
+#   ../Lib/Parameters/Robot
+import Lib.Parameters.Robot as Parameters
+#   ../Lib/Workspace/Core
+import Lib.Workspace.Core
 
 def main():
+    """
+    Description:
+        A program to generate the absolute positions of the joints of a robotic arm.
+
+        Note:
+            More information can be found here:
+                ../Lib/Wokrspace/Core.py
+    """
+
+    # Locate the path to the project folder.
+    project_folder = os.getcwd().split('Kinematics_Lib')[0] + 'Kinematics_Lib'
+
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_Structure
+    Robot_Str = Parameters.ABB_IRB_120_Str
 
     # Number of samples for joint orientation combinations to generate 
     # the workspace of a robotic arm.
-    nCr_Joint = Lib.Manipulator.Workspace.Core.Get_Number_of_Samples(Robot_Str.Name)
+    nCr_Joint = Lib.Workspace.Core.Get_Number_of_Samples(Robot_Str.Name)
 
     # The name of the resulting file.
-    print(f'[INFO] Path: ../../../../../Data/Workspace/{Robot_Str.Name}/abs_joint_orient_data.txt')
+    print(f'[INFO] Path: {project_folder}/src/Data/Workspace/{Robot_Str.Name}/abs_joint_pos_data.txt')
 
-    theta = list([[Lib.Manipulator.Workspace.Core.CONST_NONE_VALUE]] * 7)
+    theta = list([[Lib.Workspace.Core.CONST_NONE_VALUE]] * 7)
     print('[INFO] Input Data:')
     for i, th_limit in enumerate(Robot_Str.Theta.Limit):
         print(f'[INFO]  Theta {i}:')
@@ -53,9 +61,8 @@ def main():
 
     # Generate the absolute orientation of the joints to calculate the robot's workspace 
     # and save this data to a file.
-    #C:\Users\romanp\Documents\GitHub\Blender_Robotics\Data\Workspace
-    Lib.Manipulator.Workspace.Core.Generate_Absolute_Joint_Orientation(f'../../../../../Data/Workspace/{Robot_Str.Name}/abs_joint_orient_data.txt', 
-                                                                       NUM_OF_COMBINATIONS, theta)
+    Lib.Workspace.Core.Generate_Absolute_Joint_Orientation(f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/abs_joint_pos_data.txt', 
+                                                           NUM_OF_COMBINATIONS, theta)
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -1,7 +1,3 @@
-# System (Default)
-import sys
-#   Add access if it is not in the system path.
-sys.path.append('../../..')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # Typing (Support for type hints)
@@ -9,9 +5,11 @@ import typing as tp
 # Custom Script:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
+#   ../Lib/Kinematics/Utilities/General
+import Lib.Kinematics.Utilities.General
 
 def __FKF_Universal_Robots_UR3(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                               tp.List[tp.List[float]]]:
+                                                                                                                         tp.List[tp.List[float]]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the Universal Robots UR3 robotic arm.
@@ -30,10 +28,8 @@ def __FKF_Universal_Robots_UR3(theta: tp.List[float], Robot_Parameters_Str: Para
         (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
     
-    # Check that the desired absolute position of the joint is not out of limit.
-    th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit)):
-        th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
+    # Check that the desired absolute joint positions are not out of limit.
+    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
 
     """
     Description:
@@ -106,10 +102,8 @@ def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
         (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
     
-    # Check that the desired absolute position of the joint is not out of limit.
-    th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit)):
-        th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
+    # Check that the desired absolute joint positions are not out of limit.
+    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
 
     """
     Description:
@@ -197,10 +191,8 @@ def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameter
         (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
         
-    # Check that the desired absolute position of the joint is not out of limit.
-    th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit)):
-        th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
+    # Check that the desired absolute joint positions are not out of limit.
+    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
 
     """
     Description:
@@ -293,10 +285,8 @@ def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameter
         (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
     
-    # Check that the desired absolute position of the joint is not out of limit.
-    th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit)):
-        th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
+    # Check that the desired absolute joint positions are not out of limit.
+    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
 
     """
     Description:
@@ -386,10 +376,8 @@ def __FKF_EPSON_LS3_B401S(theta: tp.List[float], Robot_Parameters_Str: Parameter
         (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
     
-    # Check that the desired absolute position of the joint is not out of limit.
-    th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit)):
-        th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
+    # Check that the desired absolute joint positions are not out of limit.
+    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
 
     """
     Description:

@@ -1,34 +1,42 @@
-# Platform (Platform identification data)
-import platform
 # System (Default)
 import sys
-if platform.system() == 'Windows':
-    # Windows Path.
-    sys.path.append('..\\..\\..\\..')
-else:
-    # Linux (Ubuntu) Path.
-    sys.path.append('../../../..' + 'src') 
-# Custom Script:
-#   ../Lib/Manipulator/Parameters (The main parameters of the manipulator)
-import Lib.Manipulator.Parameters as Parameters
-#   ../Lib/Manipulator/Workspace/Core
-import Lib.Manipulator.Workspace.Core
+#   Add access if it is not in the system path.
+sys.path.append('../../..')
+# OS (Operating system interfaces)
+import os
+# Custom Library:
+#   ../Lib/Parameters/Robot
+import Lib.Parameters.Robot as Parameters
+#   ../Lib/Workspace/Core
+import Lib.Workspace.Core
 
 def main():
+    """
+    Description:
+        A program to generate the workspace of a robot arm from the absolute positions of the joints.
+
+        Note:
+            Absolute joint positions are generated from the program below:
+                ../gen_abs_joint_pos.py
+    """
+
+    # Locate the path to the project folder.
+    project_folder = os.getcwd().split('Kinematics_Lib')[0] + 'Kinematics_Lib'
+
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_Structure
+    Robot_Str = Parameters.ABB_IRB_120_Str
 
     # Input File: Absolute orientation of the joints.
-    CONST_FILE_NAME_IN = 'abs_joint_orient_data'
-    print(f'[INFO] Path (Input File): ../../../../../Data/Workspace/{Robot_Str.Name}{CONST_FILE_NAME_IN}.txt')
+    CONST_FILE_NAME_IN = 'abs_joint_pos_data'
+    print(f'[INFO] Path (Input File): {project_folder}/src/Data/Workspace/{Robot_Str.Name}{CONST_FILE_NAME_IN}.txt')
     # Output File: X, Y, Z positions of the workspace.
-    CONST_FILE_NAME_OUT = 'tool0_workspace_data'
-    print(f'[INFO] Path (Output File): ../../../../../Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_OUT}.txt')
+    CONST_FILE_NAME_OUT = 'tool0_workspace_data2'
+    print(f'[INFO] Path (Output File): {project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_OUT}.txt')
 
-    # Generate x, y, z positions of the workspace from the absolute orientation 
+    # Generate x, y, z positions of the workspace from the absolute positions
     # of the joints.
-    Lib.Manipulator.Workspace.Core.Generate_Workspace_XYZ(Robot_Str, f'../../../../../Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_IN}.txt', 
-                                                          f'../../../../../Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_OUT}.txt')
+    Lib.Workspace.Core.Generate_Workspace_XYZ(Robot_Str, f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_IN}.txt', 
+                                              f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_OUT}.txt')
     
 if __name__ == "__main__":
     sys.exit(main())

@@ -5,8 +5,8 @@ import time
 # OS (Operating system interfaces)
 import os
 # Custom Script:
-#   ../Lib/Manipulator/Kinematics/Core
-import Lib.Manipulator.Kinematics.Core
+#   ../Lib/Kinematics/Core
+import Lib.Kinematics.Core
 
 """
 Description: 
@@ -159,7 +159,7 @@ def Generate_Workspace_XYZ(Robot_Str, file_path_in, file_path_out):
             data = line.split(',')
 
             # Calculation of forward kinematics. Get the Homogeneous end-effector transformation matrix {T}.
-            T = Lib.Manipulator.Kinematics.Core.Forward_Kinematics(np.float32(data), 'Modified', Robot_Str)[1]
+            T = Lib.Kinematics.Core.Forward_Kinematics(np.float32(data), 'Modified', Robot_Str)[1]
 
             # Get the translation part from the homogeneous transformation matrix {T}.
             p = T.p.all()
