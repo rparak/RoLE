@@ -2,6 +2,23 @@
 import bpy
 # Typing (Support for type hints)
 import typing as tp
+# Numpy (Array computing) [pip3 install numpy]tp
+import numpy as np
+# OS (Operating system interfaces)
+import os
+# BMesh (Access to blenders bmesh data)
+import bmesh
+# Mathutils (Math Types & Utilities)
+import mathutils 
+# Custom Library:
+#   ../Lib/Transformation/Core
+import Lib.Transformation.Core as Transformation
+#   ../Lib/Parameters/Robot
+import Lib.Parameters.Robot
+#   ../Lib/Blender/Core
+import Lib.Blender.Core
+#   ../Lib/Blender/Parameters/Camera
+import Lib.Blender.Parameters.Camera
 
 def Deselect_All() -> None:
     """
@@ -12,6 +29,67 @@ def Deselect_All() -> None:
     for obj in bpy.context.selected_objects:
         bpy.data.objects[obj.name].select_set(False)
     bpy.context.view_layer.update()
+        
+def Object_Exist(name: str) -> bool:
+    """
+    Description:
+        Check if the object exists within the scene.
+        
+    Args:
+        (1) name [string]: Object name.
+        
+    Returns:
+        (1) parameter [bool]: 'True' if it exists, otherwise 'False'.
+    """
+    
+    return True if bpy.context.scene.objects.get(name) else False
+
+def Remove_Object(name: str) -> None:
+    """
+    Description:
+        Remove the object (hierarchy) from the scene, if it exists. 
+
+    Args:
+        (1) name [string]: The name of the object.
+    """
+
+    # Find the object with the desired name in the scene.
+    object_name = None
+    for obj in bpy.data.objects:
+        if name in obj.name and Object_Exist(obj.name) == True:
+            object_name = obj.name
+            break
+
+    # If the object exists, remove it, as well as the other objects in the hierarchy.
+    if object_name is not None:
+        bpy.data.objects[object_name].select_set(True)
+        for child in bpy.data.objects[object_name].children:
+            child.select_set(True)
+        bpy.ops.object.delete()
+        bpy.context.view_layer.update()
+
+def Set_Object_Material_Color(name: str, color: tp.List[float]):
+    """
+    Description:
+        Set the material color of the individual object and/or the object hierarchy (if exists).
+            
+    Args:
+        (1) name [string]: The name of the object.
+        (2) color [Vector<float>]: RGBA color values: rgba(red, green, blue, alpha).
+    """
+
+    for obj in bpy.data.objects:
+        if bpy.data.objects[name].parent == True:
+            if obj.parent == bpy.data.objects[name]:
+                for material in obj.material_slots:
+                    material.material.node_tree.nodes['Principled BSDF'].inputs["Base Color"].default_value = color
+
+                 # Recursive call.
+                return Set_Object_Material_Color(obj.name, color)
+        else:
+            if obj == bpy.data.objects[name]:
+                for material in obj.material_slots:
+                    material.material.node_tree.nodes['Principled BSDF'].inputs["Base Color"].default_value = color 
 
 def Set_Object_Material_Transparency(name: str, alpha: float) -> None:
     """
@@ -52,6 +130,318 @@ def Set_Object_Material_Transparency(name: str, alpha: float) -> None:
                     material.material.shadow_method = 'OPAQUE'
                     material.material.node_tree.nodes['Principled BSDF'].inputs['Alpha'].default_value = alpha
 
+def __Add_Primitive(type: str, properties: tp.Tuple[float, tp.List[float], tp.List[float]]) -> bpy.ops.mesh:
+    """
+    Description:
+        Add a primitive three-dimensional object.
+        
+    Args:
+        (1) type [string]: Type of the object. 
+                            Primitives: ['Plane', 'Cube', 'Sphere', 'Capsule']
+        (2) properties [Dictionary {'Size/Radius': float, 'Scale/Size/None': Vector<float>, 
+                                    'Location': Vector<float>]: Transformation properties of the created object. The structure depends 
+                                                                on the specific object.
+    
+    Returns:
+        (1) parameter [bpy.ops.mesh]: Individual three-dimensional object (primitive).
+    """
+        
+    return {
+        'Plane': lambda x: bpy.ops.mesh.primitive_plane_add(size=x['Size'], scale=x['Scale'], location=x['Location']),
+        'Cube': lambda x: bpy.ops.mesh.primitive_cube_add(size=x['Size'], scale=x['Scale'], location=x['Location']),
+        'Sphere': lambda x: bpy.ops.mesh.primitive_uv_sphere_add(radius=x['Radius'], location=x['Location']),
+        'Capsule': lambda x: bpy.ops.mesh.primitive_round_cube_add(radius=x['Radius'], size=x['Size'], location=x['Location'], arc_div=10)
+    }[type](properties)
+
+def Create_Primitive(type: str, name: str, properties: tp.Tuple[tp.Tuple[float, tp.List[float]], tp.Tuple[float]]) -> None:
+    """
+    Description:
+        Create a primitive three-dimensional object with additional properties.
+
+    Args:
+        (1) type [string]: Type of the object. 
+                            Primitives: ['Plane', 'Cube', 'Sphere', 'Capsule']
+        (2) name [string]: The name of the created object.
+        (3) properties [{'transformation': {'Size/Radius': float, 'Scale/Size/None': Vector<float>, Location': Vector<float>}, 
+                         'material': {'RGBA': Vector<float>, 'alpha': float}}]: Properties of the created object. The structure depends on 
+                                                                                on the specific object.
+    """
+
+    # Create a new material and set the material color of the object.
+    material = bpy.data.materials.new(f'{name}_mat')
+    material.use_nodes = True
+    material.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value = properties['material']['RGBA']
+
+    # Add a primitive three-dimensional object.
+    __Add_Primitive(type, properties['transformation'])
+
+    # Change the name and material of the object.
+    bpy.context.active_object.name = name
+    bpy.context.active_object.active_material = material
+
+    # Set the transparency of the object material.
+    if properties['material']['alpha'] < 1.0:
+        Set_Object_Material_Transparency(name, properties['material']['alpha'])
+
+    # Deselect all objects in the current scene.
+    Deselect_All()
+
+    # Update the scene.
+    bpy.context.view_layer.update()
+
+def Get_Object_Hierarchy(name: str) -> None:
+    """
+    Description: 
+        Get the hierarchy of objects from the object structure.
+        
+    Args:
+        (1) name [string]: Name of the main object.
+
+    Example:
+        Get_Object_Hierarchy(bpy.data.objects['ABB_IRB_120'])
+    """
+    
+    for obj in bpy.data.objects:
+        if obj.parent == bpy.data.objects[name]:
+            # Print name of the current object (index i).
+            print(obj.name)
+            # Recursive call.
+            return Get_Object_Hierarchy(obj.name)
+
+def Remove_Animation_Data() -> None:
+    """
+    Description: 
+        Remove animation data from objects (Clear keyframes).
+    """
+    
+    for obj in bpy.data.objects:
+        obj.animation_data_clear()
+
+def Object_Visibility(name: str, state: bool) -> None:
+    """
+    Description:
+        Function to enable and disable the visibility of an object.
+    
+    Args:
+        (1) name [string]: Name of the main object.
+        (2) state [bool]: Enable (True) / Disable (False).  
+    """
+    
+    cmd = not state; obj = bpy.data.objects[name]
+    
+    if Object_Exist(name):
+        obj.hide_viewport = cmd; obj.hide_render = cmd
+        for obj_i in obj.children:
+            obj_i.hide_viewport = cmd; obj_i.hide_render = cmd
+
+def Set_Object_Transformation(name: str, T: tp.List[tp.List[float]]) -> None:
+    """
+    Description:
+        Set the object transformation.
+        
+    Args:
+        (1) name [string]: Name of the main object.
+        (2) T [Matrix<float> 4x4]: Homogeneous transformation matrix (access to location, rotation and scale).
+    """
+
+    if isinstance(T, (list, np.ndarray)):
+        T = Transformation.Homogeneous_Transformation_Matrix_Cls(T, np.float32)
+    
+    bpy.data.objects[name].matrix_basis = T.Transpose().all().copy()
+
+def Duplicate_Object(name: str, identification: str):
+    """
+    Description:
+        Duplication of objects and/or object hierarchy (if exists).
+        
+    Args:
+        (1) name [string]: Name of the main object.
+        (2) identification [string]: Identification of the name of the new object.
+                                     (name + '_' + identification)
+    """
+    
+    # Select the main object and/or object hierarchy.
+    bpy.data.objects[name].select_set(True)
+    if bpy.data.objects[name].children:
+        # If the object has children(s).
+        for obj in bpy.data.objects[name].children:        
+            bpy.data.objects[obj.name].select_set(True)
+    # Duplicate the selected object(s).
+    bpy.ops.object.duplicate()
+    
+    # Deselect the current object / object hierarchy.
+    for obj in bpy.context.selected_objects:
+        if name in obj.name:
+            # Rename the main object.
+            obj.name = name + '_' + identification
+        bpy.data.objects[obj.name].select_set(False)
+    
+    bpy.context.view_layer.update()
+
+def Set_Camera_Properties(name: str, Camera_Parameters_Str: Lib.Blender.Parameters.Camera.Camera_Parameters_Str):
+    """
+    Description:
+        Set the camera (object) transformation and projection.
+
+    Args:
+        (1) name [string]: Object name.
+        (2) Camera_Parameters_Str [Camera_Parameters_Str(object)]: The structure of the main parameters of the camera.
+    """
+
+    # Set the object transformation.
+    Set_Object_Transformation(name, Camera_Parameters_Str.T)
+
+    # Set the projection of the camera.
+    bpy.data.cameras[name].type = Camera_Parameters_Str.Type
+    if Camera_Parameters_Str.Type == 'PERSP':
+        bpy.data.cameras[name].lens = Camera_Parameters_Str.Value
+    elif Camera_Parameters_Str.Type == 'ORTHO':
+        bpy.data.cameras[name].ortho_scale = Camera_Parameters_Str.Value
+
+def Get_Absolute_Joint_Position(axes_sequence_cfg: str, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> tp.List[float]:
+    """
+    Description:
+        Get the the absolute positions of the robot's joints.
+        
+    Args:
+        (1) axes_sequence_cfg [string]: Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
+        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+
+    Returns:
+        (1) parameter [Vector<float>]: Current absolute joint position in s / meters.       
+    """
+
+    th = np.zeros(Robot_Parameters_Str.Theta.Zero.shape)
+    for i, (th_i_name, T_i_zero_cfg, ax_i, th_i_type) in enumerate(zip(Robot_Parameters_Str.Theta.Name, Robot_Parameters_Str.T.Zero_Cfg, 
+                                                                       Robot_Parameters_Str.Theta.Axis, Robot_Parameters_Str.Theta.Type)):   
+        # Convert a string axis letter to an identification number.
+        ax_i_id_num = Lib.Blender.Utilities.General.Convert_Ax_Str2Num(ax_i)
+
+        if th_i_type == 'R':
+            # Identification of joint type: R - Revolute
+            #   The actual orientation of the joint in iteration i.
+            th_actual = bpy.data.objects[th_i_name].rotation_euler[ax_i_id_num]
+            #   The initial orientation of the joint in iteration i.
+            th_init   = Lib.Manipulator.Utilities.Transformation.Get_Euler_From_Matrix(T_i_zero_cfg, axes_sequence_cfg)[ax_i_id_num]
+
+            if (th_actual - th_init) > Lib.Manipulator.Utilities.Mathematics.CONST_MATH_PI:
+                th[i] = (th_actual - th_init) - Lib.Manipulator.Utilities.Mathematics.CONST_MATH_PI * 2
+            else:    
+                th[i] = th_actual - th_init
+        elif th_i_type == 'P':
+            # Identification of joint type: P - Prismatic
+            #   The actual translation of the joint in iteration i.
+            th_actual = bpy.data.objects[th_i_name].location[ax_i_id_num]
+            #   The initial translation of the joint in iteration i.
+            th_init   = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Translation_Part(T_i_zero_cfg)[ax_i_id_num]
+   
+            th[i] = th_actual - th_init
+
+    return th
+
+def Set_Absolute_Joint_Position(theta: tp.List[float], axes_sequence_cfg: str, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> bool:
+    """
+    Description:
+        Set the absolute position of the robot joints.
+        
+    Args:
+        (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+        (2) axes_sequence_cfg [string]: Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
+        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+    
+    Returns:
+        (1) parameter [bool]: The result is 'True' if the required absolute joint positions 
+                              are within the limits, and 'False' if they are not.
+    """
+
+    for _, (th_i, th_i_name, T_i_zero_cfg, th_i_limit, ax_i, th_i_type) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Name, 
+                                                                                         Robot_Parameters_Str.T.Zero_Cfg, Robot_Parameters_Str.Theta.Limit,
+                                                                                         Robot_Parameters_Str.Theta.Axis, Robot_Parameters_Str.Theta.Type)): 
+        bpy.data.objects[th_i_name].rotation_mode = axes_sequence_cfg
+        if th_i_limit[0] <= th_i <= th_i_limit[1]:
+            if th_i_type == 'R':
+                # Identification of joint type: R - Revolute
+                bpy.data.objects[th_i_name].rotation_euler = Lib.Manipulator.Utilities.Transformation.Get_Euler_From_Matrix(T_i_zero_cfg @ Lib.Manipulator.Utilities.Transformation.Get_Rotation_Matrix(ax_i, th_i), 
+                                                                                                                            axes_sequence_cfg)
+            elif th_i_type == 'P':
+                # Identification of joint type: P - Prismatic
+                bpy.data.objects[th_i_name].location = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Translation_Part(T_i_zero_cfg @ Lib.Manipulator.Utilities.Transformation.Get_Translation_Matrix(ax_i, th_i))
+        else:
+            return False
+
+    return True
+
+def Insert_Key_Frame(name: str, property: str, frame: int, index: str):
+    """
+    Description:
+        Insert a keyframe with the given property.
+        
+    Args:
+        (1) name [string]: Name of the main object.
+        (2) property [string]: The path to the property that is supposed to be the key (matrix_basis, location, rotation_euler, scale, etc.)
+        (3) frame [int]: The frame in which the keyframe is inserted.
+        (4) index [string]: The index of the property to be the key.
+                            Note:
+                                The "location" property has 3 parts: [x, y, z][Vector<float>]
+                                1\ index = 'ALL' -> all parts
+                                2\ index = 'X' -> x part, etc.
+    """
+    
+    required_index = Lib.Blender.Utilities.General.Convert_Ax_Str2Num(index)
+    if property == 'matrix_basis':
+        bpy.data.objects[name].keyframe_insert('location', frame=frame, index=required_index)
+        bpy.data.objects[name].keyframe_insert('rotation_euler', frame=frame, index=required_index)
+        bpy.data.objects[name].keyframe_insert('scale', frame=frame, index=required_index)
+    else:
+        bpy.data.objects[name].keyframe_insert(property, frame=frame, index=required_index)
+
+def Generate_Robot_Path_From_Animation(Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str, SD_Poly_Cls: Lib.Blender.Core.Poly_3D_Cls):
+    """
+    Description:
+        Generate robot data (x, y, z path) from animation.
+        
+    Args:
+        (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (2) SD_Poly_Cls [Poly_3D_Cls(object)]: Visualization of a 3-D (dimensional) polyline.
+    """
+    
+    # Initialize the size (length) of the polyline data set.
+    SD_Poly_Cls.Initialization(bpy.context.scene.frame_end + 1)
+    
+    for frame in range(bpy.context.scene.frame_start, bpy.context.scene.frame_end + 1):
+        bpy.context.scene.frame_set(frame)
+        
+        # Get the current absolute joint position in radians / meters.
+        th = Get_Absolute_Joint_Position(Robot_Parameters_Str)
+
+        # Add coordinates (x,y,z points) calculated from Forward Kinematics 
+        # to the polyline.
+        x, y, z = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Translation_Part(Lib.Manipulator.Kinematics.Core.Forward_Kinematics(th, 'Modified', Robot_Parameters_Str)[1])
+        SD_Poly_Cls.Add(frame, x, y, z)   
+
+def Save_Robot_Data_From_Animation(file_path: str, Robot_Parameters_Str: Lib.Manipulator.Parameters.Robot_Parameters_Str):
+    """
+    Description:
+        Save the absolute joint position data from the animation to the file.
+        
+    Args:
+        (1) file_path [string]: The specified file path.
+        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+    """
+
+    # if the file exists, then remove it.
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    for frame in range(bpy.context.scene.frame_start, bpy.context.scene.frame_end + 1):
+        bpy.context.scene.frame_set(frame)
+
+        # Get the current absolute joint position in radians / meters.
+        th = Get_Absolute_Joint_Position(Robot_Parameters_Str)
+
+        # Write data to the file.
+        Lib.Utilities.File_IO.Save_Data_To_File(file_path, th)
+
 def Transform_Object_To_Wireframe(name: str, thickness: float) -> None:
     """
     Description:
@@ -68,15 +458,127 @@ def Transform_Object_To_Wireframe(name: str, thickness: float) -> None:
 
     # Select the desired object in the scene.
     bpy.data.objects[name].select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[name]
-    bpy.ops.object.mode_set(mode='EDIT')
     # Add the modifier (wireframe) and set the desired thickness.
     bpy.ops.object.modifier_add(type='WIREFRAME')
     bpy.context.object.modifiers['Wireframe'].thickness = thickness
     # Release the object from the selection.
-    bpy.ops.object.mode_set(mode='OBJECT')
-    bpy.context.view_layer.objects.active = None
     bpy.data.objects[name].select_set(False)
+
+def Attach_Viewpoints(viewpoint_name: str, axes_sequence_cfg: str, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> None:
+    """
+    Decription:
+        Attach viewpoints with the correct transformation to an object joints.
+        
+    Args:
+        (1) viewpoint_name [string]: Name of the main object.
+        (2) axes_sequence_cfg [string]: Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.
+        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.   
+    """
+
+    # Set the rotation mode.
+    bpy.data.objects[viewpoint_name].rotation_mode = axes_sequence_cfg
+
+    for _, (name, T_i_zero_cfg) in enumerate(zip(Robot_Parameters_Str.Theta.Name, Robot_Parameters_Str.T.Zero_Cfg)):
+        # Duplication of objects and/or object hierarchy (if exists).
+        Duplicate_Object(viewpoint_name, bpy.data.objects[name].name)
+
+        # Set the name of the new waipoint.
+        #   (name + '_' + identification)
+        viewpoint_name_new = viewpoint_name + '_' + bpy.data.objects[name].name
+
+        # Set the target (desired) viewpoint position in the current joint.
+        bpy.data.objects[viewpoint_name_new].matrix_basis = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Transpose(T_i_zero_cfg)  
+        # Connecting a child object (viewpoint_i) to a parent object (joint_i).
+        bpy.data.objects[viewpoint_name_new].parent = bpy.data.objects[name]
+        # Reset (null) the object matrix.
+        bpy.data.objects[viewpoint_name_new].matrix_basis = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Transpose(Lib.Manipulator.Utilities.Transformation.Get_Matrix_Identity(4)) 
+
+def Add_Viewpoints(viewpoint_name: str, axes_sequence_cfg: str, T: tp.List[tp.List[tp.List[float]]]) -> None:
+    """
+    Decription:
+        Add viewpoints with the correct transformation.
+        
+    Args:
+        (1) viewpoint_name [string]: Name of the main object.
+        (2) axes_sequence_cfg [string]: Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.
+        (3) T [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
+                                       Note:
+                                        Where n is the number of joints.
+    """
+
+    # Set the rotation mode.
+    bpy.data.objects[viewpoint_name].rotation_mode = axes_sequence_cfg
+
+    for i, T_i in enumerate(T):
+        # Duplication of objects and/or object hierarchy (if exists).
+        Duplicate_Object(viewpoint_name, f'Joint_{i}')
+
+        # Set the name of the new waipoint.
+        #   (name + '_' + identification)
+        viewpoint_name_new = viewpoint_name + '_' + f'Joint_{i}'
+        
+        # Set the target (desired) viewpoint position in the current joint.
+        bpy.data.objects[viewpoint_name_new].location       = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Translation_Part(T_i)
+        bpy.data.objects[viewpoint_name_new].rotation_euler = Lib.Manipulator.Utilities.Transformation.Get_Euler_From_Matrix(T_i, axes_sequence_cfg)
+
+def Is_Point_Inside_Object(name: str, point: tp.List[float], max_distance: float) -> bool:
+    """
+    Description:
+        Determine if the point is located inside the mesh object.
+
+    Args:
+        (1) name [string]: Name of the mesh object.
+        (2) point [Vector<float>]: Input point (x, y, z).
+        (3) max_distance [float]: Maximum distance.
+
+    Returns:
+        (1) parameter [bool]: The result is 'True' if the point is inside the object, and 
+                              'False' if it is not.
+
+    Example:
+        Is_Point_Inside_Mesh(np.array([0.0, 0.0, 0.0]), 1.0e+5, 'Cube')
+    """
+
+    # Find the nearest point on the object.
+    _, nearest_point, normal, _ = bpy.data.objects[name].closest_point_on_mesh(point, distance=max_distance)
+
+    return not((np.array(nearest_point) - point) @ normal < 0.0)
+
+def Get_Vertices_From_Object(name: str) -> tp.List[float]:
+    """
+    Description:
+        Get (x, y, z) positions of the vertices of the mesh object.
+
+    Args:
+        (1) name [string]: Name of the mesh object.
+
+    Returns:
+        (1) parameter [Vector<float>]: Vector (list) of given vertices.
+    """
+
+    return [bpy.data.objects[name].matrix_world @ vertex_i.co for vertex_i in bpy.data.objects[name].data.vertices]
+
+def Set_Object_Origin(name: str, T: tp.List[tp.List[float]]) -> None:
+    """
+    Description:
+        Set the origin (position / rotation) of the individual objects.
+
+    Args:
+        (1) name [string]: Name of the mesh object. 
+        (2) T [Matrix<float> 4x4]: Origin of the object (homogeneous transformation matrix).
+    """
+
+    # Select an object.
+    bpy.data.objects[name].select_set(True)
+
+    # Set the position of the cursor and the origin of the 
+    # object.
+    bpy.context.scene.cursor.matrix = T
+    bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+
+    # Deselect an object and update the layer.
+    bpy.data.objects[name].select_set(False)
+    bpy.context.view_layer.update()
 
 def Generate_Convex_Polyhedron_From_Data(name: str, data: tp.List[float], material_properties: tp.Tuple[tp.List[float], float]) -> None:
     """
@@ -95,7 +597,7 @@ def Generate_Convex_Polyhedron_From_Data(name: str, data: tp.List[float], materi
     material.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value = material_properties['RGBA']
 
     # Create a mesh from the input data.
-    mesh = bpy.data.meshes.new(f'{name}')
+    mesh = bpy.data.meshes.new(f'{name}_Convex_Polyhedron')
     mesh.from_pydata(data, [], [])
     mesh.update()
 
@@ -123,3 +625,43 @@ def Generate_Convex_Polyhedron_From_Data(name: str, data: tp.List[float], materi
     # Set the transparency of the object material.
     if material_properties['alpha'] < 1.0:
         Set_Object_Material_Transparency(name, material_properties['alpha'])
+
+def __Get_BMesh_Data_From_Object(name: str) -> bmesh.types.BMesh:
+    """
+    Description:
+        Get the BMesh representation (data) from the mesh object.
+
+    Args:
+        (1) name [string]: Name of the mesh object. 
+
+    Returns:
+        (1) parameter [bmesh.types.BMesh]: BMesh representation (data) of the object.
+    """
+
+    bmesh_data = bmesh.new()
+    bmesh_data.from_mesh(bpy.context.scene.objects[name].data)
+    bmesh_data.transform(bpy.context.scene.objects[name].matrix_world)
+
+    return bmesh_data
+
+def Check_Overlap_Objects(name_1: str, name_2: str) -> bool:
+    """
+    Description:
+        A function to check if two mesh objects overlap or not. 
+
+    Args:
+        (1 - 2) name_{i} [string]: Name of the mesh objects.
+
+    Returns:
+        (1) parameter [bool]: Objects overlap (True) or not (False).
+    """
+
+    # Get a BVH tree based on BMesh data.
+    bhv_obj_1 = mathutils.bvhtree.BVHTree.FromBMesh(__Get_BMesh_Data_From_Object(name_1))
+    bhv_obj_2 = mathutils.bvhtree.BVHTree.FromBMesh(__Get_BMesh_Data_From_Object(name_2))
+
+    # Test the overlap of the two meshes.
+    if bhv_obj_1.overlap(bhv_obj_2):
+        return True
+    else: 
+        return False

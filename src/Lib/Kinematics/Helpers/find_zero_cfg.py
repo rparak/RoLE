@@ -1,12 +1,12 @@
 # System (Default)
 import sys
 #   Add access if it is not in the system path.
-sys.path.append('../../../..')
+sys.path.append('../../..')
 # Custom Library:
 #   ../Lib/Manipulator/Kinematics/Core
-import Lib.Manipulator.Kinematics.Core
-#   ../Lib/Manipulator/Parameters (The main parameters of the manipulator)
-import Lib.Manipulator.Parameters
+import Lib.Kinematics.Core
+#   ../Lib/Manipulator/Parameters
+import Lib.Parameters.Robot as Parameters
 
 def main():
     """
@@ -18,14 +18,14 @@ def main():
     """
     
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Lib.Manipulator.Parameters.ABB_IRB_120_Str
+    Robot_Str = Parameters.ABB_IRB_120_Str
 
     """
     Description:
         Find the zero configuration of the homogeneous matrix of each joint using the modified 
         forward kinematics calculation method.
     """
-    Robot_Str.T.Zero_Cfg = Lib.Manipulator.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
+    Robot_Str.T.Zero_Cfg = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
 
     for i, T_i in enumerate(Robot_Str.T.Zero_Cfg):
         # Get the translational and rotational part from the transformation matrix.

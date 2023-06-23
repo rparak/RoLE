@@ -12,7 +12,7 @@ import os
 import Lib.Blender.Utilities
 #   ../Lib/Utilities/File_IO
 import Lib.Utilities.File_IO
-#   ../Lib/Parameters/Robot.py
+#   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 
 """

@@ -197,7 +197,7 @@ def Forward_Kinematics(theta: tp.List[float], method: str, Robot_Parameters_Str:
     }[method](theta, Robot_Parameters_Str)
 
 def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                                                                  tp.List[tp.List[tp.List[float]]]]:
+                                                                                                                                            tp.List[tp.List[tp.List[float]]]]:
     """
     Description:
         Get the configuration of the homogeneous matrix of each joint using the standard forward kinematics calculation method.
@@ -243,7 +243,7 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
     return (th_limit_err, T_zero_cfg)
 
 def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                                                                  tp.List[tp.List[tp.List[float]]]]:
+                                                                                                                                            tp.List[tp.List[tp.List[float]]]]:
     """
     Description:
         Get the configuration of the homogeneous matrix of each joint using the modified forward kinematics calculation method.
@@ -288,7 +288,7 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
     return (th_limit_err, T_zero_cfg)
 
 def Get_Individual_Joint_Configuration(theta: tp.List[float], method: str, Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                                                                    tp.List[tp.List[tp.List[float]]]]:
+                                                                                                                                              tp.List[tp.List[tp.List[float]]]]:
     """
     Description:
         Get the configuration of the homogeneous matrix of each joint using forward kinematics. The method of calculating 
