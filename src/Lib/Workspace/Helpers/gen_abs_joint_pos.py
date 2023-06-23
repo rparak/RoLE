@@ -27,7 +27,7 @@ def main():
     """
 
     # Locate the path to the project folder.
-    project_folder = os.getcwd().split('Kinematics_Lib')[0] + 'Kinematics_Lib'
+    project_folder = os.getcwd().split('Kinematics')[0] + 'Kinematics'
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = Parameters.ABB_IRB_120_Str
