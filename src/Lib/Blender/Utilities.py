@@ -13,12 +13,18 @@ import mathutils
 # Custom Library:
 #   ../Lib/Transformation/Core
 import Lib.Transformation.Core as Transformation
+#   ../Lib/Transformation/Utilities/Mathematics
+import Lib.Transformation.Utilities.Mathematics as Mathematics
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot
 #   ../Lib/Blender/Core
 import Lib.Blender.Core
 #   ../Lib/Blender/Parameters/Camera
 import Lib.Blender.Parameters.Camera
+#   ../Lib/Kinematics/Core
+import Lib.Kinematics.Core as Kinematics
+#   ../Lib/Utilities/File_IO
+import Lib.Utilities.File_IO as File_IO
 
 def Deselect_All() -> None:
     """
@@ -247,7 +253,7 @@ def Set_Object_Transformation(name: str, T: tp.List[tp.List[float]]) -> None:
     if isinstance(T, (list, np.ndarray)):
         T = Transformation.Homogeneous_Transformation_Matrix_Cls(T, np.float32)
     
-    bpy.data.objects[name].matrix_basis = T.Transpose().all().copy()
+    bpy.data.objects[name].matrix_basis = T.Transpose().all()
 
 def Duplicate_Object(name: str, identification: str):
     """
@@ -298,14 +304,32 @@ def Set_Camera_Properties(name: str, Camera_Parameters_Str: Lib.Blender.Paramete
     elif Camera_Parameters_Str.Type == 'ORTHO':
         bpy.data.cameras[name].ortho_scale = Camera_Parameters_Str.Value
 
-def Get_Absolute_Joint_Position(axes_sequence_cfg: str, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> tp.List[float]:
+def Convert_Ax_Str2Id(ax: str) -> int:
+    """
+    Description:
+        Convert a string axis letter to an identification number.
+        
+    Args:
+        (1) ax [string]: Axis name.
+        
+    Returns:
+        (1) parameter [int]: Identification number.
+    """
+    
+    return {
+        'X': 0,
+        'Y': 1,
+        'Z': 2,
+        'ALL': -1
+    }[ax]
+
+def Get_Absolute_Joint_Position(Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> tp.List[float]:
     """
     Description:
         Get the the absolute positions of the robot's joints.
         
     Args:
-        (1) axes_sequence_cfg [string]: Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
-        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
         (1) parameter [Vector<float>]: Current absolute joint position in s / meters.       
@@ -315,17 +339,17 @@ def Get_Absolute_Joint_Position(axes_sequence_cfg: str, Robot_Parameters_Str: Li
     for i, (th_i_name, T_i_zero_cfg, ax_i, th_i_type) in enumerate(zip(Robot_Parameters_Str.Theta.Name, Robot_Parameters_Str.T.Zero_Cfg, 
                                                                        Robot_Parameters_Str.Theta.Axis, Robot_Parameters_Str.Theta.Type)):   
         # Convert a string axis letter to an identification number.
-        ax_i_id_num = Lib.Blender.Utilities.General.Convert_Ax_Str2Num(ax_i)
+        ax_i_id_num = Convert_Ax_Str2Id(ax_i)
 
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
             #   The actual orientation of the joint in iteration i.
             th_actual = bpy.data.objects[th_i_name].rotation_euler[ax_i_id_num]
             #   The initial orientation of the joint in iteration i.
-            th_init   = Lib.Manipulator.Utilities.Transformation.Get_Euler_From_Matrix(T_i_zero_cfg, axes_sequence_cfg)[ax_i_id_num]
+            th_init   = T_i_zero_cfg.Get_Rotation('ZYX').all()[ax_i_id_num]
 
-            if (th_actual - th_init) > Lib.Manipulator.Utilities.Mathematics.CONST_MATH_PI:
-                th[i] = (th_actual - th_init) - Lib.Manipulator.Utilities.Mathematics.CONST_MATH_PI * 2
+            if (th_actual - th_init) > Mathematics.CONST_MATH_PI:
+                th[i] = (th_actual - th_init) - Mathematics.CONST_MATH_PI * 2
             else:    
                 th[i] = th_actual - th_init
         elif th_i_type == 'P':
@@ -333,21 +357,20 @@ def Get_Absolute_Joint_Position(axes_sequence_cfg: str, Robot_Parameters_Str: Li
             #   The actual translation of the joint in iteration i.
             th_actual = bpy.data.objects[th_i_name].location[ax_i_id_num]
             #   The initial translation of the joint in iteration i.
-            th_init   = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Translation_Part(T_i_zero_cfg)[ax_i_id_num]
+            th_init   = T_i_zero_cfg.p.all()[ax_i_id_num]
    
             th[i] = th_actual - th_init
 
     return th
 
-def Set_Absolute_Joint_Position(theta: tp.List[float], axes_sequence_cfg: str, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> bool:
+def Set_Absolute_Joint_Position(theta: tp.List[float], Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> bool:
     """
     Description:
         Set the absolute position of the robot joints.
         
     Args:
         (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
-        (2) axes_sequence_cfg [string]: Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
-        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
     
     Returns:
         (1) parameter [bool]: The result is 'True' if the required absolute joint positions 
@@ -357,15 +380,14 @@ def Set_Absolute_Joint_Position(theta: tp.List[float], axes_sequence_cfg: str, R
     for _, (th_i, th_i_name, T_i_zero_cfg, th_i_limit, ax_i, th_i_type) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Name, 
                                                                                          Robot_Parameters_Str.T.Zero_Cfg, Robot_Parameters_Str.Theta.Limit,
                                                                                          Robot_Parameters_Str.Theta.Axis, Robot_Parameters_Str.Theta.Type)): 
-        bpy.data.objects[th_i_name].rotation_mode = axes_sequence_cfg
+        bpy.data.objects[th_i_name].rotation_mode = 'ZYX'
         if th_i_limit[0] <= th_i <= th_i_limit[1]:
             if th_i_type == 'R':
                 # Identification of joint type: R - Revolute
-                bpy.data.objects[th_i_name].rotation_euler = Lib.Manipulator.Utilities.Transformation.Get_Euler_From_Matrix(T_i_zero_cfg @ Lib.Manipulator.Utilities.Transformation.Get_Rotation_Matrix(ax_i, th_i), 
-                                                                                                                            axes_sequence_cfg)
+                bpy.data.objects[th_i_name].rotation_euler = (T_i_zero_cfg @ Transformation.Get_Rotation_Matrix(ax_i, th_i)).Get_Rotation('ZYX').all()
             elif th_i_type == 'P':
                 # Identification of joint type: P - Prismatic
-                bpy.data.objects[th_i_name].location = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Translation_Part(T_i_zero_cfg @ Lib.Manipulator.Utilities.Transformation.Get_Translation_Matrix(ax_i, th_i))
+                bpy.data.objects[th_i_name].location = (T_i_zero_cfg @ Transformation.Get_Translation_Matrix(ax_i, th_i)).p.all()
         else:
             return False
 
@@ -387,13 +409,15 @@ def Insert_Key_Frame(name: str, property: str, frame: int, index: str):
                                 2\ index = 'X' -> x part, etc.
     """
     
-    required_index = Lib.Blender.Utilities.General.Convert_Ax_Str2Num(index)
+    # Convert a string letter to an identification number.
+    index_id_num = Convert_Ax_Str2Id(index)
+    
     if property == 'matrix_basis':
-        bpy.data.objects[name].keyframe_insert('location', frame=frame, index=required_index)
-        bpy.data.objects[name].keyframe_insert('rotation_euler', frame=frame, index=required_index)
-        bpy.data.objects[name].keyframe_insert('scale', frame=frame, index=required_index)
+        bpy.data.objects[name].keyframe_insert('location', frame=frame, index=index_id_num)
+        bpy.data.objects[name].keyframe_insert('rotation_euler', frame=frame, index=index_id_num)
+        bpy.data.objects[name].keyframe_insert('scale', frame=frame, index=index_id_num)
     else:
-        bpy.data.objects[name].keyframe_insert(property, frame=frame, index=required_index)
+        bpy.data.objects[name].keyframe_insert(property, frame=frame, index=index_id_num)
 
 def Generate_Robot_Path_From_Animation(Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str, SD_Poly_Cls: Lib.Blender.Core.Poly_3D_Cls):
     """
@@ -416,10 +440,10 @@ def Generate_Robot_Path_From_Animation(Robot_Parameters_Str: Lib.Parameters.Robo
 
         # Add coordinates (x,y,z points) calculated from Forward Kinematics 
         # to the polyline.
-        x, y, z = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Translation_Part(Lib.Manipulator.Kinematics.Core.Forward_Kinematics(th, 'Modified', Robot_Parameters_Str)[1])
+        x, y, z = Kinematics.Forward_Kinematics(th, 'Modified', Robot_Parameters_Str)[1].p.all()
         SD_Poly_Cls.Add(frame, x, y, z)   
 
-def Save_Robot_Data_From_Animation(file_path: str, Robot_Parameters_Str: Lib.Manipulator.Parameters.Robot_Parameters_Str):
+def Save_Robot_Data_From_Animation(file_path: str, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str):
     """
     Description:
         Save the absolute joint position data from the animation to the file.
@@ -440,7 +464,7 @@ def Save_Robot_Data_From_Animation(file_path: str, Robot_Parameters_Str: Lib.Man
         th = Get_Absolute_Joint_Position(Robot_Parameters_Str)
 
         # Write data to the file.
-        Lib.Utilities.File_IO.Save_Data_To_File(file_path, th)
+        File_IO.Save_Data_To_File(file_path, th)
 
 def Transform_Object_To_Wireframe(name: str, thickness: float) -> None:
     """
@@ -464,19 +488,18 @@ def Transform_Object_To_Wireframe(name: str, thickness: float) -> None:
     # Release the object from the selection.
     bpy.data.objects[name].select_set(False)
 
-def Attach_Viewpoints(viewpoint_name: str, axes_sequence_cfg: str, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> None:
+def Attach_Viewpoints(viewpoint_name: str, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> None:
     """
     Decription:
         Attach viewpoints with the correct transformation to an object joints.
         
     Args:
         (1) viewpoint_name [string]: Name of the main object.
-        (2) axes_sequence_cfg [string]: Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.
-        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.   
+        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.   
     """
 
     # Set the rotation mode.
-    bpy.data.objects[viewpoint_name].rotation_mode = axes_sequence_cfg
+    bpy.data.objects[viewpoint_name].rotation_mode = 'ZYX'
 
     for _, (name, T_i_zero_cfg) in enumerate(zip(Robot_Parameters_Str.Theta.Name, Robot_Parameters_Str.T.Zero_Cfg)):
         # Duplication of objects and/or object hierarchy (if exists).
@@ -487,27 +510,26 @@ def Attach_Viewpoints(viewpoint_name: str, axes_sequence_cfg: str, Robot_Paramet
         viewpoint_name_new = viewpoint_name + '_' + bpy.data.objects[name].name
 
         # Set the target (desired) viewpoint position in the current joint.
-        bpy.data.objects[viewpoint_name_new].matrix_basis = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Transpose(T_i_zero_cfg)  
+        bpy.data.objects[viewpoint_name_new].matrix_basis = T_i_zero_cfg.Transpose().all()
         # Connecting a child object (viewpoint_i) to a parent object (joint_i).
         bpy.data.objects[viewpoint_name_new].parent = bpy.data.objects[name]
         # Reset (null) the object matrix.
-        bpy.data.objects[viewpoint_name_new].matrix_basis = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Transpose(Lib.Manipulator.Utilities.Transformation.Get_Matrix_Identity(4)) 
+        bpy.data.objects[viewpoint_name_new].matrix_basis = Transformation.Get_Matrix_Identity(4) 
 
-def Add_Viewpoints(viewpoint_name: str, axes_sequence_cfg: str, T: tp.List[tp.List[tp.List[float]]]) -> None:
+def Add_Viewpoints(viewpoint_name: str, T: tp.List[tp.List[tp.List[float]]]) -> None:
     """
     Decription:
         Add viewpoints with the correct transformation.
         
     Args:
         (1) viewpoint_name [string]: Name of the main object.
-        (2) axes_sequence_cfg [string]: Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.
-        (3) T [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
+        (2) T [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
                                        Note:
                                         Where n is the number of joints.
     """
 
     # Set the rotation mode.
-    bpy.data.objects[viewpoint_name].rotation_mode = axes_sequence_cfg
+    bpy.data.objects[viewpoint_name].rotation_mode = 'ZYX'
 
     for i, T_i in enumerate(T):
         # Duplication of objects and/or object hierarchy (if exists).
@@ -518,8 +540,8 @@ def Add_Viewpoints(viewpoint_name: str, axes_sequence_cfg: str, T: tp.List[tp.Li
         viewpoint_name_new = viewpoint_name + '_' + f'Joint_{i}'
         
         # Set the target (desired) viewpoint position in the current joint.
-        bpy.data.objects[viewpoint_name_new].location       = Lib.Manipulator.Utilities.Transformation.Get_Matrix_Translation_Part(T_i)
-        bpy.data.objects[viewpoint_name_new].rotation_euler = Lib.Manipulator.Utilities.Transformation.Get_Euler_From_Matrix(T_i, axes_sequence_cfg)
+        bpy.data.objects[viewpoint_name_new].location       = T_i.p.all()
+        bpy.data.objects[viewpoint_name_new].rotation_euler = T_i.Get_Rotation('ZYX')
 
 def Is_Point_Inside_Object(name: str, point: tp.List[float], max_distance: float) -> bool:
     """
