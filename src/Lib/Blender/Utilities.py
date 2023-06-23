@@ -541,7 +541,7 @@ def Add_Viewpoints(viewpoint_name: str, T: tp.List[tp.List[tp.List[float]]]) -> 
         
         # Set the target (desired) viewpoint position in the current joint.
         bpy.data.objects[viewpoint_name_new].location       = T_i.p.all()
-        bpy.data.objects[viewpoint_name_new].rotation_euler = T_i.Get_Rotation('ZYX')
+        bpy.data.objects[viewpoint_name_new].rotation_euler = T_i.Get_Rotation('ZYX').all()
 
 def Is_Point_Inside_Object(name: str, point: tp.List[float], max_distance: float) -> bool:
     """

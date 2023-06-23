@@ -44,8 +44,17 @@ def main():
     # Deselect all objects in the current scene.
     Lib.Blender.Utilities.Deselect_All()
     
+    # Removes joint viewpoints if they exist in the current scene.
+    i = 0
+    while True:
+        if Lib.Blender.Utilities.Object_Exist(f'Viewpoint_Joint_{i}') == True:
+            Lib.Blender.Utilities.Remove_Object(f'Viewpoint_Joint_{i}')
+        else:
+            break     
+        i += 1
+
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_Str
+    Robot_Str = Parameters.EPSON_LS3_B401S_Str
 
     """
     Description:
