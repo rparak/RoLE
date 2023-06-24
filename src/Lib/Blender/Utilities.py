@@ -74,6 +74,34 @@ def Remove_Object(name: str) -> None:
         bpy.ops.object.delete()
         bpy.context.view_layer.update()
 
+def Remove_Object_Material(name: str) -> None:
+    """
+    Description:
+        Remove all materials from the individual object.
+            
+    Args:
+        (1) name [string]: The name of the object.
+    """
+        
+    # Create a default material. Due to a possible change in the color of the object. 
+    material_obj = bpy.data.materials.new('Default_Material')
+    material_obj.use_nodes = True
+    material_obj.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value = (0.75,0.75,0.75,1.0) 
+        
+    for obj in bpy.data.objects:
+        if obj == bpy.data.objects[name]:
+            # Remove all materials (material slots) from the object.
+            obj.active_material_index = 0
+            for i in range(len(obj.material_slots)):
+                bpy.ops.object.material_slot_remove({'object': obj})
+
+            # Assign material to the active object.
+            bpy.context.view_layer.objects.active = bpy.data.objects[name]
+            bpy.context.active_object.active_material = material_obj
+            bpy.context.view_layer.objects.active = None
+    
+    Deselect_All()
+
 def Set_Object_Material_Color(name: str, color: tp.List[float]):
     """
     Description:
