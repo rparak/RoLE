@@ -172,6 +172,10 @@ class Poly_3D_Cls(object):
         bpy.data.objects[self.__data_block.name].data.bevel_factor_end = 1.0
         bpy.data.objects[self.__data_block.name].data.keyframe_insert(data_path='bevel_factor_end', frame=frame_end, index=-1)
 
+class Mechanism_Cls(object):
+    def __init__(self, viewpoint_visibility: bool) -> None:
+        pass
+
 class Robot_Cls(object):
     """
     Description:
