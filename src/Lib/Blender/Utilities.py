@@ -388,6 +388,7 @@ def Set_Absolute_Joint_Position(theta: tp.List[float], Robot_Parameters_Str: Lib
             elif th_i_type == 'P':
                 # Identification of joint type: P - Prismatic
                 bpy.data.objects[th_i_name].location = (T_i_zero_cfg @ Transformation.Get_Translation_Matrix(ax_i, th_i)).p.all()
+
         else:
             return False
 
