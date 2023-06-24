@@ -175,81 +175,132 @@ class Poly_3D_Cls(object):
 class Robot_Cls(object):
     """
     Description:
-        ...
+        A class for working with a robot object in a Blender scene.
 
     Initialization of the Class:
         Args:
-            ...
+            (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+            (2) viewpoint_visibility [bool]: The state (enable/disable) of the robot end-effector viewpoint object visibility.
 
         Example:
             Initialization:
                 # Assignment of the variables.
-                ...
+                #   Example for the ABB IRB 120 robot.
+                Robot_Parameters_Str = Lib.Parameters.Robot.ABB_IRB_120_Str
+                viewpoint_visibility = True
 
                 # Initialization of the class.
-                ...
+                Cls = Robot_Cls(Robot_Parameters_Str, viewpoint_visibility)
 
             Features:
                 # Properties of the class.
-                ...
+                Cls.Parameters
+                Cls.Theta_0, Cls.T_EE
 
                 # Functions of the class.
-                ...
+                Cls.Set_Absolute_Joint_Position([0.0. 0.0, 0.0, 0.0, 0.0, 0.0])
     """
 
-    def __init__(self, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str):
-        # << PRIVATE >> #
-        self.__Robot_Parameters_Str = Robot_Parameters_Str
-        self.__Robot_Parameters_Str.T.Base = HTM_Cls(bpy.data.objects[self.__Robot_Parameters_Str.Name].matrix_basis, 
-                                                     np.float32)
-        self.__Robot_Parameters_Str.T.Zero_Cfg = Kinematics.Get_Individual_Joint_Configuration(self.__Robot_Parameters_Str.Theta.Zero, 'Modified', 
-                                                                                               self.__Robot_Parameters_Str)[1]
-        
-        self.__Viewpoint_EE_Name = f'{self.__Robot_Parameters_Str.Name}_Viewpoint_EE'
-
-        # add visibility viewpoint here and function will be private
+    def __init__(self, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str, viewpoint_visibility: bool) -> None:
+        try:
+            assert Lib.Blender.Utilities.Object_Exist(Robot_Parameters_Str.Name) == True
+            
+            # << PRIVATE >> #
+            self.__Robot_Parameters_Str = Robot_Parameters_Str
+            # Get the homogeneous transformation matrix of the robot based on the position of the robot structure in Blender.
+            self.__Robot_Parameters_Str.T.Base = HTM_Cls(bpy.data.objects[self.__Robot_Parameters_Str.Name].matrix_basis, 
+                                                        np.float32)
+            # Get the zero configuration of the homogeneous matrix of each joint using forward kinematics. 
+            self.__Robot_Parameters_Str.T.Zero_Cfg = Kinematics.Get_Individual_Joint_Configuration(self.__Robot_Parameters_Str.Theta.Zero, 'Modified', 
+                                                                                                self.__Robot_Parameters_Str)[1]
+            
+            # Enable or disable the visibility of the end-effector viewpoint.
+            self.__viewpoint_visibility = viewpoint_visibility
+            self.__Viewpoint_EE_Name = f'{self.__Robot_Parameters_Str.Name}_Viewpoint_EE'
+            if Lib.Blender.Utilities.Object_Exist(self.__Viewpoint_EE_Name):
+                # ...
+                Lib.Blender.Utilities.Object_Visibility(self.__Viewpoint_EE_Name, self.__viewpoint_visibility)
+                # Set the transformation of the viewpoint object.
+                #   The object transformation will be set to the end-effector of the robot structure.
+                Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
+            
+        except AssertionError as error:
+            print(f'[ERROR] Information: {error}')
+            print(f'[ERROR] The robot object named <{Robot_Parameters_Str.Name}> does not exist in the current scene.')
 
     @property
-    def Theta_0(self):
+    def Parameters(self) -> Lib.Parameters.Robot.Robot_Parameters_Str:
+        """
+        Description:
+            Get the structure of the main parameters of the robot.
+
+        Returns:
+            (1) parameter [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        """
+        return self.__Robot_Parameters_Str
+    
+    @property
+    def Theta_0(self) -> tp.List[float]:
+        """
+        Description:
+            Get the zero (home) absolute position of the joint in radians/meter.
+
+        Returns:
+            (1) parameter [Vector<float>]: Zero (home) absolute joint position in radians / meters.
+        """
         return self.__Robot_Parameters_Str.Theta.Zero
     
     @property
-    def Theta(self):
+    def Theta(self) -> tp.List[float]:
+        """
+        Description:
+            Get the absolute positions of the robot's joints.
+
+        Returns:
+            (1) parameter [Vector<float>]: Current absolute joint position in radians / meters.
+        """
         return Lib.Blender.Utilities.Get_Absolute_Joint_Position(self.__Robot_Parameters_Str)
 
     @property
-    def T_EE(self):
+    def T_EE(self) -> tp.List[tp.List[float]]:
+        """
+        Description:
+            Get the homogeneous transformation matrix of the robot end-effector.
+
+        Returns:
+            (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+        """
         return Kinematics.Forward_Kinematics(self.Theta, 'Modified', self.__Robot_Parameters_Str)[1]
 
-    def Viewpoint_Visibility(self, state: bool) -> None:
+    def __Update(self) -> None:
         """
         Description:
-            Function to enable and disable the visibility of the end-effector viewpoint.
-        
+            Update the scene.
+        """
+
+        bpy.context.view_layer.update()
+
+    def Set_Absolute_Joint_Position(self, theta: tp.List[float]) -> None:
+        """
+        Description:
+            Set the absolute position of the robot joints.
+
         Args:
-            (1) state [bool]: Enable (True) / Disable (False).  
+            (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
         """
+        try:
+            assert self.__Robot_Parameters_Str.Theta.Zero.size == theta.size
 
-        if Lib.Blender.Utilities.Object_Exist(self.__Viewpoint_EE_Name):
-            # ...
-            Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, 
-                                                            self.T_EE)
-            # ...
-            Lib.Blender.Utilities.Object_Visibility(self.__Viewpoint_EE_Name, state)
+            Lib.Blender.Utilities.Set_Absolute_Joint_Position(theta, self.__Robot_Parameters_Str)
 
-    def Get_Random_Theta(self):
-        """
-        Description:
-
-        """
-
-        Theta_Random = np.array([0.0] * self.__Robot_Parameters_Str.Theta.Zero.size, np.float32)
-        for i in range(Theta_Random.size):
-            Theta_Random[i] = np.float32(np.random.uniform(self.__Robot_Parameters_Str.Theta.Limit[i][0], 
-                                                           self.__Robot_Parameters_Str.Theta.Limit[i][1]))
+            # If the viewpoint visibility is enabled, set the transformation of the object 
+            # to the end-effector of the robot.
+            if self.__viewpoint_visibility == True:
+                Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
             
-        return Theta_Random
-
-    def Set_Absolute_Joint_Position(self, theta):
-        Lib.Blender.Utilities.Set_Absolute_Joint_Position(theta, self.__Robot_Parameters_Str)
-        Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
+            # Update the scene.
+            self.__Update()
+            
+        except AssertionError as error:
+            print(f'[ERROR] Information: {error}')
+            print(f'[ERROR] Incorrect number of values in the input variable theta. The input variable must contain {self.__Robot_Parameters_Str.Theta.Zero.size} values.')

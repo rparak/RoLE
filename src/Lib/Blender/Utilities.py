@@ -394,7 +394,7 @@ def Get_Absolute_Joint_Position(Robot_Parameters_Str: Lib.Parameters.Robot.Robot
         (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
-        (1) parameter [Vector<float>]: Current absolute joint position in s / meters.       
+        (1) parameter [Vector<float>]: Current absolute joint position in radians / meters.       
     """
 
     # Get the zero configuration of each joint.
