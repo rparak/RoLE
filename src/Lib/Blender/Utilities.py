@@ -323,6 +323,40 @@ def Convert_Ax_Str2Id(ax: str) -> int:
         'ALL': -1
     }[ax]
 
+def __Get_Zero_Joint_Cfg(Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> tp.List[tp.List[tp.List[float]]]:
+    """
+    Description:
+        Get the zero configuration of each joint using a modified forward kinematics calculation method.
+
+    Args:
+        (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        
+    Returns:
+        (1) parameter [Matrix<float> nx(4x4)]: Zero configuration of each joint.
+                                               Note:
+                                                Where n is the number of joints.
+    """
+
+    T_i = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float32); T_zero_cfg = []
+    for i, (th_i, dh_i, th_i_type) in enumerate(zip(Robot_Parameters_Str.Theta.Zero, Robot_Parameters_Str.DH.Modified, 
+                                                    Robot_Parameters_Str.Theta.Type)):
+        # Forward kinematics using modified DH parameters.
+        if th_i_type == 'R':
+            # Identification of joint type: R - Revolute
+            T_i = T_i @ Kinematics.DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
+        elif th_i_type == 'P':
+            # Identification of joint type: P - Prismatic
+            T_i = T_i @ Kinematics.DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+
+        # Addition of a homogeneous matrix configuration in the current 
+        # episode (joint absolute position i).
+        if Robot_Parameters_Str.Theta.Zero.size - 1 == i:
+            T_zero_cfg.append(T_i @ Robot_Parameters_Str.T.End_Effector)
+        else:
+            T_zero_cfg.append(T_i)
+
+    return T_zero_cfg
+
 def Get_Absolute_Joint_Position(Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> tp.List[float]:
     """
     Description:
@@ -335,8 +369,11 @@ def Get_Absolute_Joint_Position(Robot_Parameters_Str: Lib.Parameters.Robot.Robot
         (1) parameter [Vector<float>]: Current absolute joint position in s / meters.       
     """
 
+    # Get the zero configuration of each joint.
+    T_zero_cfg = __Get_Zero_Joint_Cfg(Robot_Parameters_Str)
+
     th = np.zeros(Robot_Parameters_Str.Theta.Zero.shape)
-    for i, (th_i_name, T_i_zero_cfg, ax_i, th_i_type) in enumerate(zip(Robot_Parameters_Str.Theta.Name, Robot_Parameters_Str.T.Zero_Cfg, 
+    for i, (th_i_name, T_i_zero_cfg, ax_i, th_i_type) in enumerate(zip(Robot_Parameters_Str.Theta.Name, T_zero_cfg, 
                                                                        Robot_Parameters_Str.Theta.Axis, Robot_Parameters_Str.Theta.Type)):   
         # Convert a string axis letter to an identification number.
         ax_i_id_num = Convert_Ax_Str2Id(ax_i)
@@ -377,8 +414,11 @@ def Set_Absolute_Joint_Position(theta: tp.List[float], Robot_Parameters_Str: Lib
                               are within the limits, and 'False' if they are not.
     """
 
+    # Get the zero configuration of each joint.
+    T_zero_cfg = __Get_Zero_Joint_Cfg(Robot_Parameters_Str)
+
     for _, (th_i, th_i_name, T_i_zero_cfg, th_i_limit, ax_i, th_i_type) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Name, 
-                                                                                         Robot_Parameters_Str.T.Zero_Cfg, Robot_Parameters_Str.Theta.Limit,
+                                                                                         T_zero_cfg, Robot_Parameters_Str.Theta.Limit,
                                                                                          Robot_Parameters_Str.Theta.Axis, Robot_Parameters_Str.Theta.Type)): 
         bpy.data.objects[th_i_name].rotation_mode = 'ZYX'
         if th_i_limit[0] <= th_i <= th_i_limit[1]:

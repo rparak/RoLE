@@ -46,7 +46,7 @@ Description:
         position and orientation of the end-effector. 
 """
 
-def __DH_Standard(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.List[float]]:
+def DH_Standard(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.List[float]]:
     """
     Description:
         Standard Denavit-Hartenberg (DH) method. 
@@ -93,10 +93,10 @@ def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: P
         # Forward kinematics using standard DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
-            T_i = T_i @ __DH_Standard(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
+            T_i = T_i @ DH_Standard(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            T_i = T_i @ __DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            T_i = T_i @ DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
 
         # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
@@ -104,7 +104,7 @@ def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: P
     # th_limit_err[], T_Base @ T_n @ T_EE
     return (th_limit_err, T_i @ Robot_Parameters_Str.T.End_Effector)
 
-def __DH_Modified(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.List[float]]:
+def DH_Modified(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.List[float]]:
     """
     Description:
         Modified Denavit-Hartenberg Method.
@@ -159,10 +159,10 @@ def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: P
         # Forward kinematics using modified DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
-            T_i = T_i @ __DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
+            T_i = T_i @ DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            T_i = T_i @ __DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            T_i = T_i @ DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
 
         # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
@@ -224,10 +224,10 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
         # Forward kinematics using standard DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
-            T_i = T_i @ __DH_Standard(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
+            T_i = T_i @ DH_Standard(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            T_i = T_i @ __DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            T_i = T_i @ DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
 
         # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
@@ -270,10 +270,10 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
         # Forward kinematics using modified DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
-            T_i = T_i @ __DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
+            T_i = T_i @ DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            T_i = T_i @ __DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            T_i = T_i @ DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
 
         # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = True if th_i_limit[0] <= th_i <= th_i_limit[1] else False
