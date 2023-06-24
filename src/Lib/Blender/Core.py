@@ -2,9 +2,17 @@
 import bpy
 # Typing (Support for type hints)
 import typing as tp
+# Numpy (Array computing) [pip3 install numpy]
+import numpy as np
 # Custom Script:
 #   ../Lib/Blender/Utilities
 import Lib.Blender.Utilities
+#   ../Lib/Parameters/Robot
+import Lib.Parameters.Robot
+#   ../Lib/Kinematics/Core
+import Lib.Kinematics.Core as Kinematics
+#   ../Lib/Transformation/Core
+from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
 
 class Poly_3D_Cls(object):
     """
@@ -163,3 +171,85 @@ class Poly_3D_Cls(object):
         bpy.data.objects[self.__data_block.name].data.keyframe_insert(data_path='bevel_factor_end', frame=frame_start, index=-1)
         bpy.data.objects[self.__data_block.name].data.bevel_factor_end = 1.0
         bpy.data.objects[self.__data_block.name].data.keyframe_insert(data_path='bevel_factor_end', frame=frame_end, index=-1)
+
+class Robot_Cls(object):
+    """
+    Description:
+        ...
+
+    Initialization of the Class:
+        Args:
+            ...
+
+        Example:
+            Initialization:
+                # Assignment of the variables.
+                ...
+
+                # Initialization of the class.
+                ...
+
+            Features:
+                # Properties of the class.
+                ...
+
+                # Functions of the class.
+                ...
+    """
+
+    def __init__(self, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str):
+        # << PRIVATE >> #
+        self.__Robot_Parameters_Str = Robot_Parameters_Str
+        self.__Robot_Parameters_Str.T.Base = HTM_Cls(bpy.data.objects[self.__Robot_Parameters_Str.Name].matrix_basis, 
+                                                     np.float32)
+        self.__Robot_Parameters_Str.T.Zero_Cfg = Kinematics.Get_Individual_Joint_Configuration(self.__Robot_Parameters_Str.Theta.Zero, 'Modified', 
+                                                                                               self.__Robot_Parameters_Str)[1]
+        
+        self.__Viewpoint_EE_Name = f'{self.__Robot_Parameters_Str.Name}_Viewpoint_EE'
+
+        # add visibility viewpoint here and function will be private
+
+    @property
+    def Theta_0(self):
+        return self.__Robot_Parameters_Str.Theta.Zero
+    
+    @property
+    def Theta(self):
+        return Lib.Blender.Utilities.Get_Absolute_Joint_Position(self.__Robot_Parameters_Str)
+
+    @property
+    def T_EE(self):
+        return Kinematics.Forward_Kinematics(self.Theta, 'Modified', self.__Robot_Parameters_Str)[1]
+
+    def Viewpoint_Visibility(self, state: bool) -> None:
+        """
+        Description:
+            Function to enable and disable the visibility of the end-effector viewpoint.
+        
+        Args:
+            (1) state [bool]: Enable (True) / Disable (False).  
+        """
+
+        if Lib.Blender.Utilities.Object_Exist(self.__Viewpoint_EE_Name):
+            # ...
+            Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, 
+                                                            self.T_EE)
+            # ...
+            Lib.Blender.Utilities.Object_Visibility(self.__Viewpoint_EE_Name, state)
+
+    def Get_Random_Theta(self):
+        """
+        Description:
+
+        """
+
+        Theta_Random = np.array([0.0] * self.__Robot_Parameters_Str.Theta.Zero.size, np.float32)
+        for i in range(Theta_Random.size):
+            Theta_Random[i] = np.float32(np.random.uniform(self.__Robot_Parameters_Str.Theta.Limit[i][0], 
+                                                           self.__Robot_Parameters_Str.Theta.Limit[i][1]))
+            
+        return Theta_Random
+
+    def Set_Absolute_Joint_Position(self, theta):
+        Lib.Blender.Utilities.Set_Absolute_Joint_Position(theta, self.__Robot_Parameters_Str)
+        Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
