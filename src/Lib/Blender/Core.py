@@ -284,6 +284,9 @@ class Robot_Cls(object):
 
         bpy.context.view_layer.update()
 
+    def Reset(self):
+        pass
+
     def Set_Absolute_Joint_Position(self, theta: tp.List[float]) -> None:
         """
         Description:
