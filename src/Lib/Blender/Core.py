@@ -222,7 +222,7 @@ class Robot_Cls(object):
             self.__viewpoint_visibility = viewpoint_visibility
             self.__Viewpoint_EE_Name = f'{self.__Robot_Parameters_Str.Name}_Viewpoint_EE'
             if Lib.Blender.Utilities.Object_Exist(self.__Viewpoint_EE_Name):
-                # ...
+                # Enable / disable the visibility of an object.
                 Lib.Blender.Utilities.Object_Visibility(self.__Viewpoint_EE_Name, self.__viewpoint_visibility)
                 # Set the transformation of the viewpoint object.
                 #   The object transformation will be set to the end-effector of the robot structure.
@@ -284,8 +284,26 @@ class Robot_Cls(object):
 
         bpy.context.view_layer.update()
 
-    def Reset(self):
-        pass
+    def Reset(self, mode: str) -> None:
+        """
+        Description:
+            Function to reset the absolute position of the robot joints from the selected mode.
+
+        Args:
+            (1) mode [string]: Possible modes to reset the absolute position of the joints.
+        """
+
+        try:
+            assert mode in ['Zero', 'Home']
+
+            if mode == 'Zero':
+                self.Set_Absolute_Joint_Position(self.__Robot_Parameters_Str.Theta.Zero)
+            else:
+                self.Set_Absolute_Joint_Position(self.__Robot_Parameters_Str.Theta.Home)
+
+        except AssertionError as error:
+            print(f'[ERROR] Information: {error}')
+            print('[INFO] Incorrect reset mode selected. The selected mode must be chosen from the two options (Zero, Home).')
 
     def Set_Absolute_Joint_Position(self, theta: tp.List[float]) -> None:
         """

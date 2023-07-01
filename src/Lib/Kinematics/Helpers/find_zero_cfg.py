@@ -29,13 +29,14 @@ def main():
 
     for i, T_i in enumerate(Robot_Str.T.Zero_Cfg):
         # Get the translational and rotational part from the transformation matrix.
-        p = T_i.p.all(); R_ea = T_i.Get_Rotation('ZYX').all()
+        p = T_i.p; Euler_Angles = T_i.Get_Rotation('ZYX'); Quaternions = T_i.Get_Rotation('QUATERNION')
 
         # Zero configuration of the homogeneous matrix in the current episode.
-        #   Joint_{i}: p, R (Euler Angles or Quaternions)
+        #   Joint_{i}: p, R (Euler Angles and Quaternions)
         print(f'[INFO] Homogeneous matrix T_{i} in iteration {i}:')
-        print(f'[INFO] Translation part (X, Y, Z [metres]): |X = {p[0]:.5f} | Y = {p[1]:.5f} | Z = {p[2]:.5f}|')
-        print(f'[INFO] Rotation part (Euler Angles [rad]):  |X = {R_ea[0]:.5f} | Y = {R_ea[1]:.5f} | Z = {R_ea[2]:.5f}|')       
+        print(f'[INFO] >> p: [{p.x:.3f}, {p.y:.3f}, {p.z:.3f}]')
+        print(f'[INFO] >> Euler Angles: [{Euler_Angles.x:.3f}, {Euler_Angles.y:.3f}, {Euler_Angles.z:.3f}]')
+        print(f'[INFO] >> Quaternions: [{Quaternions.w:.5f}, {Quaternions.x:.5f}, {Quaternions.y:.5f}, {Quaternions.z:.5f}]')
     
 if __name__ == '__main__':
     main()

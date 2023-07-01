@@ -24,31 +24,6 @@ Description:
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
 
-# Initialization of the absolute joint position of the robot structure.
-#   Type: ABB IRB 120
-CONST_ABB_IRB_120_ZERO_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64))
-CONST_ABB_IRB_120_HOME_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([0.0, 0.0, 0.0, 0.0, 90.0, 0.0], dtype=np.float64))
-CONST_ABB_IRB_120_TEST_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([20.0, -20.0, 20.0, -20.0, 20.0, -20.0], dtype=np.float64))
-#   Type: Universal Robots UR3
-CONST_UR3_ZERO_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64))
-CONST_UR3_HOME_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([-90.0, -90.0, 0.0, -90.0, 0.0, 0.0], dtype=np.float64))
-CONST_UR3_TEST_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([20.0, -20.0, 20.0, -20.0, 20.0, -20.0], dtype=np.float64))
-#   Type: ABB IRB 14000 (Right)
-CONST_ABB_IRB_14000_R_ZERO_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64))
-CONST_ABB_IRB_14000_R_HOME_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([0.0, -130.0, -135.0, 30.0, 0.0, 40.0, 0.0], dtype=np.float64))
-CONST_ABB_IRB_14000_R_TEST_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([20.0, -20.0, 20.0, -20.0, 20.0, -20.0, 20.0], dtype=np.float64))
-#   Type: ABB IRB 14000 (Left)
-CONST_ABB_IRB_14000_L_ZERO_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64))
-CONST_ABB_IRB_14000_L_HOME_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([0.0, -130.0,  135.0, 30.0, 0.0, 40.0, 0.0], dtype=np.float64))
-CONST_ABB_IRB_14000_L_TEST_JOINT_ORIENTATION = Mathematics.Degree_To_Radian(np.array([20.0, -20.0, 20.0, -20.0, 20.0, -20.0, 20.0], dtype=np.float64))
-#   Type: Epson LS3-B401S
-CONST_EPSON_LS3_B401S_ZERO_JOINT_ORIENTATION = [Mathematics.Degree_To_Radian(0.0), Mathematics.Degree_To_Radian(0.0), 0.0, Mathematics.Degree_To_Radian(0.0)]
-CONST_EPSON_LS3_B401S_HOME_JOINT_ORIENTATION = [Mathematics.Degree_To_Radian(90.0), Mathematics.Degree_To_Radian(0.0), 0.0, Mathematics.Degree_To_Radian(0.0)]
-CONST_EPSON_LS3_B401S_TEST_JOINT_ORIENTATION = [Mathematics.Degree_To_Radian(-20.0), Mathematics.Degree_To_Radian(20.0), -0.05, Mathematics.Degree_To_Radian(50.0)]
-
-# Parameter for the desired absolute positions of the robot arm joints.
-CONST_DESIRED_JOINT_ORIENTATION = CONST_UR3_ZERO_JOINT_ORIENTATION
-
 def main():
     """
     Description:
@@ -61,16 +36,19 @@ def main():
     # Remove animation data from objects (Clear keyframes).
     Lib.Blender.Utilities.Remove_Animation_Data()
     
-    # ...
+    # Set the structure of the main parameters of the controlled robot.
     Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, True)
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}')
 
+    # Reset the absolute position of the robot joints to the 'Zero'.
+    Robot_ID_0_Cls.Reset('Zero')
+    
     print('[INFO] Absolute Joint Positions (desired):')
-    for i, th_i in enumerate(CONST_DESIRED_JOINT_ORIENTATION):
+    for i, th_i in enumerate(Robot_ID_0_Cls.Parameters.Theta.Home):
         print(f'[INFO] >> Joint_{i}({Mathematics.Radian_To_Degree(th_i):.3f})')
 
     # Set the absolute position of the robot joints.
-    Robot_ID_0_Cls.Set_Absolute_Joint_Position(CONST_DESIRED_JOINT_ORIENTATION)
+    Robot_ID_0_Cls.Set_Absolute_Joint_Position(Robot_ID_0_Cls.Parameters.Theta.Home)
 
     # Get the the absolute positions of the robot's joints.
     print('[INFO] Absolute Joint Positions (actual):')
