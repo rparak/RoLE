@@ -13,18 +13,13 @@ import mathutils
 # Custom Library:
 #   ../Lib/Transformation/Core
 import Lib.Transformation.Core as Transformation
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot
 #   ../Lib/Blender/Core
 import Lib.Blender.Core
 #   ../Lib/Blender/Parameters/Camera
 import Lib.Blender.Parameters.Camera
-#   ../Lib/Kinematics/Core
-import Lib.Kinematics.Core as Kinematics
-#   ../Lib/Utilities/File_IO
-import Lib.Utilities.File_IO as File_IO
+
 
 def Deselect_All() -> None:
     """
@@ -351,117 +346,6 @@ def Convert_Ax_Str2Id(ax: str) -> int:
         'ALL': -1
     }[ax]
 
-def __Get_Zero_Joint_Cfg(Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> tp.List[tp.List[tp.List[float]]]:
-    """
-    Description:
-        Get the zero configuration of each joint using a modified forward kinematics calculation method.
-
-    Args:
-        (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        
-    Returns:
-        (1) parameter [Matrix<float> nx(4x4)]: Zero configuration of each joint.
-                                               Note:
-                                                Where n is the number of joints.
-    """
-
-    T_i = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float32); T_zero_cfg = []
-    for i, (th_i, dh_i, th_i_type) in enumerate(zip(Robot_Parameters_Str.Theta.Zero, Robot_Parameters_Str.DH.Modified, 
-                                                    Robot_Parameters_Str.Theta.Type)):
-        # Forward kinematics using modified DH parameters.
-        if th_i_type == 'R':
-            # Identification of joint type: R - Revolute
-            T_i = T_i @ Kinematics.DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
-        elif th_i_type == 'P':
-            # Identification of joint type: P - Prismatic
-            T_i = T_i @ Kinematics.DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
-
-        # Addition of a homogeneous matrix configuration in the current 
-        # episode (joint absolute position i).
-        if Robot_Parameters_Str.Theta.Zero.size - 1 == i:
-            T_zero_cfg.append(T_i @ Robot_Parameters_Str.T.End_Effector)
-        else:
-            T_zero_cfg.append(T_i)
-
-    return T_zero_cfg
-
-def Get_Absolute_Joint_Position(Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> tp.List[float]:
-    """
-    Description:
-        Get the the absolute positions of the robot's joints.
-        
-    Args:
-        (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-
-    Returns:
-        (1) parameter [Vector<float>]: Current absolute joint position in radians / meters.       
-    """
-
-    # Get the zero configuration of each joint.
-    T_zero_cfg = __Get_Zero_Joint_Cfg(Robot_Parameters_Str)
-
-    th = np.zeros(Robot_Parameters_Str.Theta.Zero.shape)
-    for i, (th_i_name, T_i_zero_cfg, ax_i, th_i_type) in enumerate(zip(Robot_Parameters_Str.Theta.Name, T_zero_cfg, 
-                                                                       Robot_Parameters_Str.Theta.Axis, Robot_Parameters_Str.Theta.Type)):   
-        # Convert a string axis letter to an identification number.
-        ax_i_id_num = Convert_Ax_Str2Id(ax_i)
-
-        if th_i_type == 'R':
-            # Identification of joint type: R - Revolute
-            #   The actual orientation of the joint in iteration i.
-            th_actual = bpy.data.objects[th_i_name].rotation_euler[ax_i_id_num]
-            #   The initial orientation of the joint in iteration i.
-            th_init   = T_i_zero_cfg.Get_Rotation('ZYX').all()[ax_i_id_num]
-
-            if (th_actual - th_init) > Mathematics.CONST_MATH_PI:
-                th[i] = (th_actual - th_init) - Mathematics.CONST_MATH_PI * 2
-            else:    
-                th[i] = th_actual - th_init
-        elif th_i_type == 'P':
-            # Identification of joint type: P - Prismatic
-            #   The actual translation of the joint in iteration i.
-            th_actual = bpy.data.objects[th_i_name].location[ax_i_id_num]
-            #   The initial translation of the joint in iteration i.
-            th_init   = T_i_zero_cfg.p.all()[ax_i_id_num]
-   
-            th[i] = th_actual - th_init
-
-    return th
-
-def Set_Absolute_Joint_Position(theta: tp.List[float], Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str) -> bool:
-    """
-    Description:
-        Set the absolute position of the robot joints.
-        
-    Args:
-        (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
-        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-    
-    Returns:
-        (1) parameter [bool]: The result is 'True' if the required absolute joint positions 
-                              are within the limits, and 'False' if they are not.
-    """
-
-    # Get the zero configuration of each joint.
-    T_zero_cfg = __Get_Zero_Joint_Cfg(Robot_Parameters_Str)
-
-    for _, (th_i, th_i_name, T_i_zero_cfg, th_i_limit, ax_i, th_i_type) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Name, 
-                                                                                         T_zero_cfg, Robot_Parameters_Str.Theta.Limit,
-                                                                                         Robot_Parameters_Str.Theta.Axis, Robot_Parameters_Str.Theta.Type)): 
-        bpy.data.objects[th_i_name].rotation_mode = 'ZYX'
-        if th_i_limit[0] <= th_i <= th_i_limit[1]:
-            if th_i_type == 'R':
-                # Identification of joint type: R - Revolute
-                bpy.data.objects[th_i_name].rotation_euler = (T_i_zero_cfg @ Transformation.Get_Rotation_Matrix(ax_i, th_i)).Get_Rotation('ZYX').all()
-            elif th_i_type == 'P':
-                # Identification of joint type: P - Prismatic
-                bpy.data.objects[th_i_name].location = (T_i_zero_cfg @ Transformation.Get_Translation_Matrix(ax_i, th_i)).p.all()
-
-        else:
-            return False
-
-    return True
-
 def Insert_Key_Frame(name: str, property: str, frame: int, index: str):
     """
     Description:
@@ -486,54 +370,7 @@ def Insert_Key_Frame(name: str, property: str, frame: int, index: str):
         bpy.data.objects[name].keyframe_insert('rotation_euler', frame=frame, index=index_id_num)
         bpy.data.objects[name].keyframe_insert('scale', frame=frame, index=index_id_num)
     else:
-        bpy.data.objects[name].keyframe_insert(property, frame=frame, index=index_id_num)
-
-def Generate_Robot_Path_From_Animation(Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str, SD_Poly_Cls: Lib.Blender.Core.Poly_3D_Cls):
-    """
-    Description:
-        Generate robot data (x, y, z path) from animation.
-        
-    Args:
-        (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (2) SD_Poly_Cls [Poly_3D_Cls(object)]: Visualization of a 3-D (dimensional) polyline.
-    """
-    
-    # Initialize the size (length) of the polyline data set.
-    SD_Poly_Cls.Initialization(bpy.context.scene.frame_end + 1)
-    
-    for frame in range(bpy.context.scene.frame_start, bpy.context.scene.frame_end + 1):
-        bpy.context.scene.frame_set(frame)
-        
-        # Get the current absolute joint position in radians / meters.
-        th = Get_Absolute_Joint_Position(Robot_Parameters_Str)
-
-        # Add coordinates (x,y,z points) calculated from Forward Kinematics 
-        # to the polyline.
-        x, y, z = Kinematics.Forward_Kinematics(th, 'Modified', Robot_Parameters_Str)[1].p.all()
-        SD_Poly_Cls.Add(frame, x, y, z)   
-
-def Save_Robot_Data_From_Animation(file_path: str, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str):
-    """
-    Description:
-        Save the absolute joint position data from the animation to the file.
-        
-    Args:
-        (1) file_path [string]: The specified file path.
-        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-    """
-
-    # if the file exists, then remove it.
-    if os.path.exists(file_path):
-        os.remove(file_path)
-
-    for frame in range(bpy.context.scene.frame_start, bpy.context.scene.frame_end + 1):
-        bpy.context.scene.frame_set(frame)
-
-        # Get the current absolute joint position in radians / meters.
-        th = Get_Absolute_Joint_Position(Robot_Parameters_Str)
-
-        # Write data to the file.
-        File_IO.Save_Data_To_File(file_path, th)
+        bpy.data.objects[name].keyframe_insert(property, frame=frame, index=index_id_num)  
 
 def Transform_Object_To_Wireframe(name: str, thickness: float) -> None:
     """

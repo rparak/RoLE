@@ -22,8 +22,8 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
-# Set the structure of the main parameters of the camera (object).
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+# Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
 def main():

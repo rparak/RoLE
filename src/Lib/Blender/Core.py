@@ -12,7 +12,9 @@ import Lib.Parameters.Robot
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core as Kinematics
 #   ../Lib/Transformation/Core
-from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
+import Lib.Transformation.Core as Transformation
+#   ../Lib/Transformation/Utilities/Mathematics
+import Lib.Transformation.Utilities.Mathematics as Mathematics
 
 class Poly_3D_Cls(object):
     """
@@ -179,7 +181,7 @@ class Mechanism_Cls(object):
 class Robot_Cls(object):
     """
     Description:
-        A class for working with a robot object in a Blender scene.
+        A class for working with a robotic arm object in a Blender scene.
 
     Initialization of the Class:
         Args:
@@ -212,11 +214,14 @@ class Robot_Cls(object):
             # << PRIVATE >> #
             self.__Robot_Parameters_Str = Robot_Parameters_Str
             # Get the homogeneous transformation matrix of the robot based on the position of the robot structure in Blender.
-            self.__Robot_Parameters_Str.T.Base = HTM_Cls(bpy.data.objects[self.__Robot_Parameters_Str.Name].matrix_basis, 
-                                                        np.float32)
+            self.__Robot_Parameters_Str.T.Base = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[self.__Robot_Parameters_Str.Name].matrix_basis, 
+                                                                                                      np.float32)
             # Get the zero configuration of the homogeneous matrix of each joint using forward kinematics. 
             self.__Robot_Parameters_Str.T.Zero_Cfg = Kinematics.Get_Individual_Joint_Configuration(self.__Robot_Parameters_Str.Theta.Zero, 'Modified', 
-                                                                                                self.__Robot_Parameters_Str)[1]
+                                                                                                   self.__Robot_Parameters_Str)[1]
+            
+            # Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
+            self.__axes_sequence_cfg = 'ZYX'
             
             # Enable or disable the visibility of the end-effector viewpoint.
             self.__viewpoint_visibility = viewpoint_visibility
@@ -252,7 +257,39 @@ class Robot_Cls(object):
         Returns:
             (1) parameter [Vector<float>]: Zero (home) absolute joint position in radians / meters.
         """
+
         return self.__Robot_Parameters_Str.Theta.Zero
+    
+    def __Get_Zero_Joint_Cfg(self) -> tp.List[tp.List[tp.List[float]]]:
+        """
+        Description:
+            Get the zero configuration of each joint using a modified forward kinematics calculation method.
+
+        Returns:
+            (1) parameter [Matrix<float> nx(4x4)]: Zero configuration of each joint.
+                                                Note:
+                                                    Where n is the number of joints.
+        """
+
+        T_i = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float32); T_zero_cfg = []
+        for i, (th_i, dh_i, th_i_type) in enumerate(zip(self.__Robot_Parameters_Str.Theta.Zero, self.__Robot_Parameters_Str.DH.Modified, 
+                                                        self.__Robot_Parameters_Str.Theta.Type)):
+            # Forward kinematics using modified DH parameters.
+            if th_i_type == 'R':
+                # Identification of joint type: R - Revolute
+                T_i = T_i @ Kinematics.DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
+            elif th_i_type == 'P':
+                # Identification of joint type: P - Prismatic
+                T_i = T_i @ Kinematics.DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+
+            # Addition of a homogeneous matrix configuration in the current 
+            # episode (joint absolute position i).
+            if self.__Robot_Parameters_Str.Theta.Zero.size - 1 == i:
+                T_zero_cfg.append(T_i @ self.__Robot_Parameters_Str.T.End_Effector)
+            else:
+                T_zero_cfg.append(T_i)
+
+        return T_zero_cfg
     
     @property
     def Theta(self) -> tp.List[float]:
@@ -263,7 +300,37 @@ class Robot_Cls(object):
         Returns:
             (1) parameter [Vector<float>]: Current absolute joint position in radians / meters.
         """
-        return Lib.Blender.Utilities.Get_Absolute_Joint_Position(self.__Robot_Parameters_Str)
+
+        # Get the zero configuration of each joint.
+        T_zero_cfg = self.__Get_Zero_Joint_Cfg()
+
+        th = np.zeros(self.__Robot_Parameters_Str.Theta.Zero.shape)
+        for i, (th_i_name, T_i_zero_cfg, ax_i, th_i_type) in enumerate(zip(self.__Robot_Parameters_Str.Theta.Name, T_zero_cfg, 
+                                                                           self.__Robot_Parameters_Str.Theta.Axis, self.__Robot_Parameters_Str.Theta.Type)):   
+            # Convert a string axis letter to an identification number.
+            ax_i_id_num = Lib.Blender.Utilities.Convert_Ax_Str2Id(ax_i)
+
+            if th_i_type == 'R':
+                # Identification of joint type: R - Revolute
+                #   The actual orientation of the joint in iteration i.
+                th_actual = bpy.data.objects[th_i_name].rotation_euler[ax_i_id_num]
+                #   The initial orientation of the joint in iteration i.
+                th_init   = T_i_zero_cfg.Get_Rotation(self.__axes_sequence_cfg).all()[ax_i_id_num]
+
+                if (th_actual - th_init) > Mathematics.CONST_MATH_PI:
+                    th[i] = (th_actual - th_init) - Mathematics.CONST_MATH_PI * 2
+                else:    
+                    th[i] = th_actual - th_init
+            elif th_i_type == 'P':
+                # Identification of joint type: P - Prismatic
+                #   The actual translation of the joint in iteration i.
+                th_actual = bpy.data.objects[th_i_name].location[ax_i_id_num]
+                #   The initial translation of the joint in iteration i.
+                th_init   = T_i_zero_cfg.p.all()[ax_i_id_num]
+    
+                th[i] = th_actual - th_init
+
+        return th
 
     @property
     def T_EE(self) -> tp.List[tp.List[float]]:
@@ -297,7 +364,7 @@ class Robot_Cls(object):
             assert mode in ['Zero', 'Home']
 
             if mode == 'Zero':
-                self.Set_Absolute_Joint_Position(self.__Robot_Parameters_Str.Theta.Zero)
+                self.Set_Absolute_Joint_Position(self.Theta_0)
             else:
                 self.Set_Absolute_Joint_Position(self.__Robot_Parameters_Str.Theta.Home)
 
@@ -305,26 +372,52 @@ class Robot_Cls(object):
             print(f'[ERROR] Information: {error}')
             print('[INFO] Incorrect reset mode selected. The selected mode must be chosen from the two options (Zero, Home).')
 
-    def Set_Absolute_Joint_Position(self, theta: tp.List[float]) -> None:
+    def Set_Absolute_Joint_Position(self, theta: tp.List[float]) -> bool:
         """
         Description:
             Set the absolute position of the robot joints.
 
         Args:
             (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+
+        Returns:
+            (1) parameter [bool]: The result is 'True' if the required absolute joint positions 
+                                  are within the limits, and 'False' if they are not.
         """
         try:
             assert self.__Robot_Parameters_Str.Theta.Zero.size == theta.size
 
-            Lib.Blender.Utilities.Set_Absolute_Joint_Position(theta, self.__Robot_Parameters_Str)
+            # Get the zero configuration of each joint.
+            T_zero_cfg = self.__Get_Zero_Joint_Cfg()
+
+            for i, (th_i, th_i_name, T_i_zero_cfg, th_i_limit, ax_i, th_i_type) in enumerate(zip(theta, self.__Robot_Parameters_Str.Theta.Name, 
+                                                                                                 T_zero_cfg, self.__Robot_Parameters_Str.Theta.Limit,
+                                                                                                 self.__Robot_Parameters_Str.Theta.Axis, self.__Robot_Parameters_Str.Theta.Type)): 
+                bpy.data.objects[th_i_name].rotation_mode = self.__axes_sequence_cfg
+                if th_i_limit[0] <= th_i <= th_i_limit[1]:
+                    if th_i_type == 'R':
+                        # Identification of joint type: R - Revolute
+                        bpy.data.objects[th_i_name].rotation_euler = (T_i_zero_cfg @ Transformation.Get_Rotation_Matrix(ax_i, th_i)).Get_Rotation(self.__axes_sequence_cfg).all()
+                    elif th_i_type == 'P':
+                        # Identification of joint type: P - Prismatic
+                        bpy.data.objects[th_i_name].location = (T_i_zero_cfg @ Transformation.Get_Translation_Matrix(ax_i, th_i)).p.all()
+                else:
+                    # Update the scene.
+                    self.__Update()
+                    # Reset the absolute position of the robot joints to the 'Zero'.
+                    self.Reset('Zero')
+                    print(f'[INFO] The desired input joint {th_i} in index {i} is out of limit.')
+                    return False
 
             # If the viewpoint visibility is enabled, set the transformation of the object 
             # to the end-effector of the robot.
             if self.__viewpoint_visibility == True:
                 Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
-            
+
             # Update the scene.
             self.__Update()
+
+            return True
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
