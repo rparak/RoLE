@@ -168,10 +168,7 @@ Universal_Robots_UR3_Str.T.Base = HTM_Cls([[1.0, 0.0, 0.0, 0.0],
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-Universal_Robots_UR3_Str.T.End_Effector = HTM_Cls([[1.0, 0.0, 0.0, 0.0],
-                                                   [0.0, 1.0, 0.0, 0.0],
-                                                   [0.0, 0.0, 1.0, 0.0],
-                                                   [0.0, 0.0, 0.0, 1.0]], np.float32)
+Universal_Robots_UR3_Str.T.End_Effector = HTM_Cls(None, np.float32)
 # Denavit-Hartenberg (DH)
 Universal_Robots_UR3_Str.DH.Standard = np.array([[0.0,      0.0,  0.1519,   1.5707963267948966],
                                                  [0.0, -0.24365,     0.0,                  0.0],
@@ -226,20 +223,14 @@ ABB_IRB_120_Str = Robot_Parameters_Str(Name = 'ABB_IRB_120_ID_001')
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-ABB_IRB_120_Str.T.Base = HTM_Cls([[1.0, 0.0, 0.0, 0.0],
-                                  [0.0, 1.0, 0.0, 0.0],
-                                  [0.0, 0.0, 1.0, 0.0],
-                                  [0.0, 0.0, 0.0, 1.0]], np.float32)
+ABB_IRB_120_Str.T.Base = HTM_Cls(None, np.float32)
 # End-effector (tool):
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-ABB_IRB_120_Str.T.End_Effector = HTM_Cls([[1.0, 0.0, 0.0, 0.0],
-                                          [0.0, 1.0, 0.0, 0.0],
-                                          [0.0, 0.0, 1.0, 0.0],
-                                          [0.0, 0.0, 0.0, 1.0]], np.float32)
+ABB_IRB_120_Str.T.End_Effector = HTM_Cls(None, np.float32)
 # Denavit-Hartenberg (DH)
 ABB_IRB_120_Str.DH.Standard = np.array([[0.0,                   0.0, 0.290, -1.5707963267948966],
                                         [-1.5707963267948966, 0.270,   0.0,                 0.0],
@@ -271,6 +262,74 @@ ABB_IRB_120_Str.Theta.Name = [f'Joint_1_{ABB_IRB_120_Str.Name}', f'Joint_2_{ABB_
                               f'Joint_5_{ABB_IRB_120_Str.Name}', f'Joint_6_{ABB_IRB_120_Str.Name}']
 ABB_IRB_120_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_120_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z']
+
+"""
+Robot Type - ABB IRB 120 with Linear Axis:
+    Absolute Joint Position:
+        Joint L: [-0.8, +0.0] [m]
+        Joint 1: [+/- 165.0] [°]
+        Joint 2: [+/- 110.0] [°]
+        Joint 3: [-110.0, +70.0] [°]
+        Joint 4: [+/- 160.0] [°]
+        Joint 5: [+/- 120.0] [°]
+        Joint 6: [+/- 400.0] [°]
+
+    Denavit-Hartenberg (DH) Standard:
+        theta_zero = [  0.0, -1.57,   0.0,   0.0,   0.0,   0.0]
+        a          = [  0.0, 0.270,  0.07,   0.0,   0.0,   0.0]
+        d          = [0.290,   0.0,   0.0, 0.302,   0.0, 0.072]
+        alpha      = [-1.57,   0.0, -1.57,  1.57, -1.57,   0.0]
+"""
+ABB_IRB_120_L_Ax_Str = Robot_Parameters_Str(Name = 'ABB_IRB_120_L_Ax_ID_001')
+# Homogeneous transformation matrix of the base.
+#   1\ None: Identity Matrix
+#       [[1.0, 0.0, 0.0, 0.0],
+#        [0.0, 1.0, 0.0, 0.0],
+#        [0.0, 0.0, 1.0, 0.0],
+#        [0.0, 0.0, 0.0, 1.0]]
+ABB_IRB_120_L_Ax_Str.T.Base = HTM_Cls(None, np.float32)
+# End-effector (tool):
+#   1\ None: Identity Matrix
+#       [[1.0, 0.0, 0.0, 0.0],
+#        [0.0, 1.0, 0.0, 0.0],
+#        [0.0, 0.0, 1.0, 0.0],
+#        [0.0, 0.0, 0.0, 1.0]]
+ABB_IRB_120_L_Ax_Str.T.End_Effector = HTM_Cls(None, np.float32)
+# Denavit-Hartenberg (DH)
+ABB_IRB_120_L_Ax_Str.DH.Standard = np.array([[0.0,                   0.0, 0.113,                 0.0],
+                                             [0.0,                   0.0, 0.290, -1.5707963267948966],
+                                             [-1.5707963267948966, 0.270,   0.0,                 0.0],
+                                             [0.0,                  0.07,   0.0, -1.5707963267948966],
+                                             [0.0,                   0.0, 0.302,  1.5707963267948966],
+                                             [0.0,                   0.0,   0.0, -1.5707963267948966],
+                                             [3.141592653589793,     0.0, 0.072,                 0.0]], dtype = np.float32)
+
+ABB_IRB_120_L_Ax_Str.DH.Modified = np.array([[0.0,                   0.0, 0.113,                 0.0],
+                                             [0.0,                   0.0, 0.290,                 0.0],
+                                             [-1.5707963267948966,   0.0,   0.0, -1.5707963267948966],
+                                             [0.0,                 0.270,   0.0,                 0.0],
+                                             [0.0,                  0.07, 0.302, -1.5707963267948966],
+                                             [0.0,                   0.0,   0.0,  1.5707963267948966],
+                                             [3.141592653589793,     0.0, 0.072, -1.5707963267948966]], dtype = np.float32)
+# Zero/Home absolute position of each joint.
+ABB_IRB_120_L_Ax_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float32)
+ABB_IRB_120_L_Ax_Str.Theta.Home = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Mathematics.Degree_To_Radian(90), 0.0],
+                                           dtype = np.float32)
+# Limits of absolute joint position.
+ABB_IRB_120_L_Ax_Str.Theta.Limit = np.array([[             -0.800,                0.0],
+                                             [-2.8797932657906435, 2.8797932657906435], 
+                                             [-1.9198621771937625, 1.9198621771937625], 
+                                             [-1.9198621771937625, 1.2217304763960306], 
+                                             [ -2.792526803190927,  2.792526803190927], 
+                                             [-2.0943951023931953, 2.0943951023931953], 
+                                             [ -3.141592653589793,  3.141592653589793]], dtype = np.float32)
+# Other parameters of the robot structure.
+ABB_IRB_120_L_Ax_Str.Theta.Name = [f'Joint_L_{ABB_IRB_120_L_Ax_Str.Name}', f'Joint_1_{ABB_IRB_120_L_Ax_Str.Name}',
+                                   f'Joint_2_{ABB_IRB_120_L_Ax_Str.Name}', f'Joint_3_{ABB_IRB_120_L_Ax_Str.Name}', 
+                                   f'Joint_4_{ABB_IRB_120_L_Ax_Str.Name}', f'Joint_5_{ABB_IRB_120_L_Ax_Str.Name}', 
+                                   f'Joint_6_{ABB_IRB_120_L_Ax_Str.Name}']
+ABB_IRB_120_L_Ax_Str.Theta.Type = ['P', 'R', 'R', 'R', 'R', 'R', 'R']
+ABB_IRB_120_L_Ax_Str.Theta.Axis = ['X', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 
 """
 ABB_IRB_120_Str.DH.Modified = np.array([[0.0,                   0.0, 0.113,                 0.0],
@@ -406,10 +465,7 @@ ABB_IRB_14000_L_Str.T.Base = HTM_Cls([[ 0.5716,  0.1048, 0.8138, 0.0536],
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-ABB_IRB_14000_L_Str.T.End_Effector = HTM_Cls([[1.0, 0.0, 0.0, 0.0],
-                                              [0.0, 1.0, 0.0, 0.0],
-                                              [0.0, 0.0, 1.0, 0.0],
-                                              [0.0, 0.0, 0.0, 1.0]], np.float32)
+ABB_IRB_14000_L_Str.T.End_Effector = HTM_Cls(None, np.float32)
 # Denavit-Hartenberg (DH)
 ABB_IRB_14000_L_Str.DH.Standard = np.array([[                0.0,  0.030,    0.1, -1.5707963267948966],
                                             [                0.0, -0.030,    0.0,  1.5707963267948966],
@@ -449,10 +505,10 @@ ABB_IRB_14000_L_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 """
 Robot Type - Epson LS3-B401S:
     Absolute Joint Position:
-        Joint 1: [-40, +220] [°]
-        Joint 2: [+/- 140] [°]
-        Joint 3: [-0.150, +0] [m]
-        Joint 4: [+/- 180] [°]
+        Joint 1: [-40, +220.0] [°]
+        Joint 2: [+/- 140.0] [°]
+        Joint 3: [-0.150, +0.0] [m]
+        Joint 4: [+/- 180.0] [°]
 
     Denavit-Hartenberg (DH) Standard:
         Method 1 (th_3 - rotates counterclockwise):
@@ -479,20 +535,14 @@ EPSON_LS3_B401S_Str = Robot_Parameters_Str(Name = 'EPSON_LS3_B401S_ID_001')
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-EPSON_LS3_B401S_Str.T.Base = HTM_Cls([[1.0, 0.0, 0.0, 0.0],
-                                      [0.0, 1.0, 0.0, 0.0],
-                                      [0.0, 0.0, 1.0, 0.0],
-                                      [0.0, 0.0, 0.0, 1.0]], np.float32)
+EPSON_LS3_B401S_Str.T.Base = HTM_Cls(None, np.float32)
 # End-effector (tool):
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-EPSON_LS3_B401S_Str.T.End_Effector = HTM_Cls([[1.0, 0.0, 0.0, 0.0],
-                                              [0.0, 1.0, 0.0, 0.0],
-                                              [0.0, 0.0, 1.0, 0.0],
-                                              [0.0, 0.0, 0.0, 1.0]], np.float32)
+EPSON_LS3_B401S_Str.T.End_Effector = HTM_Cls(None, np.float32)
 # Denavit-Hartenberg (DH)
 EPSON_LS3_B401S_Str.DH.Standard = np.array([[0.0, 0.225,  0.1731,               0.0],
                                             [0.0, 0.175,  0.0499, 3.141592653589793],

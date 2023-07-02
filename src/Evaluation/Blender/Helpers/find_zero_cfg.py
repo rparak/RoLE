@@ -54,7 +54,7 @@ def main():
         i += 1
 
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.EPSON_LS3_B401S_Str
+    Robot_Str = Parameters.ABB_IRB_120_L_Ax_Str
 
     """
     Description:
