@@ -5,9 +5,9 @@ import sys
 #   Add access if it is not in the system path.
 if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
-# Numpy (Array computing) [pip3 install numpy]
-import numpy as np
 # Custom Script:
+#   ../Lib/Blender/Parameters/Camera
+import Lib.Blender.Parameters.Camera
 #   ../Lib/Blender/Utilities
 import Lib.Blender.Utilities
 #   ../Lib/Blender/Core
@@ -23,6 +23,8 @@ Description:
 """
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
+# Set the structure of the main parameters of the camera (object).
+CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
 def main():
     """
@@ -35,6 +37,10 @@ def main():
     
     # Remove animation data from objects (Clear keyframes).
     Lib.Blender.Utilities.Remove_Animation_Data()
+
+    # Set the camera (object) transformation and projection.
+    if Lib.Blender.Utilities.Object_Exist('Camera'):
+        Lib.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
     
     # Set the structure of the main parameters of the controlled robot.
     Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, True)

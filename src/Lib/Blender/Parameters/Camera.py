@@ -6,13 +6,15 @@ from dataclasses import dataclass, field
 import typing as tp
 # Custom Library:
 #   ../Lib/Transformation/Core
-from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
+import Lib.Transformation.Core as Transformation 
+#   ../Lib/Transformation/Utilities
+import Lib.Transformation.Utilities.Mathematics as Mathematics
 
 @dataclass
 class Camera_Parameters_Str:
     """
     Description:
-        The structure of the main parameters of the camera.
+        The structure of the main parameters of the camera (sensor) object.
 
     Example:
         Initialization:
@@ -20,10 +22,9 @@ class Camera_Parameters_Str:
             Cls.T = ...
             ...
             Cls.Value = ..
-
     """
 
-    # Transformation matrix of the object.
+    # Homogeneous transformation matrix of the object.
     #   Unit [Matrix<float>]
     T: tp.List[tp.List[float]] = field(default_factory=list)
     #  The properties of the projection view.
@@ -39,10 +40,8 @@ Camera view from the right.
     The properties of the projection view: Perspective, 50.0
 """
 Right_View_Camera_Parameters_Str = Camera_Parameters_Str()
-Right_View_Camera_Parameters_Str.T = HTM_Cls([[ -0.4226, -0.3099, 0.8516, 3.2500],
-                                              [  0.9063, -0.1445, 0.3971, 1.5000],
-                                              [  0.0000,  0.9396, 0.3420, 1.4500],
-                                              [  0.0000,  0.0000, 0.0000, 1.0000]], np.float32)
+Right_View_Camera_Parameters_Str.T = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float32).Rotation([Mathematics.Degree_To_Radian(70.0), 0.0, Mathematics.Degree_To_Radian(-115.0)], 
+                                                                                          'XYZ').Translation([3.25, 1.5, 1.45])
 Right_View_Camera_Parameters_Str.Type  = 'PERSP'
 Right_View_Camera_Parameters_Str.Value = 50.0
 
