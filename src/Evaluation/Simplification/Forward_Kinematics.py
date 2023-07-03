@@ -20,7 +20,7 @@ Description:
     Initialization of constants.
 """
 # Number of randomly generated samples.
-CONST_SIZE = 1
+CONST_SIZE = 1000
 
 def main():
     """
@@ -30,7 +30,7 @@ def main():
     """
 
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_Str
+    Robot_Str = Parameters.ABB_IRB_120_L_Ax_Str
 
     """
     Description:

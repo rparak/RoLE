@@ -18,7 +18,7 @@ def main():
     """
     
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_L_Ax_Str
+    Robot_Str = Parameters.ABB_IRB_120_Str
 
     """
     Description:
