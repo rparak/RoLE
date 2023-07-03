@@ -17,6 +17,7 @@ import Lib.Parameters.Robot as Parameters
 #   ../Lib/Transformation/Utilities/Mathematics
 import Lib.Transformation.Utilities.Mathematics as Mathematics
 
+
 """
 Description:
     Initialization of constants.
@@ -37,6 +38,11 @@ def main():
     
     # Remove animation data from objects (Clear keyframes).
     Lib.Blender.Utilities.Remove_Animation_Data()
+
+    CONST_ROBOT_TYPE.T.Base = Transformation.Homogeneous_Transformation_Matrix_Cls([[ 0.5716,  0.1048, 0.8138, 0.0536],
+                 [-0.6170,  0.7088, 0.3420, 0.0725],
+                 [-0.5410, -0.6976, 0.4698, 0.4149],
+                 [    0.0,     0.0,    0.0,    1.0]], np.float32)
 
     # Set the camera (object) transformation and projection.
     if Lib.Blender.Utilities.Object_Exist('Camera'):
