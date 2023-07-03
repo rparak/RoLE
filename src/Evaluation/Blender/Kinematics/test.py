@@ -22,7 +22,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
@@ -44,7 +44,7 @@ def main():
     
     # Set the structure of the main parameters of the controlled robot.
     Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, True)
-    print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}')
+    print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
     # Reset the absolute position of the robot joints to the 'Zero'.
     Robot_ID_0_Cls.Reset('Zero')

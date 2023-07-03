@@ -83,7 +83,7 @@ def __FKF_Universal_Robots_UR3(theta: tp.List[float], Robot_Parameters_Str: Para
     return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
 
 def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                      tp.List[tp.List[float]]]:
+                                                                                                                tp.List[tp.List[float]]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the ABB IRB 120 robotic arm.
@@ -168,8 +168,40 @@ def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
     # th_limit_err[], T_Base @ T_n @ T_EE
     return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
 
+def __FKF_ABB_IRB_120_L_Ax(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
+                                                                                                                    tp.List[tp.List[float]]]:
+    # Check that the desired absolute joint positions are not out of limit.
+    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
+
+    """
+    Description:
+        Abbreviations for individual functions. Used to speed up calculations.
+    """
+
+    # Computation of the homogeneous end-effector transformation matrix {T}
+    T = np.array(np.identity(4), dtype=np.float32)
+    T[0,0] = ((np.sin(theta[1])*np.sin(theta[4]) + 0.25*np.sin(-theta[1] + theta[2] + theta[3] + theta[4]) - 0.25*np.sin(theta[1] - theta[2] - theta[3] + theta[4]) + 0.25*np.sin(theta[1] + theta[2] + theta[3] - theta[4]) + 0.25*np.sin(theta[1] + theta[2] + theta[3] + theta[4]))*np.cos(theta[5]) + np.sin(theta[5])*np.cos(theta[1])*np.cos(theta[2] + theta[3]))*np.cos(theta[6] + 309871/98635) + (np.sin(theta[1])*np.cos(theta[4]) + 0.25*np.cos(-theta[1] + theta[2] + theta[3] + theta[4]) - 0.25*np.cos(theta[1] - theta[2] - theta[3] + theta[4]) - 0.25*np.cos(theta[1] + theta[2] + theta[3] - theta[4]) + 0.25*np.cos(theta[1] + theta[2] + theta[3] + theta[4]))*np.sin(theta[6] + 309871/98635)
+    T[0,1] = ((-np.sin(theta[1])*np.sin(theta[4]) - 0.25*np.sin(-theta[1] + theta[2] + theta[3] + theta[4]) + 0.25*np.sin(theta[1] - theta[2] - theta[3] + theta[4]) - 0.25*np.sin(theta[1] + theta[2] + theta[3] - theta[4]) - 0.25*np.sin(theta[1] + theta[2] + theta[3] + theta[4]))*np.cos(theta[5]) - np.sin(theta[5])*np.cos(theta[1])*np.cos(theta[2] + theta[3]))*np.sin(theta[6] + 309871/98635) + (np.sin(theta[1])*np.cos(theta[4]) + 0.25*np.cos(-theta[1] + theta[2] + theta[3] + theta[4]) - 0.25*np.cos(theta[1] - theta[2] - theta[3] + theta[4]) - 0.25*np.cos(theta[1] + theta[2] + theta[3] - theta[4]) + 0.25*np.cos(theta[1] + theta[2] + theta[3] + theta[4]))*np.cos(theta[6] + 309871/98635)
+    T[0,2] = -(np.sin(theta[1])*np.sin(theta[4]) + 0.25*np.sin(-theta[1] + theta[2] + theta[3] + theta[4]) - 0.25*np.sin(theta[1] - theta[2] - theta[3] + theta[4]) + 0.25*np.sin(theta[1] + theta[2] + theta[3] - theta[4]) + 0.25*np.sin(theta[1] + theta[2] + theta[3] + theta[4]))*np.sin(theta[5]) + np.cos(theta[1])*np.cos(theta[5])*np.cos(theta[2] + theta[3])
+    T[0,3] = theta[0] - 0.072*(np.sin(theta[1])*np.sin(theta[4]) + 0.25*np.sin(-theta[1] + theta[2] + theta[3] + theta[4]) - 0.25*np.sin(theta[1] - theta[2] - theta[3] + theta[4]) + 0.25*np.sin(theta[1] + theta[2] + theta[3] - theta[4]) + 0.25*np.sin(theta[1] + theta[2] + theta[3] + theta[4]))*np.sin(theta[5]) - 0.07*np.sin(theta[3])*np.sin(theta[2] - 155113/98748)*np.cos(theta[1]) - 0.301999979970156*np.sin(theta[3])*np.cos(theta[1])*np.cos(theta[2] - 155113/98748) - 0.301999979970156*np.sin(theta[2] - 155113/98748)*np.cos(theta[1])*np.cos(theta[3]) + 0.07*np.cos(theta[1])*np.cos(theta[3])*np.cos(theta[2] - 155113/98748) + 0.072*np.cos(theta[1])*np.cos(theta[5])*np.cos(theta[2] + theta[3]) + 0.27*np.cos(theta[1])*np.cos(theta[2] - 155113/98748)
+    T[1,0] = (-(np.sin(theta[4])*np.cos(theta[1]) - 0.25*np.cos(-theta[1] + theta[2] + theta[3] + theta[4]) - 0.25*np.cos(theta[1] - theta[2] - theta[3] + theta[4]) + 0.25*np.cos(theta[1] + theta[2] + theta[3] - theta[4]) + 0.25*np.cos(theta[1] + theta[2] + theta[3] + theta[4]))*np.cos(theta[5]) + np.sin(theta[1])*np.sin(theta[5])*np.cos(theta[2] + theta[3]))*np.cos(theta[6] + 309871/98635) - (0.25*np.sin(-theta[1] + theta[2] + theta[3] + theta[4]) + 0.25*np.sin(theta[1] - theta[2] - theta[3] + theta[4]) + 0.25*np.sin(theta[1] + theta[2] + theta[3] - theta[4]) - 0.25*np.sin(theta[1] + theta[2] + theta[3] + theta[4]) + np.cos(theta[1])*np.cos(theta[4]))*np.sin(theta[6] + 309871/98635)
+    T[1,1] = -(-(np.sin(theta[4])*np.cos(theta[1]) - 0.25*np.cos(-theta[1] + theta[2] + theta[3] + theta[4]) - 0.25*np.cos(theta[1] - theta[2] - theta[3] + theta[4]) + 0.25*np.cos(theta[1] + theta[2] + theta[3] - theta[4]) + 0.25*np.cos(theta[1] + theta[2] + theta[3] + theta[4]))*np.cos(theta[5]) + np.sin(theta[1])*np.sin(theta[5])*np.cos(theta[2] + theta[3]))*np.sin(theta[6] + 309871/98635) - (0.25*np.sin(-theta[1] + theta[2] + theta[3] + theta[4]) + 0.25*np.sin(theta[1] - theta[2] - theta[3] + theta[4]) + 0.25*np.sin(theta[1] + theta[2] + theta[3] - theta[4]) - 0.25*np.sin(theta[1] + theta[2] + theta[3] + theta[4]) + np.cos(theta[1])*np.cos(theta[4]))*np.cos(theta[6] + 309871/98635)
+    T[1,2] = (np.sin(theta[4])*np.cos(theta[1]) - 0.25*np.cos(-theta[1] + theta[2] + theta[3] + theta[4]) - 0.25*np.cos(theta[1] - theta[2] - theta[3] + theta[4]) + 0.25*np.cos(theta[1] + theta[2] + theta[3] - theta[4]) + 0.25*np.cos(theta[1] + theta[2] + theta[3] + theta[4]))*np.sin(theta[5]) + np.sin(theta[1])*np.cos(theta[5])*np.cos(theta[2] + theta[3])
+    T[1,3] = 0.072*(np.sin(theta[4])*np.cos(theta[1]) - 0.25*np.cos(-theta[1] + theta[2] + theta[3] + theta[4]) - 0.25*np.cos(theta[1] - theta[2] - theta[3] + theta[4]) + 0.25*np.cos(theta[1] + theta[2] + theta[3] - theta[4]) + 0.25*np.cos(theta[1] + theta[2] + theta[3] + theta[4]))*np.sin(theta[5]) - 0.07*np.sin(theta[1])*np.sin(theta[3])*np.sin(theta[2] - 155113/98748) - 0.301999979970156*np.sin(theta[1])*np.sin(theta[3])*np.cos(theta[2] - 155113/98748) - 0.301999979970156*np.sin(theta[1])*np.sin(theta[2] - 155113/98748)*np.cos(theta[3]) + 0.07*np.sin(theta[1])*np.cos(theta[3])*np.cos(theta[2] - 155113/98748) + 0.072*np.sin(theta[1])*np.cos(theta[5])*np.cos(theta[2] + theta[3]) + 0.27*np.sin(theta[1])*np.cos(theta[2] - 155113/98748)
+    T[2,0] = (-np.sin(theta[5])*np.sin(theta[2] + theta[3]) + np.cos(theta[4])*np.cos(theta[5])*np.cos(theta[2] + theta[3]))*np.cos(theta[6] + 309871/98635) - np.sin(theta[4])*np.sin(theta[6] + 309871/98635)*np.cos(theta[2] + theta[3])
+    T[2,1] = -(-np.sin(theta[5])*np.sin(theta[2] + theta[3]) + np.cos(theta[4])*np.cos(theta[5])*np.cos(theta[2] + theta[3]))*np.sin(theta[6] + 309871/98635) - np.sin(theta[4])*np.cos(theta[2] + theta[3])*np.cos(theta[6] + 309871/98635)
+    T[2,2] = -np.sin(theta[5])*np.cos(theta[4])*np.cos(theta[2] + theta[3]) - np.sin(theta[2] + theta[3])*np.cos(theta[5])
+    T[2,3] = 0.301999979970156*np.sin(theta[3])*np.sin(theta[2] - 155113/98748) - 0.07*np.sin(theta[3])*np.cos(theta[2] - 155113/98748) - 0.072*np.sin(theta[5])*np.cos(theta[4])*np.cos(theta[2] + theta[3]) - 0.07*np.sin(theta[2] - 155113/98748)*np.cos(theta[3]) - 0.27*np.sin(theta[2] - 155113/98748) - 0.072*np.sin(theta[2] + theta[3])*np.cos(theta[5]) - 0.301999979970156*np.cos(theta[3])*np.cos(theta[2] - 155113/98748) + 0.402999989697838
+    T[3,0] = 0
+    T[3,1] = 0
+    T[3,2] = 0
+    T[3,3] = 1.00000000000000
+
+    # th_limit_err[], T_Base @ T_n @ T_EE
+    return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
+
 def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                          tp.List[tp.List[float]]]:
+                                                                                                                    tp.List[tp.List[float]]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the ABB IRB 1400 (YuMi) robotic arm.
@@ -263,7 +295,7 @@ def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameter
     return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
 
 def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                          tp.List[tp.List[float]]]:
+                                                                                                                    tp.List[tp.List[float]]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the ABB IRB 1400 (YuMi) robotic arm.
@@ -357,7 +389,7 @@ def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameter
     return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
 
 def __FKF_EPSON_LS3_B401S(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                          tp.List[tp.List[float]]]:
+                                                                                                                    tp.List[tp.List[float]]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the Epson LS3 B401S robotic arm.
@@ -413,7 +445,7 @@ def __FKF_EPSON_LS3_B401S(theta: tp.List[float], Robot_Parameters_Str: Parameter
     return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
 
 def FKFast_Solution(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                    tp.List[tp.List[float]]]:
+                                                                                                              tp.List[tp.List[float]]]:
     """
     Description:
         Calculation of forward kinematics using the fast method. The function was created by simplifying 
@@ -428,7 +460,8 @@ def FKFast_Solution(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robo
 
             Manipulators:
                 Universal Robots: UR3
-                ABB: IRB 120, IRB 14000 (YuMi)
+                ABB: IRB 120, IRB 120 with Linear Axis, 
+                     IRB 14000 (YuMi)
                 Epson: LS3 B401S
 
     Args:
@@ -448,6 +481,7 @@ def FKFast_Solution(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robo
     return {
         'Universal_Robots_UR3': lambda th, r_param_str: __FKF_Universal_Robots_UR3(th, r_param_str),
         'ABB_IRB_120': lambda th, r_param_str: __FKF_ABB_IRB_120(th, r_param_str),
+        'ABB_IRB_120_L_Ax': lambda th, r_param_str: __FKF_ABB_IRB_120_L_Ax(th, r_param_str),
         'ABB_IRB_14000_R': lambda th, r_param_str: __FKF_ABB_IRB_14000_R(th, r_param_str),
         'ABB_IRB_14000_L': lambda th, r_param_str: __FKF_ABB_IRB_14000_L(th, r_param_str),
         'EPSON_LS3_B401S': lambda th, r_param_str: __FKF_EPSON_LS3_B401S(th, r_param_str)

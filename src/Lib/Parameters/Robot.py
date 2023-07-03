@@ -125,6 +125,9 @@ class Robot_Parameters_Str:
     # Name of the robotic structure.
     #   Unit [string]
     Name: str = ''
+    # Identification number.
+    #   Unit [int]
+    Id: int = 0
     # Denavit-Hartenberg (DH) parameters.
     #   Unit [__DH_Parameters_Str(object)]
     DH: DH_Parameters_Str = field(default_factory=DH_Parameters_Str)
@@ -146,7 +149,7 @@ Robot Type - Universal Robots UR3:
         d          = [0.1519,      0.0,      0.0, 0.11235, 0.08535, 0.0819]
         alpha      = [  1.57,      0.0,      0.0,    1.57,   -1.57,    0.0]
 """
-Universal_Robots_UR3_Str = Robot_Parameters_Str(Name = 'Universal_Robots_UR3_ID_001')
+Universal_Robots_UR3_Str = Robot_Parameters_Str(Name = 'Universal_Robots_UR3', Id=1)
 # Homogeneous transformation matrix of the base.
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
@@ -194,9 +197,12 @@ Universal_Robots_UR3_Str.Theta.Limit = np.array([[-3.141592653589793, 3.14159265
                                                  [-3.141592653589793, 3.141592653589793], 
                                                  [-3.141592653589793, 3.141592653589793]], dtype = np.float32)
 # Other parameters of the robot structure.
-Universal_Robots_UR3_Str.Theta.Name = [f'Joint_1_{Universal_Robots_UR3_Str.Name}', f'Joint_2_{Universal_Robots_UR3_Str.Name}', 
-                                       f'Joint_3_{Universal_Robots_UR3_Str.Name}', f'Joint_4_{Universal_Robots_UR3_Str.Name}', 
-                                       f'Joint_5_{Universal_Robots_UR3_Str.Name}', f'Joint_6_{Universal_Robots_UR3_Str.Name}']
+Universal_Robots_UR3_Str.Theta.Name = [f'Joint_1_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
+                                       f'Joint_2_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
+                                       f'Joint_3_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
+                                       f'Joint_4_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
+                                       f'Joint_5_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
+                                       f'Joint_6_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}']
 Universal_Robots_UR3_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R']
 Universal_Robots_UR3_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 
@@ -216,7 +222,7 @@ Robot Type - ABB IRB 120:
         d          = [0.290,   0.0,   0.0, 0.302,   0.0, 0.072]
         alpha      = [-1.57,   0.0, -1.57,  1.57, -1.57,   0.0]
 """
-ABB_IRB_120_Str = Robot_Parameters_Str(Name = 'ABB_IRB_120_ID_001')
+ABB_IRB_120_Str = Robot_Parameters_Str(Name = 'ABB_IRB_120', Id=1)
 # Homogeneous transformation matrix of the base.
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
@@ -257,9 +263,12 @@ ABB_IRB_120_Str.Theta.Limit = np.array([[-2.8797932657906435, 2.8797932657906435
                                         [-2.0943951023931953, 2.0943951023931953], 
                                         [ -3.141592653589793,  3.141592653589793]], dtype = np.float32)
 # Other parameters of the robot structure.
-ABB_IRB_120_Str.Theta.Name = [f'Joint_1_{ABB_IRB_120_Str.Name}', f'Joint_2_{ABB_IRB_120_Str.Name}', 
-                              f'Joint_3_{ABB_IRB_120_Str.Name}', f'Joint_4_{ABB_IRB_120_Str.Name}', 
-                              f'Joint_5_{ABB_IRB_120_Str.Name}', f'Joint_6_{ABB_IRB_120_Str.Name}']
+ABB_IRB_120_Str.Theta.Name = [f'Joint_1_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
+                              f'Joint_2_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
+                              f'Joint_3_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
+                              f'Joint_4_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
+                              f'Joint_5_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
+                              f'Joint_6_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}']
 ABB_IRB_120_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_120_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 
@@ -280,7 +289,7 @@ Robot Type - ABB IRB 120 with Linear Axis:
         d          = [0.290,   0.0,   0.0, 0.302,   0.0, 0.072]
         alpha      = [-1.57,   0.0, -1.57,  1.57, -1.57,   0.0]
 """
-ABB_IRB_120_L_Ax_Str = Robot_Parameters_Str(Name = 'ABB_IRB_120_L_Ax_ID_001')
+ABB_IRB_120_L_Ax_Str = Robot_Parameters_Str(Name = 'ABB_IRB_120_L_Ax', Id=1)
 # Homogeneous transformation matrix of the base.
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
@@ -324,10 +333,13 @@ ABB_IRB_120_L_Ax_Str.Theta.Limit = np.array([[             -0.800,              
                                              [-2.0943951023931953, 2.0943951023931953], 
                                              [ -3.141592653589793,  3.141592653589793]], dtype = np.float32)
 # Other parameters of the robot structure.
-ABB_IRB_120_L_Ax_Str.Theta.Name = [f'Joint_L_{ABB_IRB_120_L_Ax_Str.Name}', f'Joint_1_{ABB_IRB_120_L_Ax_Str.Name}',
-                                   f'Joint_2_{ABB_IRB_120_L_Ax_Str.Name}', f'Joint_3_{ABB_IRB_120_L_Ax_Str.Name}', 
-                                   f'Joint_4_{ABB_IRB_120_L_Ax_Str.Name}', f'Joint_5_{ABB_IRB_120_L_Ax_Str.Name}', 
-                                   f'Joint_6_{ABB_IRB_120_L_Ax_Str.Name}']
+ABB_IRB_120_L_Ax_Str.Theta.Name = [f'Joint_L_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
+                                   f'Joint_1_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}',
+                                   f'Joint_2_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
+                                   f'Joint_3_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
+                                   f'Joint_4_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
+                                   f'Joint_5_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
+                                   f'Joint_6_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}']
 ABB_IRB_120_L_Ax_Str.Theta.Type = ['P', 'R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_120_L_Ax_Str.Theta.Axis = ['X', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 
@@ -348,7 +360,7 @@ Robot Type - ABB IRB 14000 (Right):
         d          = [  0.1,    0.0, 0.2515,   0.0, 0.265,    0.0, 0.036]
         alpha      = [-1.57,   1.57,  -1.57, -1.57, -1.57,  -1.57,   0.0]
 """
-ABB_IRB_14000_R_Str = Robot_Parameters_Str(Name = 'ABB_IRB_14000_R_ID_001')
+ABB_IRB_14000_R_Str = Robot_Parameters_Str(Name = 'ABB_IRB_14000_R', Id=1)
 # Homogeneous transformation matrix of the base of the right arm (T_Base @ T_Base_R)
 #   1\ Right Arm:
 #       [[ 0.5713, -0.1071,  0.8138,  0.0536],
@@ -399,10 +411,13 @@ ABB_IRB_14000_R_Str.Theta.Limit = np.array([[-2.9408797896104453, 2.940879789610
                                             [  -1.53588974175501, 2.4085543677521746], 
                                             [-3.9968039870670147, 3.9968039870670147]], dtype = np.float32)
 # Other parameters of the robot structure.
-ABB_IRB_14000_R_Str.Theta.Name = [f'R_Joint_1_{ABB_IRB_14000_R_Str.Name}', f'R_Joint_2_{ABB_IRB_14000_R_Str.Name}', 
-                                  f'R_Joint_7_{ABB_IRB_14000_R_Str.Name}', f'R_Joint_3_{ABB_IRB_14000_R_Str.Name}', 
-                                  f'R_Joint_4_{ABB_IRB_14000_R_Str.Name}', f'R_Joint_5_{ABB_IRB_14000_R_Str.Name}', 
-                                  f'R_Joint_6_{ABB_IRB_14000_R_Str.Name}']
+ABB_IRB_14000_R_Str.Theta.Name = [f'R_Joint_1_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
+                                  f'R_Joint_2_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
+                                  f'R_Joint_7_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
+                                  f'R_Joint_3_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
+                                  f'R_Joint_4_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
+                                  f'R_Joint_5_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
+                                  f'R_Joint_6_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}']
 ABB_IRB_14000_R_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_14000_R_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 
@@ -423,7 +438,7 @@ Robot Type - ABB IRB 14000 (Left):
         d          = [  0.1,    0.0, 0.2515,   0.0, 0.265,    0.0, 0.036]
         alpha      = [-1.57,   1.57,  -1.57, -1.57, -1.57,  -1.57,   0.0]
 """
-ABB_IRB_14000_L_Str = Robot_Parameters_Str(Name = 'ABB_IRB_14000_L_ID_001')
+ABB_IRB_14000_L_Str = Robot_Parameters_Str(Name = 'ABB_IRB_14000_L', Id=1)
 # Homogeneous transformation matrix of the base of the left arm (T_Base @ T_Base_L)
 #   1\ Left Arm:
 #       [[ 0.5716,  0.1048, 0.8138, 0.0536],
@@ -470,10 +485,13 @@ ABB_IRB_14000_L_Str.Theta.Limit = np.array([[-2.9408797896104453, 2.940879789610
                                             [  -1.53588974175501, 2.4085543677521746], 
                                             [-3.9968039870670147, 3.9968039870670147]], dtype = np.float32)
 # Parameters of the object (Blender robot arm).
-ABB_IRB_14000_L_Str.Theta.Name = [f'L_Joint_1_{ABB_IRB_14000_L_Str.Name}', f'L_Joint_2_{ABB_IRB_14000_L_Str.Name}', 
-                                  f'L_Joint_7_{ABB_IRB_14000_L_Str.Name}', f'L_Joint_3_{ABB_IRB_14000_L_Str.Name}', 
-                                  f'L_Joint_4_{ABB_IRB_14000_L_Str.Name}', f'L_Joint_5_{ABB_IRB_14000_L_Str.Name}', 
-                                  f'L_Joint_6_{ABB_IRB_14000_L_Str.Name}']
+ABB_IRB_14000_L_Str.Theta.Name = [f'L_Joint_1_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
+                                  f'L_Joint_2_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
+                                  f'L_Joint_7_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
+                                  f'L_Joint_3_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
+                                  f'L_Joint_4_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
+                                  f'L_Joint_5_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
+                                  f'L_Joint_6_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}']
 ABB_IRB_14000_L_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_14000_L_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 
@@ -503,7 +521,7 @@ Robot Type - Epson LS3-B401S:
                 d          = [0.1731, 0.0499, 0.0, 0.0785]
                 alpha      = [   0.0,   3.14, 0.0,    0.0]
 """
-EPSON_LS3_B401S_Str = Robot_Parameters_Str(Name = 'EPSON_LS3_B401S_ID_001')
+EPSON_LS3_B401S_Str = Robot_Parameters_Str(Name = 'EPSON_LS3_B401S', Id=1)
 # Homogeneous transformation matrix of the base.
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
@@ -538,7 +556,9 @@ EPSON_LS3_B401S_Str.Theta.Limit = np.array([[-0.6981317007977318, 3.839724354387
                                             [             -0.150,               0.0], 
                                             [ -3.141592653589793, 3.141592653589793]], dtype = np.float32)
 # Parameters of the object (Blender robot arm).
-EPSON_LS3_B401S_Str.Theta.Name = [f'Joint_1_{EPSON_LS3_B401S_Str.Name}', f'Joint_2_{EPSON_LS3_B401S_Str.Name}', 
-                                  f'Joint_34_{EPSON_LS3_B401S_Str.Name}', f'Joint_34_{EPSON_LS3_B401S_Str.Name}']
+EPSON_LS3_B401S_Str.Theta.Name = [f'Joint_1_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}', 
+                                  f'Joint_2_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}', 
+                                  f'Joint_34_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}', 
+                                  f'Joint_34_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}']
 EPSON_LS3_B401S_Str.Theta.Type = ['R', 'R', 'P', 'R']
 EPSON_LS3_B401S_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z']

@@ -209,12 +209,14 @@ class Robot_Cls(object):
 
     def __init__(self, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str, viewpoint_visibility: bool) -> None:
         try:
-            assert Lib.Blender.Utilities.Object_Exist(Robot_Parameters_Str.Name) == True
+            assert Lib.Blender.Utilities.Object_Exist(f'{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}') == True
             
             # << PRIVATE >> #
             self.__Robot_Parameters_Str = Robot_Parameters_Str
+            # Modified the name of the robot structure. Addition of robot structure Id (identification number).
+            self.__name = f'{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}'
             # Get the homogeneous transformation matrix of the robot based on the position of the robot structure in Blender.
-            self.__Robot_Parameters_Str.T.Base = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[self.__Robot_Parameters_Str.Name].matrix_basis, 
+            self.__Robot_Parameters_Str.T.Base = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[self.__name].matrix_basis, 
                                                                                                       np.float32)
             # Get the zero configuration of the homogeneous matrix of each joint using forward kinematics. 
             self.__Robot_Parameters_Str.T.Zero_Cfg = Kinematics.Get_Individual_Joint_Configuration(self.__Robot_Parameters_Str.Theta.Zero, 'Modified', 
@@ -225,7 +227,7 @@ class Robot_Cls(object):
             
             # Enable or disable the visibility of the end-effector viewpoint.
             self.__viewpoint_visibility = viewpoint_visibility
-            self.__Viewpoint_EE_Name = f'{self.__Robot_Parameters_Str.Name}_Viewpoint_EE'
+            self.__Viewpoint_EE_Name = f'{self.__name}_Viewpoint_EE'
             if Lib.Blender.Utilities.Object_Exist(self.__Viewpoint_EE_Name):
                 # Enable / disable the visibility of an object.
                 Lib.Blender.Utilities.Object_Visibility(self.__Viewpoint_EE_Name, self.__viewpoint_visibility)
@@ -235,7 +237,7 @@ class Robot_Cls(object):
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
-            print(f'[ERROR] The robot object named <{Robot_Parameters_Str.Name}> does not exist in the current scene.')
+            print(f'[ERROR] The robot object named <{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}> does not exist in the current scene.')
 
     @property
     def Parameters(self) -> Lib.Parameters.Robot.Robot_Parameters_Str:
@@ -246,6 +248,7 @@ class Robot_Cls(object):
         Returns:
             (1) parameter [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         """
+        
         return self.__Robot_Parameters_Str
     
     @property

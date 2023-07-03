@@ -45,14 +45,19 @@ def Forward_Kinematics_Modified(theta: sp.symbols, Robot_Parameters_Str: Paramet
     """
         
     T_i = sp.Matrix(sp.eye(4))
-    for _, (th_i, dh_i, th_i_type) in enumerate(zip(theta, Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type)):
+    for _, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type, 
+                                                             Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using modified DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
             T_i = T_i @ __DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            T_i = T_i @ __DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            if th_ax_i == 'Z':
+                T_i = T_i @ __DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            else:
+                # Translation along the X axis.
+                T_i = T_i @ __DH_Modified(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
     return sp.simplify(T_i)
 
@@ -64,7 +69,7 @@ def main():
     """
 
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.Universal_Robots_UR3_Str
+    Robot_Str = Parameters.ABB_IRB_120_L_Ax_Str
 
     # Initialize a string containing the symbol assigned with the variable.
     theta = [sp.symbols(f'theta[{i}]') for i in range(len(Robot_Str.Theta.Name))]
