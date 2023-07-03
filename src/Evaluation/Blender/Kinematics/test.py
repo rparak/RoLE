@@ -22,7 +22,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
@@ -51,7 +51,7 @@ def main():
     
     print('[INFO] Absolute Joint Positions (desired):')
     for i, th_i in enumerate(Robot_ID_0_Cls.Parameters.Theta.Home):
-        print(f'[INFO] >> Joint_{i}({Mathematics.Radian_To_Degree(th_i):.3f})')
+        print(f'[INFO] >> Joint_{i}({th_i:.3f})')
 
     # Set the absolute position of the robot joints.
     Robot_ID_0_Cls.Set_Absolute_Joint_Position(Robot_ID_0_Cls.Parameters.Theta.Home)
@@ -59,7 +59,7 @@ def main():
     # Get the the absolute positions of the robot's joints.
     print('[INFO] Absolute Joint Positions (actual):')
     for i, th_i in enumerate(Robot_ID_0_Cls.Theta):
-        print(f'[INFO] >> Joint_{i}({Mathematics.Radian_To_Degree(th_i):.3f})')
+        print(f'[INFO] >> Joint_{i}({th_i:.3f})')
 
     # Get the homogeneous transformation matrix of the robot end-effector. Parameters position 
     # and orientation (euler angles).

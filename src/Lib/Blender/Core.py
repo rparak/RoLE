@@ -272,15 +272,19 @@ class Robot_Cls(object):
         """
 
         T_i = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float32); T_zero_cfg = []
-        for i, (th_i, dh_i, th_i_type) in enumerate(zip(self.__Robot_Parameters_Str.Theta.Zero, self.__Robot_Parameters_Str.DH.Modified, 
-                                                        self.__Robot_Parameters_Str.Theta.Type)):
+        for i, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(self.__Robot_Parameters_Str.Theta.Zero, self.__Robot_Parameters_Str.DH.Modified, 
+                                                                 self.__Robot_Parameters_Str.Theta.Type, self.__Robot_Parameters_Str.Theta.Axis)):
             # Forward kinematics using modified DH parameters.
             if th_i_type == 'R':
                 # Identification of joint type: R - Revolute
                 T_i = T_i @ Kinematics.DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
             elif th_i_type == 'P':
                 # Identification of joint type: P - Prismatic
-                T_i = T_i @ Kinematics.DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+                if th_ax_i == 'Z':
+                    T_i = T_i @ Kinematics.DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+                else:
+                    # Translation along the X axis.
+                    T_i = T_i @ Kinematics.DH_Modified(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
             # Addition of a homogeneous matrix configuration in the current 
             # episode (joint absolute position i).

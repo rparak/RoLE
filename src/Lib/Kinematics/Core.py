@@ -88,15 +88,19 @@ def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: P
     """
     
     T_i = Robot_Parameters_Str.T.Base; th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit, dh_i, th_i_type) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit,
-                                                                Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type)):
+    for i, (th_i, th_i_limit, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit, Robot_Parameters_Str.DH.Modified, 
+                                                                         Robot_Parameters_Str.Theta.Type, Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using standard DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
             T_i = T_i @ DH_Standard(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            T_i = T_i @ DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            if th_ax_i == 'Z':
+                T_i = T_i @ DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            else:
+                # Translation along the X axis.
+                T_i = T_i @ DH_Standard(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
         # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
@@ -146,23 +150,19 @@ def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: P
     """
     
     T_i = Robot_Parameters_Str.T.Base; th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit, dh_i, th_i_type) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit,
-                                                                Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type)):
-        
-        """
-        alpha = dh_i[3]
-        theta = dh_i[0] - th_i if th_i_type == 'R' else dh_i[0]
-        a = dh_i[1]
-        d = dh_i[2]
-        """
-
+    for i, (th_i, th_i_limit, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit, Robot_Parameters_Str.DH.Modified, 
+                                                                         Robot_Parameters_Str.Theta.Type, Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using modified DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
             T_i = T_i @ DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            T_i = T_i @ DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            if th_ax_i == 'Z':
+                T_i = T_i @ DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            else:
+                # Translation along the X axis.
+                T_i = T_i @ DH_Modified(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
         # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
@@ -219,15 +219,19 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
     """
     
     T_i = Robot_Parameters_Str.T.Base; T_zero_cfg = []; th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit, dh_i, th_i_type) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit,
-                                                                Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type)):
+    for i, (th_i, th_i_limit, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit, Robot_Parameters_Str.DH.Modified, 
+                                                                         Robot_Parameters_Str.Theta.Type, Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using standard DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
             T_i = T_i @ DH_Standard(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            T_i = T_i @ DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            if th_ax_i == 'Z':
+                T_i = T_i @ DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            else:
+                # Translation along the X axis.
+                T_i = T_i @ DH_Standard(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
         # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
@@ -265,15 +269,19 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
     """
     
     T_i = Robot_Parameters_Str.T.Base; T_zero_cfg = []; th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit, dh_i, th_i_type) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit,
-                                                                Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type)):
+    for i, (th_i, th_i_limit, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit, Robot_Parameters_Str.DH.Modified, 
+                                                                         Robot_Parameters_Str.Theta.Type, Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using modified DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
             T_i = T_i @ DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            T_i = T_i @ DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            if th_ax_i == 'Z':
+                T_i = T_i @ DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
+            else:
+                # Translation along the X axis.
+                T_i = T_i @ DH_Modified(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
         # Check that the desired absolute joint positions are not out of limit.
         th_limit_err[i] = True if th_i_limit[0] <= th_i <= th_i_limit[1] else False

@@ -312,8 +312,8 @@ ABB_IRB_120_L_Ax_Str.DH.Modified = np.array([[0.0,                   0.0, 0.113,
                                              [0.0,                   0.0,   0.0,  1.5707963267948966],
                                              [3.141592653589793,     0.0, 0.072, -1.5707963267948966]], dtype = np.float32)
 # Zero/Home absolute position of each joint.
-ABB_IRB_120_L_Ax_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float32)
-ABB_IRB_120_L_Ax_Str.Theta.Home = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Mathematics.Degree_To_Radian(90), 0.0],
+ABB_IRB_120_L_Ax_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float32)
+ABB_IRB_120_L_Ax_Str.Theta.Home = np.array([0.0, 0.0, 0.0, 0.0, 0.0, Mathematics.Degree_To_Radian(90), 0.0],
                                            dtype = np.float32)
 # Limits of absolute joint position.
 ABB_IRB_120_L_Ax_Str.Theta.Limit = np.array([[             -0.800,                0.0],
@@ -330,31 +330,6 @@ ABB_IRB_120_L_Ax_Str.Theta.Name = [f'Joint_L_{ABB_IRB_120_L_Ax_Str.Name}', f'Joi
                                    f'Joint_6_{ABB_IRB_120_L_Ax_Str.Name}']
 ABB_IRB_120_L_Ax_Str.Theta.Type = ['P', 'R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_120_L_Ax_Str.Theta.Axis = ['X', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
-
-"""
-ABB_IRB_120_Str.DH.Modified = np.array([[0.0,                   0.0, 0.113,                 0.0],
-                                              [0.0,                   0.0, 0.290,                 0.0],
-                                              [-1.5707963267948966,   0.0,   0.0, -1.5707963267948966],
-                                              [0.0,                 0.270,   0.0,                 0.0],
-                                              [0.0,                  0.07, 0.302, -1.5707963267948966],
-                                              [0.0,                   0.0,   0.0,  1.5707963267948966],
-                                              [3.141592653589793,     0.0, 0.072, -1.5707963267948966]], dtype = np.float32)
-
-# Zero absolute position of each joint.
-ABB_IRB_120_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float32)
-# Limits of absolute joint position.
-ABB_IRB_120_Str.Theta.Limit = np.array([[-1.0, 1.0],
-                                              [-2.8797932657906435, 2.8797932657906435], 
-                                              [-1.9198621771937625, 1.9198621771937625], 
-                                              [-1.9198621771937625, 1.2217304763960306], 
-                                              [ -2.792526803190927,  2.792526803190927], 
-                                              [-2.0943951023931953, 2.0943951023931953], 
-                                              [ -3.141592653589793,  3.141592653589793]], dtype = np.float32)
-# Parameters of the object (Blender robot arm).
-ABB_IRB_120_Str.Theta.Name = ['Joint_0', 'Joint_1', 'Joint_2', 'Joint_3', 'Joint_4', 'Joint_5', 'Joint_6']
-ABB_IRB_120_Str.Theta.Type = ['P', 'R', 'R', 'R', 'R', 'R', 'R']
-ABB_IRB_120_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
-"""
 
 """
 Robot Type - ABB IRB 14000 (Right):
