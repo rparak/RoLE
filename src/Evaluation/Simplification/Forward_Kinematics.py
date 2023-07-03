@@ -12,8 +12,6 @@ import time
 import Lib.Parameters.Robot as Parameters
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core
-#   ../Lib/Kinematics/Utilities/Forward_Kinematics
-import Lib.Kinematics.Utilities.Forward_Kinematics
 
 """
 Description:
@@ -67,7 +65,7 @@ def main():
     # 3\ Forward Kinematics (Fast)
     t_0 = time.time()
     for _, th in enumerate(theta_rand):
-        Lib.Kinematics.Utilities.Forward_Kinematics.FKFast_Solution(th, Robot_Str)
+        Lib.Kinematics.Core.Forward_Kinematics(th, 'Fast', Robot_Str)
     t = time.time() - t_0
     print(f'[INFO]  3\ Forward Kinematics (Fast)')
     print(f'[INFO]      Time: {t:0.05f} in seconds.')
@@ -82,7 +80,7 @@ def main():
                               num_of_decimals)
         T_Modified = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Modified', Robot_Str)[1].all(), dtype=np.float32), 
                               num_of_decimals)
-        T_Fast = np.round(np.array(Lib.Kinematics.Utilities.Forward_Kinematics.FKFast_Solution(th, Robot_Str)[1].all(), dtype=np.float32), 
+        T_Fast = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Fast', Robot_Str)[1].all(), dtype=np.float32), 
                           num_of_decimals)
 
         if (np.array_equal(T_Standard, T_Modified) and np.array_equal(T_Modified, T_Fast)) == False:

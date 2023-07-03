@@ -5,6 +5,8 @@ import typing as tp
 # Custom Script:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
+#   ../Lib/Kinematics/Utilities/Forward_Kinematics
+import Lib.Kinematics.Utilities.Forward_Kinematics as Utilities
 #   ../Lib/Transformation/Core
 from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls, Vector3_Cls
 
@@ -193,7 +195,8 @@ def Forward_Kinematics(theta: tp.List[float], method: str, Robot_Parameters_Str:
 
     return {
         'Standard': lambda th, r_param_str: __Forward_Kinematics_Standard(th, r_param_str),
-        'Modified': lambda th, r_param_str: __Forward_Kinematics_Modified(th, r_param_str)
+        'Modified': lambda th, r_param_str: __Forward_Kinematics_Modified(th, r_param_str),
+        'Fast': lambda th, r_param_str:  Utilities.FKFast_Solution(th, r_param_str)
     }[method](theta, Robot_Parameters_Str)
 
 def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
