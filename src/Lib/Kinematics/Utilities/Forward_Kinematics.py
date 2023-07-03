@@ -170,6 +170,25 @@ def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
 
 def __FKF_ABB_IRB_120_L_Ax(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                     tp.List[tp.List[float]]]:
+    """
+    Description:
+        Calculation of forward kinematics using a fast method for the ABB IRB 120 robotic arm 
+        supplemented with a 7th linear axis.
+
+    Args:
+        (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+
+    Returns:
+        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
+                                      is exceeded. 
+                                      Note:
+                                        The value in the vector is "True" if the desired absolute 
+                                        joint positions are within the limits, and "False" if they 
+                                        are not.
+        (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+    """
+    
     # Check that the desired absolute joint positions are not out of limit.
     th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
 
@@ -187,24 +206,49 @@ def __FKF_ABB_IRB_120_L_Ax(theta: tp.List[float], Robot_Parameters_Str: Paramete
     th_1234_t11 = theta[1] + th_23_t1 + theta[4]; th_1234_t12 = -theta[1] + th_23_t1 + theta[4]
     th_1234_t2 = theta[1] - theta[2] - theta[3] + theta[4]
     th_1234_t3 = theta[1] + th_23_t1 - theta[4]
+
     # Additional Sine functions:
+    s_th_1234_t12 = np.sin(th_1234_t12); s_th_1234_t2 = np.sin(th_1234_t2); s_th_1234_t3 = np.sin(th_1234_t3)
+    s_th_1234_t11 = np.sin(th_1234_t11); s_th_23_t1 = np.sin(th_23_t1); s_th_3_v = 0.301999979970156*s_th_3
+    s_th_1_v = 0.301999979970156*s_th_1
+    s_th_6PI = np.sin(theta[6] + 3.141592653589793); s_th_2PI2 = np.sin(theta[2] - 1.5707963267948966)
 
     # Additional Cosine functions:
+    c_th_23_t1 = np.cos(th_23_t1); c_th_cos_1234_t12 = np.cos(th_1234_t12); c_th_1234_t2 = np.cos(th_1234_t2)
+    c_th_1234_t3 = np.cos(th_1234_t3); c_th_cos_1234_t11 = np.cos(th_1234_t11); c_th_123_t1 = c_th_1*c_th_23_t1
+    c_th_123_t2 = c_th_5*c_th_23_t1; c_th_123_t3 = c_th_1*c_th_123_t2
+    c_th_6PI = np.cos(theta[6] + 3.141592653589793); c_th_2PI2 = np.cos(theta[2] - 1.5707963267948966)
+    c_th_32PI = c_th_3*c_th_2PI2
+
+    # Mutual abbreviations:
+    #   Duplicates P0
+    s_th_14 = s_th_1*s_th_4
+    v_s_th_1234_t1 = 0.25*s_th_1234_t12; v_s_th_1234_t2 = 0.25*s_th_1234_t2
+    v_s_th_1234_t3 = 0.25*s_th_1234_t3; v_s_th_1234_t4 = 0.25*s_th_1234_t11
+    #   Duplicates P1
+    v_c_th_1234_t1 = 0.25*c_th_cos_1234_t12; v_c_th_1234_t2 = 0.25*c_th_1234_t2
+    v_c_th_1234_t3 = 0.25*c_th_1234_t3; v_c_th_1234_t4 = 0.25*c_th_cos_1234_t11
+    #   Duplicates P2
+    aux_id_1 = (s_th_14 + v_s_th_1234_t1 - v_s_th_1234_t2 + v_s_th_1234_t3 + v_s_th_1234_t4)
+    aux_id_2 = (s_th_1*c_th_4 + v_c_th_1234_t1 - v_c_th_1234_t2 - v_c_th_1234_t3 + v_c_th_1234_t4)
+    aux_id_3 = s_th_4*c_th_1 - v_c_th_1234_t1 - v_c_th_1234_t2 + v_c_th_1234_t3 + v_c_th_1234_t4
+    aux_id_4 = (aux_id_3)*s_th_5; aux_id_5 = s_th_1*s_th_5*c_th_23_t1
+    aux_id_6 = v_s_th_1234_t1 + v_s_th_1234_t2 + v_s_th_1234_t3 - v_s_th_1234_t4 + c_th_1*c_th_4
 
     # Computation of the homogeneous end-effector transformation matrix {T}
     T = np.array(np.identity(4), dtype=np.float32)
-    T[0,0] = ((s_th_1*s_th_4 + 0.25*np.sin(th_1234_t12) - 0.25*np.sin(th_1234_t2) + 0.25*np.sin(th_1234_t3) + 0.25*np.sin(th_1234_t11))*c_th_5 + s_th_5*c_th_1*np.cos(th_23_t1))*np.cos(theta[6] + 3.141592653589793) + (s_th_1*c_th_4 + 0.25*np.cos(th_1234_t12) - 0.25*np.cos(th_1234_t2) - 0.25*np.cos(th_1234_t3) + 0.25*np.cos(th_1234_t11))*np.sin(theta[6] + 3.141592653589793)
-    T[0,1] = ((-s_th_1*s_th_4 - 0.25*np.sin(th_1234_t12) + 0.25*np.sin(th_1234_t2) - 0.25*np.sin(th_1234_t3) - 0.25*np.sin(th_1234_t11))*c_th_5 - s_th_5*c_th_1*np.cos(th_23_t1))*np.sin(theta[6] + 3.141592653589793) + (s_th_1*c_th_4 + 0.25*np.cos(th_1234_t12) - 0.25*np.cos(th_1234_t2) - 0.25*np.cos(th_1234_t3) + 0.25*np.cos(th_1234_t11))*np.cos(theta[6] + 3.141592653589793)
-    T[0,2] = -(s_th_1*s_th_4 + 0.25*np.sin(th_1234_t12) - 0.25*np.sin(th_1234_t2) + 0.25*np.sin(th_1234_t3) + 0.25*np.sin(th_1234_t11))*s_th_5 + c_th_1*c_th_5*np.cos(th_23_t1)
-    T[0,3] = theta[0] - 0.072*(s_th_1*s_th_4 + 0.25*np.sin(th_1234_t12) - 0.25*np.sin(th_1234_t2) + 0.25*np.sin(th_1234_t3) + 0.25*np.sin(th_1234_t11))*s_th_5 - 0.07*s_th_3*np.sin(theta[2] - 1.5707963267948966)*c_th_1 - 0.301999979970156*s_th_3*c_th_1*np.cos(theta[2] - 1.5707963267948966) - 0.301999979970156*np.sin(theta[2] - 1.5707963267948966)*c_th_1*c_th_3 + 0.07*c_th_1*c_th_3*np.cos(theta[2] - 1.5707963267948966) + 0.072*c_th_1*c_th_5*np.cos(th_23_t1) + 0.27*c_th_1*np.cos(theta[2] - 1.5707963267948966)
-    T[1,0] = (-(s_th_4*c_th_1 - 0.25*np.cos(th_1234_t12) - 0.25*np.cos(th_1234_t2) + 0.25*np.cos(th_1234_t3) + 0.25*np.cos(th_1234_t11))*c_th_5 + s_th_1*s_th_5*np.cos(th_23_t1))*np.cos(theta[6] + 3.141592653589793) - (0.25*np.sin(th_1234_t12) + 0.25*np.sin(th_1234_t2) + 0.25*np.sin(th_1234_t3) - 0.25*np.sin(th_1234_t11) + c_th_1*c_th_4)*np.sin(theta[6] + 3.141592653589793)
-    T[1,1] = -(-(s_th_4*c_th_1 - 0.25*np.cos(th_1234_t12) - 0.25*np.cos(th_1234_t2) + 0.25*np.cos(th_1234_t3) + 0.25*np.cos(th_1234_t11))*c_th_5 + s_th_1*s_th_5*np.cos(th_23_t1))*np.sin(theta[6] + 3.141592653589793) - (0.25*np.sin(th_1234_t12) + 0.25*np.sin(th_1234_t2) + 0.25*np.sin(th_1234_t3) - 0.25*np.sin(th_1234_t11) + c_th_1*c_th_4)*np.cos(theta[6] + 3.141592653589793)
-    T[1,2] = (s_th_4*c_th_1 - 0.25*np.cos(th_1234_t12) - 0.25*np.cos(th_1234_t2) + 0.25*np.cos(th_1234_t3) + 0.25*np.cos(th_1234_t11))*s_th_5 + s_th_1*c_th_5*np.cos(th_23_t1)
-    T[1,3] = 0.072*(s_th_4*c_th_1 - 0.25*np.cos(th_1234_t12) - 0.25*np.cos(th_1234_t2) + 0.25*np.cos(th_1234_t3) + 0.25*np.cos(th_1234_t11))*s_th_5 - 0.07*s_th_1*s_th_3*np.sin(theta[2] - 1.5707963267948966) - 0.301999979970156*s_th_1*s_th_3*np.cos(theta[2] - 1.5707963267948966) - 0.301999979970156*s_th_1*np.sin(theta[2] - 1.5707963267948966)*c_th_3 + 0.07*s_th_1*c_th_3*np.cos(theta[2] - 1.5707963267948966) + 0.072*s_th_1*c_th_5*np.cos(th_23_t1) + 0.27*s_th_1*np.cos(theta[2] - 1.5707963267948966)
-    T[2,0] = (-s_th_5*np.sin(th_23_t1) + c_th_4*c_th_5*np.cos(th_23_t1))*np.cos(theta[6] + 3.141592653589793) - s_th_4*np.sin(theta[6] + 3.141592653589793)*np.cos(th_23_t1)
-    T[2,1] = -(-s_th_5*np.sin(th_23_t1) + c_th_4*c_th_5*np.cos(th_23_t1))*np.sin(theta[6] + 3.141592653589793) - s_th_4*np.cos(th_23_t1)*np.cos(theta[6] + 3.141592653589793)
-    T[2,2] = -s_th_5*c_th_4*np.cos(th_23_t1) - np.sin(th_23_t1)*c_th_5
-    T[2,3] = 0.301999979970156*s_th_3*np.sin(theta[2] - 1.5707963267948966) - 0.07*s_th_3*np.cos(theta[2] - 1.5707963267948966) - 0.072*s_th_5*c_th_4*np.cos(th_23_t1) - 0.07*np.sin(theta[2] - 1.5707963267948966)*c_th_3 - 0.27*np.sin(theta[2] - 1.5707963267948966) - 0.072*np.sin(th_23_t1)*c_th_5 - 0.301999979970156*c_th_3*np.cos(theta[2] - 1.5707963267948966) + 0.402999989697838
+    T[0,0] = (aux_id_1*c_th_5 + s_th_5*c_th_123_t1)*c_th_6PI + aux_id_2*s_th_6PI
+    T[0,1] = ((-s_th_14 - v_s_th_1234_t1 + v_s_th_1234_t2 - v_s_th_1234_t3 - v_s_th_1234_t4)*c_th_5 - s_th_5*c_th_123_t1)*s_th_6PI + aux_id_2*c_th_6PI
+    T[0,2] = -aux_id_1*s_th_5 + c_th_123_t3
+    T[0,3] = theta[0] - 0.072*aux_id_1*s_th_5 - 0.07*s_th_3*s_th_2PI2*c_th_1 - s_th_3_v*c_th_1*c_th_2PI2 - 0.301999979970156*s_th_2PI2*c_th_1*c_th_3 + 0.07*c_th_1*c_th_32PI + 0.072*c_th_123_t3 + 0.27*c_th_1*c_th_2PI2
+    T[1,0] = (-(aux_id_3)*c_th_5 + aux_id_5)*c_th_6PI - (aux_id_6)*s_th_6PI
+    T[1,1] = -(-(aux_id_3)*c_th_5 + aux_id_5)*s_th_6PI - (aux_id_6)*c_th_6PI
+    T[1,2] = aux_id_4 + s_th_1*c_th_123_t2
+    T[1,3] = 0.072*aux_id_4 - 0.07*s_th_1*s_th_3*s_th_2PI2 - s_th_1_v*s_th_3*c_th_2PI2 - s_th_1_v*s_th_2PI2*c_th_3 + 0.07*s_th_1*c_th_32PI + 0.072*s_th_1*c_th_123_t2 + 0.27*s_th_1*c_th_2PI2
+    T[2,0] = (-s_th_5*s_th_23_t1 + c_th_4*c_th_123_t2)*c_th_6PI - s_th_4*s_th_6PI*c_th_23_t1
+    T[2,1] = -(-s_th_5*s_th_23_t1 + c_th_4*c_th_123_t2)*s_th_6PI - s_th_4*c_th_23_t1*c_th_6PI
+    T[2,2] = -s_th_5*c_th_4*c_th_23_t1 - s_th_23_t1*c_th_5
+    T[2,3] = s_th_3_v*s_th_2PI2 - 0.07*s_th_3*c_th_2PI2 - 0.072*s_th_5*c_th_4*c_th_23_t1 - 0.07*s_th_2PI2*c_th_3 - 0.27*s_th_2PI2 - 0.072*s_th_23_t1*c_th_5 - 0.301999979970156*c_th_32PI + 0.402999989697838
     T[3,0] = 0.0
     T[3,1] = 0.0
     T[3,2] = 0.0
