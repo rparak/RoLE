@@ -20,7 +20,7 @@ Description:
     Initialization of constants.
 """
 # Number of randomly generated samples.
-CONST_SIZE = 1000
+CONST_SIZE = 1
 
 def main():
     """

@@ -64,7 +64,7 @@ def DH_Standard(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.Li
                     [          0.0,                                  0.0,                                    0.0,             1.0]], np.float32)
 
 def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                                                  tp.List[tp.List[float]]]:
+                                                                                                                            tp.List[tp.List[float]]]:
     """
     Description:
         Calculation of forward kinematics using the standard Denavit-Hartenberg (DH) method.
@@ -171,7 +171,7 @@ def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: P
     return (th_limit_err, T_i @ Robot_Parameters_Str.T.End_Effector)
 
 def Forward_Kinematics(theta: tp.List[float], method: str, Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                                                    tp.List[tp.List[float]]]:
+                                                                                                                              tp.List[tp.List[float]]]:
     """
     Description:
         Calculation of forward kinematics. The method of calculating depends on the input parameter (2).
