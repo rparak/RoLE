@@ -15,7 +15,6 @@ import Lib.Blender.Core
 #   ../Lib/Parameters/Mechanism
 import Lib.Parameters.Mechanism as Parameters
 
-
 """
 Description:
     Initialization of constants.

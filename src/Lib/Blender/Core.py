@@ -339,7 +339,6 @@ class Mechanism_Cls(object):
         try:
             assert isinstance(theta, float)
 
-
             bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_mode = self.__axes_sequence_cfg
             if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
                 if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
