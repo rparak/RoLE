@@ -66,7 +66,7 @@ class Theta_Parameters_Str(object):
     # Limits of absolute joint position in radians and meters.
     #   Unit [Matrix<float>]
     Limit: tp.List[tp.List[float]] = field(default_factory=list)
-    # Parameters of the object (Blender robot arm).
+    # Other parameters of the object structure.
     #   The name of the joints.
     #       Unit [Vector<string>]
     Name: tp.List[str] = field(default_factory=list)
@@ -77,10 +77,6 @@ class Theta_Parameters_Str(object):
     #   Identification of the axis of the absolute position of the joint. 
     #       Unit [Vector<string>]
     Axis: tp.List[str] = field(default_factory=list)
-    #   Direction of the axis of the joint. 
-    #       Note: +1 (Standard), -1 (Inverted)
-    #       Unit [Vector<int>]
-    Direction: tp.List[int] = field(default_factory=list)
 
 @dataclass
 class T_Parameters_Str:
@@ -131,7 +127,7 @@ class Robot_Parameters_Str:
     # Denavit-Hartenberg (DH) parameters.
     #   Unit [__DH_Parameters_Str(object)]
     DH: DH_Parameters_Str = field(default_factory=DH_Parameters_Str)
-    # Absolute joint position (theta) parameters
+    # Absolute joint position (theta) parameters.
     #   Unit [__Theta_Parameters_Str(object)]
     Theta: Theta_Parameters_Str = field(default_factory=Theta_Parameters_Str)
     # Homogeneous transformation matrix (T) parameters.
@@ -272,7 +268,7 @@ ABB_IRB_120_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_120_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 
 """
-Robot Type - ABB IRB 120 with Linear Axis:
+Robot Type - ABB IRB 120 with SMC Linear Axis (LEJSH63NZA 800):
     Absolute Joint Position:
         Joint L: [-0.8, +0.0] [m]
         Joint 1: [+/- 165.0] [°]
@@ -283,10 +279,10 @@ Robot Type - ABB IRB 120 with Linear Axis:
         Joint 6: [+/- 400.0] [°]
 
     Denavit-Hartenberg (DH) Standard:
-        theta_zero = [  0.0, -1.57,   0.0,   0.0,   0.0,   0.0]
-        a          = [  0.0, 0.270,  0.07,   0.0,   0.0,   0.0]
-        d          = [0.290,   0.0,   0.0, 0.302,   0.0, 0.072]
-        alpha      = [-1.57,   0.0, -1.57,  1.57, -1.57,   0.0]
+        theta_zero = [  0.0,   0.0, -1.57,   0.0,   0.0,   0.0,   0.0]
+        a          = [  0.0,   0.0, 0.270,  0.07,   0.0,   0.0,   0.0]
+        d          = [0.113, 0.290,   0.0,   0.0, 0.302,   0.0, 0.072]
+        alpha      = [  0.0, -1.57,   0.0, -1.57,  1.57, -1.57,   0.0]
 """
 ABB_IRB_120_L_Ax_Str = Robot_Parameters_Str(Name = 'ABB_IRB_120_L_Ax', Id=1)
 # Homogeneous transformation matrix of the base.

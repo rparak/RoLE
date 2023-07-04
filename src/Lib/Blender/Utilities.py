@@ -87,7 +87,7 @@ def Remove_Object_Material(name: str) -> None:
         if obj == bpy.data.objects[name]:
             # Remove all materials (material slots) from the object.
             obj.active_material_index = 0
-            for i in range(len(obj.material_slots)):
+            for _ in range(len(obj.material_slots)):
                 bpy.ops.object.material_slot_remove({'object': obj})
 
             # Assign material to the active object.
@@ -95,6 +95,7 @@ def Remove_Object_Material(name: str) -> None:
             bpy.context.active_object.active_material = material_obj
             bpy.context.view_layer.objects.active = None
     
+    # Deselect all objects in the current scene.
     Deselect_All()
 
 def Set_Object_Material_Color(name: str, color: tp.List[float]):

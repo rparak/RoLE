@@ -9,6 +9,8 @@ import numpy as np
 import Lib.Blender.Utilities
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot
+#   ../Lib/Parameters/Mechanism
+import Lib.Parameters.Mechanism
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core as Kinematics
 #   ../Lib/Transformation/Core
@@ -175,8 +177,202 @@ class Poly_3D_Cls(object):
         bpy.data.objects[self.__data_block.name].data.keyframe_insert(data_path='bevel_factor_end', frame=frame_end, index=-1)
 
 class Mechanism_Cls(object):
-    def __init__(self, viewpoint_visibility: bool) -> None:
-        pass
+    """
+    Description:
+        A class for working with a mechanism object in a Blender scene.
+
+    Initialization of the Class:
+        Args:
+            (1) Mechanism_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the mechanism.
+            (2) viewpoint_visibility [bool]: The state (enable/disable) of the mechanism slider viewpoint object visibility.
+
+        Example:
+            Initialization:
+                # Assignment of the variables.
+                #   Example for the SMC LEFB25UNZS 1400C mechanism.
+                Mechanism_Parameters_Str = Lib.Parameters.Mechanism.SMC_LEFB25_1400_0_1_Str
+                viewpoint_visibility = True
+
+                # Initialization of the class.
+                Cls = Mechanism_Cls(Mechanism_Parameters_Str, viewpoint_visibility)
+
+            Features:
+                # Properties of the class.
+                Cls.Parameters
+                Cls.Theta_0, Cls.T_EE
+
+                # Functions of the class.
+                Cls.Set_Absolute_Joint_Position([0.0])
+    """
+        
+    def __init__(self, Mechanism_Parameters_Str: Lib.Parameters.Mechanism.Mechanism_Parameters_Str, viewpoint_visibility: bool) -> None:
+        try:
+            assert Lib.Blender.Utilities.Object_Exist(f'{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}') == True
+            
+            # << PRIVATE >> #
+            self.__Mechanism_Parameters_Str = Mechanism_Parameters_Str
+            # Modified the name of the robot structure. Addition of robot structure Id (identification number).
+            self.__name = f'{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}'
+            # Get the homogeneous transformation matrix of the mechanism based on the position of the mechanism structure in Blender.
+            self.__Mechanism_Parameters_Str.T.Base = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[self.__name].matrix_basis, 
+                                                                                                          np.float32)
+
+            # Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
+            self.__axes_sequence_cfg = 'ZYX'
+            
+            # Enable or disable the visibility of the end-effector viewpoint.
+            self.__viewpoint_visibility = viewpoint_visibility
+            self.__Viewpoint_EE_Name = f'{self.__name}_Viewpoint_EE'
+            if Lib.Blender.Utilities.Object_Exist(self.__Viewpoint_EE_Name):
+                # Enable / disable the visibility of an object.
+                Lib.Blender.Utilities.Object_Visibility(self.__Viewpoint_EE_Name, self.__viewpoint_visibility)
+                # Set the transformation of the viewpoint object.
+                #   The object transformation will be set to the end-effector of the robot structure.
+                Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
+            
+        except AssertionError as error:
+            print(f'[ERROR] Information: {error}')
+            print(f'[ERROR] The robot object named <{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}> does not exist in the current scene.')
+
+    @property
+    def Parameters(self) -> Lib.Parameters.Mechanism.Mechanism_Parameters_Str:
+        """
+        Description:
+            Get the structure of the main parameters of the mechanism.
+
+        Returns:
+            (1) parameter [Mechanism_Parameters_Str(object)]: The structure of the main parameters of the mechanism.
+        """
+        
+        return self.__Mechanism_Parameters_Str
+    
+    @property
+    def Theta_0(self) -> float:
+        """
+        Description:
+            Get the zero (home) absolute position of the joint in radians/meter.
+
+        Returns:
+            (1) parameter [Vector<float>]: Zero (home) absolute joint position in radians / meters.
+        """
+
+        return self.__Mechanism_Parameters_Str.Theta.Zero
+
+    @property
+    def Theta(self) -> float:
+        """
+        Description:
+            Get the absolute position of the mechanism joint.
+
+        Returns:
+            (1) parameter [Vector<float>]: Current absolute joint position in radians / meters.
+        """
+
+        # Convert a string axis letter to an identification number.
+        ax_i_id_num = Lib.Blender.Utilities.Convert_Ax_Str2Id(self.__Mechanism_Parameters_Str.Theta.Axis)
+
+        if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
+            # Identification of joint type: R - Revolute
+            return bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler[ax_i_id_num]
+        elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
+            # Identification of joint type: P - Prismatic
+            return bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location[ax_i_id_num]
+        
+    @property
+    def T_EE(self) -> tp.List[tp.List[float]]:
+        """
+        Description:
+            Get the homogeneous transformation matrix of the mechanism slider.
+
+        Returns:
+            (1) parameter [Matrix<float> 4x4]: Homogeneous transformation matrix of the mechanism slider.
+        """
+
+        # Get the actual homogenous transformation matrix of the mechanism slider.
+        T_Slider = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].matrix_basis, 
+                                                                         np.float32)
+
+        return self.__Mechanism_Parameters_Str.T.Base @ T_Slider @ self.__Mechanism_Parameters_Str.T.Shuttle
+    
+    def __Update(self) -> None:
+        """
+        Description:
+            Update the scene.
+        """
+
+        bpy.context.view_layer.update()
+
+    def Reset(self, mode: str) -> None:
+        """
+        Description:
+            Function to reset the absolute position of the mechanism joint from the selected mode.
+
+        Args:
+            (1) mode [string]: Possible modes to reset the absolute position of the joint.
+        """
+
+        try:
+            assert mode in ['Zero', 'Home']
+
+            if mode == 'Zero':
+                self.Set_Absolute_Joint_Position(self.Theta_0)
+            else:
+                self.Set_Absolute_Joint_Position(self.__Mechanism_Parameters_Str.Theta.Home)
+
+        except AssertionError as error:
+            print(f'[ERROR] Information: {error}')
+            print('[INFO] Incorrect reset mode selected. The selected mode must be chosen from the two options (Zero, Home).')
+
+    def Set_Absolute_Joint_Position(self, theta: float) -> bool:
+        """
+        Description:
+            Set the absolute position of the mechanism joint.
+
+        Args:
+            (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+
+        Returns:
+            (1) parameter [bool]: The result is 'True' if the required absolute joint positions 
+                                  are within the limits, and 'False' if they are not.
+        """
+        
+        try:
+            assert isinstance(theta, float)
+
+
+            bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_mode = self.__axes_sequence_cfg
+            if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
+                if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
+                    # Identification of joint type: R - Revolute
+                    bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler = (self.__Mechanism_Parameters_Str.T.Slider @ 
+                                                                                                   Transformation.Get_Rotation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
+                                                                                                                                      theta)).Get_Rotation(self.__axes_sequence_cfg).all()
+                elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
+                    # Identification of joint type: P - Prismatic
+                    bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location = (self.__Mechanism_Parameters_Str.T.Slider @ 
+                                                                                             Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
+                                                                                                                                   theta)).p.all()
+            else:
+                # Update the scene.
+                self.__Update()
+                # Reset the absolute position of the robot joints to the 'Zero'.
+                self.Reset('Zero')
+                print(f'[INFO] The desired input joint {theta} is out of limit.')
+                return False
+
+            # If the viewpoint visibility is enabled, set the transformation of the object 
+            # to the end-effector of the robot.
+            if self.__viewpoint_visibility == True:
+                Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
+
+            # Update the scene.
+            self.__Update()
+
+            return True
+            
+        except AssertionError as error:
+            print(f'[ERROR] Information: {error}')
+            print('[ERROR] Incorrect value type in the input variable theta. The input variable must be of type float.')
 
 class Robot_Cls(object):
     """
@@ -204,7 +400,7 @@ class Robot_Cls(object):
                 Cls.Theta_0, Cls.T_EE
 
                 # Functions of the class.
-                Cls.Set_Absolute_Joint_Position([0.0. 0.0, 0.0, 0.0, 0.0, 0.0])
+                Cls.Set_Absolute_Joint_Position([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     """
 
     def __init__(self, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str, viewpoint_visibility: bool) -> None:
@@ -338,7 +534,7 @@ class Robot_Cls(object):
                 th[i] = th_actual - th_init
 
         return th
-
+    
     @property
     def T_EE(self) -> tp.List[tp.List[float]]:
         """
@@ -346,7 +542,7 @@ class Robot_Cls(object):
             Get the homogeneous transformation matrix of the robot end-effector.
 
         Returns:
-            (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+            (1) parameter [Matrix<float> 4x4]: Homogeneous transformation matrix of the End-Effector.
         """
         return Kinematics.Forward_Kinematics(self.Theta, 'Modified', self.__Robot_Parameters_Str)[1]
 
@@ -391,6 +587,7 @@ class Robot_Cls(object):
             (1) parameter [bool]: The result is 'True' if the required absolute joint positions 
                                   are within the limits, and 'False' if they are not.
         """
+
         try:
             assert self.__Robot_Parameters_Str.Theta.Zero.size == theta.size
 
