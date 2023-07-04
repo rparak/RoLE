@@ -376,11 +376,15 @@ class Mechanism_Cls(object):
                 return False
 
             # If the viewpoint visibility is enabled, set the transformation of the object 
-            # to the end-effector of the robot.
+            # to the slider (end-effector) of the mechanism.
             if self.__viewpoint_visibility == True:
-                Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
-                # Insert a keyframe of the object (Viewpoint) into the frame at time t(1). 
-                Lib.Blender.Utilities.Insert_Key_Frame(self.__Viewpoint_EE_Name, 'matrix_basis', t_1 * self.__fps, 'ALL')
+                for i_frame in range(np.int32(t_0 * self.__fps),  np.int32(t_1 * self.__fps) + 1):
+                    # Set scene frame.
+                    bpy.context.scene.frame_set(i_frame)
+                    # Set the object transformation obtained from the current absolute position of the joints.
+                    Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
+                    # Insert a keyframe of the object (Viewpoint) into the frame at time t(1). 
+                    Lib.Blender.Utilities.Insert_Key_Frame(self.__Viewpoint_EE_Name, 'matrix_basis', i_frame, 'ALL')
 
             # Update the scene.
             self.__Update()
@@ -648,9 +652,13 @@ class Robot_Cls(object):
             # If the viewpoint visibility is enabled, set the transformation of the object 
             # to the end-effector of the robot.
             if self.__viewpoint_visibility == True:
-                Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
-                # Insert a keyframe of the object (Viewpoint) into the frame at time t(1). 
-                Lib.Blender.Utilities.Insert_Key_Frame(self.__Viewpoint_EE_Name, 'matrix_basis', t_1 * self.__fps, 'ALL')
+                for i_frame in range(np.int32(t_0 * self.__fps), np.int32(t_1 * self.__fps) + 1):
+                    # Set scene frame.
+                    bpy.context.scene.frame_set(i_frame)
+                    # Set the object transformation obtained from the current absolute position of the joints.
+                    Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
+                    # Insert a keyframe of the object (Viewpoint) into the frame at time t(1). 
+                    Lib.Blender.Utilities.Insert_Key_Frame(self.__Viewpoint_EE_Name, 'matrix_basis', i_frame, 'ALL')
 
             # Update the scene.
             self.__Update()
