@@ -180,7 +180,7 @@ def Forward_Kinematics(theta: tp.List[float], method: str, Robot_Parameters_Str:
         
     Args:
         (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
-        (2) method [string]: Forward kinematics method (1: Standard, 2: Modified).
+        (2) method [string]: Forward kinematics method (1: Standard, 2: Modified, 3: Fast).
         (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:

@@ -316,7 +316,7 @@ ABB_IRB_120_L_Ax_Str.DH.Modified = np.array([[0.0,                   0.0, 0.113,
                                              [3.141592653589793,     0.0, 0.072, -1.5707963267948966]], dtype = np.float32)
 # Zero/Home absolute position of each joint.
 ABB_IRB_120_L_Ax_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float32)
-ABB_IRB_120_L_Ax_Str.Theta.Home = np.array([0.0, 0.0, 0.0, 0.0, 0.0, Mathematics.Degree_To_Radian(90), 0.0],
+ABB_IRB_120_L_Ax_Str.Theta.Home = np.array([-0.400, Mathematics.Degree_To_Radian(90.0), 0.0, 0.0, 0.0, Mathematics.Degree_To_Radian(90.0), 0.0],
                                            dtype = np.float32)
 # Limits of absolute joint position.
 ABB_IRB_120_L_Ax_Str.Theta.Limit = np.array([[             -0.800,                0.0],

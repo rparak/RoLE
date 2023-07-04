@@ -219,6 +219,9 @@ class Mechanism_Cls(object):
 
             # Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
             self.__axes_sequence_cfg = 'ZYX'
+
+            # Get the FPS (Frames Per Seconds) value from the Blender settings.
+            self.__fps = bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
             
             # Enable or disable the visibility of the end-effector viewpoint.
             self.__viewpoint_visibility = viewpoint_visibility
@@ -315,21 +318,23 @@ class Mechanism_Cls(object):
             assert mode in ['Zero', 'Home']
 
             if mode == 'Zero':
-                self.Set_Absolute_Joint_Position(self.Theta_0)
+                self.Set_Absolute_Joint_Position(self.Theta_0, 0.0, 0.0)
             else:
-                self.Set_Absolute_Joint_Position(self.__Mechanism_Parameters_Str.Theta.Home)
+                self.Set_Absolute_Joint_Position(self.__Mechanism_Parameters_Str.Theta.Home, 0.0, 0.0)
 
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
             print('[INFO] Incorrect reset mode selected. The selected mode must be chosen from the two options (Zero, Home).')
 
-    def Set_Absolute_Joint_Position(self, theta: float) -> bool:
+    def Set_Absolute_Joint_Position(self, theta: float, t_0: float, t_1: float) -> bool:
         """
         Description:
             Set the absolute position of the mechanism joint.
 
         Args:
             (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+            (2) t_0 [float]: Animation start time in seconds.
+            (3) t_1 [float]: Animation stop time in seconds.
 
         Returns:
             (1) parameter [bool]: The result is 'True' if the required absolute joint positions 
@@ -339,8 +344,16 @@ class Mechanism_Cls(object):
         try:
             assert isinstance(theta, float)
 
+            # Insert a keyframe of the object (Viewpoint) into the frame at time t(0). 
+            if self.__viewpoint_visibility == True:
+                Lib.Blender.Utilities.Insert_Key_Frame(self.__Viewpoint_EE_Name, 'matrix_basis', t_0 * self.__fps, 'ALL')
+
             bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_mode = self.__axes_sequence_cfg
             if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
+
+                # Insert a keyframe of the object (Joint_0) into the frame at time t(0). 
+                Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', t_0 * self.__fps, 'ALL')
+
                 if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
                     # Identification of joint type: R - Revolute
                     bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler = (self.__Mechanism_Parameters_Str.T.Slider @ 
@@ -351,6 +364,9 @@ class Mechanism_Cls(object):
                     bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location = (self.__Mechanism_Parameters_Str.T.Slider @ 
                                                                                              Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
                                                                                                                                    theta)).p.all()
+                    
+                # Insert a keyframe of the object (Joint_0) into the frame at time t(1). 
+                Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', t_1 * self.__fps, 'ALL')
             else:
                 # Update the scene.
                 self.__Update()
@@ -363,6 +379,8 @@ class Mechanism_Cls(object):
             # to the end-effector of the robot.
             if self.__viewpoint_visibility == True:
                 Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
+                # Insert a keyframe of the object (Viewpoint) into the frame at time t(1). 
+                Lib.Blender.Utilities.Insert_Key_Frame(self.__Viewpoint_EE_Name, 'matrix_basis', t_1 * self.__fps, 'ALL')
 
             # Update the scene.
             self.__Update()
@@ -419,6 +437,9 @@ class Robot_Cls(object):
             
             # Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
             self.__axes_sequence_cfg = 'ZYX'
+
+            # Get the FPS (Frames Per Seconds) value from the Blender settings.
+            self.__fps = bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
             
             # Enable or disable the visibility of the end-effector viewpoint.
             self.__viewpoint_visibility = viewpoint_visibility
@@ -566,21 +587,23 @@ class Robot_Cls(object):
             assert mode in ['Zero', 'Home']
 
             if mode == 'Zero':
-                self.Set_Absolute_Joint_Position(self.Theta_0)
+                self.Set_Absolute_Joint_Position(self.Theta_0, 0.0, 0.0)
             else:
-                self.Set_Absolute_Joint_Position(self.__Robot_Parameters_Str.Theta.Home)
+                self.Set_Absolute_Joint_Position(self.__Robot_Parameters_Str.Theta.Home, 0.0, 0.0)
 
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
             print('[INFO] Incorrect reset mode selected. The selected mode must be chosen from the two options (Zero, Home).')
 
-    def Set_Absolute_Joint_Position(self, theta: tp.List[float]) -> bool:
+    def Set_Absolute_Joint_Position(self, theta: tp.List[float], t_0: float, t_1: float) -> bool:
         """
         Description:
             Set the absolute position of the robot joints.
 
         Args:
             (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+            (2) t_0 [float]: Animation start time in seconds.
+            (3) t_1 [float]: Animation stop time in seconds.
 
         Returns:
             (1) parameter [bool]: The result is 'True' if the required absolute joint positions 
@@ -590,6 +613,10 @@ class Robot_Cls(object):
         try:
             assert self.__Robot_Parameters_Str.Theta.Zero.size == theta.size
 
+            # Insert a keyframe of the object (Viewpoint) into the frame at time t(0). 
+            if self.__viewpoint_visibility == True:
+                Lib.Blender.Utilities.Insert_Key_Frame(self.__Viewpoint_EE_Name, 'matrix_basis', t_0 * self.__fps, 'ALL')
+
             # Get the zero configuration of each joint.
             T_zero_cfg = self.__Get_Zero_Joint_Cfg()
 
@@ -598,12 +625,18 @@ class Robot_Cls(object):
                                                                                                  self.__Robot_Parameters_Str.Theta.Axis, self.__Robot_Parameters_Str.Theta.Type)): 
                 bpy.data.objects[th_i_name].rotation_mode = self.__axes_sequence_cfg
                 if th_i_limit[0] <= th_i <= th_i_limit[1]:
+                    # Insert a keyframe of the object (Joint_{i}) into the frame at time t(0). 
+                    Lib.Blender.Utilities.Insert_Key_Frame(th_i_name, 'matrix_basis', t_0 * self.__fps, 'ALL')
+
                     if th_i_type == 'R':
                         # Identification of joint type: R - Revolute
                         bpy.data.objects[th_i_name].rotation_euler = (T_i_zero_cfg @ Transformation.Get_Rotation_Matrix(ax_i, th_i)).Get_Rotation(self.__axes_sequence_cfg).all()
                     elif th_i_type == 'P':
                         # Identification of joint type: P - Prismatic
                         bpy.data.objects[th_i_name].location = (T_i_zero_cfg @ Transformation.Get_Translation_Matrix(ax_i, th_i)).p.all()
+
+                    # Insert a keyframe of the object (Joint_{i}) into the frame at time t(1). 
+                    Lib.Blender.Utilities.Insert_Key_Frame(th_i_name, 'matrix_basis', t_1 * self.__fps, 'ALL')
                 else:
                     # Update the scene.
                     self.__Update()
@@ -616,6 +649,8 @@ class Robot_Cls(object):
             # to the end-effector of the robot.
             if self.__viewpoint_visibility == True:
                 Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
+                # Insert a keyframe of the object (Viewpoint) into the frame at time t(1). 
+                Lib.Blender.Utilities.Insert_Key_Frame(self.__Viewpoint_EE_Name, 'matrix_basis', t_1 * self.__fps, 'ALL')
 
             # Update the scene.
             self.__Update()

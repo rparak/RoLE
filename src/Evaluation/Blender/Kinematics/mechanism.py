@@ -5,6 +5,8 @@ import sys
 #   Add access if it is not in the system path.
 if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
+# Numpy (Array computing) [pip3 install numpy]
+import numpy as np
 # Custom Script:
 #   ../Lib/Blender/Parameters/Camera
 import Lib.Blender.Parameters.Camera
@@ -20,7 +22,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled mechanism.
-CONST_MECHANISM_0_1_TYPE = Parameters.SMC_LEFB25_1400_0_1_Str
+CONST_MECHANISM_0_1_TYPE = Parameters.SMC_LEFB25_14000_0_1_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
@@ -47,15 +49,23 @@ def main():
     # Reset the absolute position of the mechanism joints to the 'Zero'.
     Mechanism_ID_0_1_Cls.Reset('Zero')
     
+    # The first frame on which the animation starts.
+    bpy.context.scene.frame_start = np.int32(0.0)
+
     print('[INFO] Absolute Joint Positions (desired):')
-    print(f'[INFO] >> Joint_L({Mechanism_ID_0_1_Cls.Parameters.Theta.Home:.3f})')
+    print(f'[INFO] >> Joint_0({Mechanism_ID_0_1_Cls.Parameters.Theta.Home:.3f})')
 
     # Set the absolute position of the robot joints.
-    Mechanism_ID_0_1_Cls.Set_Absolute_Joint_Position(Mechanism_ID_0_1_Cls.Parameters.Theta.Home)
+    Mechanism_ID_0_1_Cls.Set_Absolute_Joint_Position(Mechanism_ID_0_1_Cls.Parameters.Theta.Home, 0.0, 2.0)
+
+    # The last frame on which the animation stops.
+    #   Note:
+    #       Convert the time in seconds to the FPS value from the Blender settings.
+    bpy.context.scene.frame_end = np.int32(2.0 * (bpy.context.scene.render.fps / bpy.context.scene.render.fps_base))
 
     # Get the absolute positions of the joints of the mechanism.
     print('[INFO] Absolute Joint Positions (actual):')
-    print(f'[INFO] >> Joint_L({Mechanism_ID_0_1_Cls.Theta:.3f})')
+    print(f'[INFO] >> Joint_0({Mechanism_ID_0_1_Cls.Theta:.3f})')
 
     # Get the homogeneous transformation matrix of the mechanism end-effector (shuttle). Parameters position 
     # and orientation (euler angles).
