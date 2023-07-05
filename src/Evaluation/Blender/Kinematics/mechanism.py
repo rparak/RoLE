@@ -29,7 +29,7 @@ CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_S
 def main():
     """
     Description:
-        A program that primarily demonstrates how to work with a specific class to control a mechanism in Blender scene.
+        A program that demonstrates how to work with a specific class to control a mechanism in Blender scene.
     """
     
     # Deselect all objects in the current scene.
