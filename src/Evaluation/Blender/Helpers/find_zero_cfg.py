@@ -11,6 +11,7 @@ import Lib.Blender.Utilities
 import Lib.Kinematics.Core
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
+
 """
 Description:
     Open Viewpoint.blend from the Blender folder and copy + paste this script and run it.

@@ -17,6 +17,15 @@ import Lib.Parameters.Robot as Parameters
 
 """
 Description:
+    Open Generate.blend from the Blender folder and copy + paste this script and run it.
+
+    Terminal:
+        $ cd Documents/GitHub/Industrial_Robots_Kinematics/Blender/Workspace
+        $ blender Generate.blend
+"""
+
+"""
+Description:
     Initialization of constants.
 """
 # The name of the input file and folder.
