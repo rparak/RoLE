@@ -28,6 +28,8 @@ Description:
 Description:
     Initialization of constants.
 """
+# Set the structure of the main parameters of the robot.
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 # The name of the input file and folder.
 CONST_FILE_NAME = 'tool0_workspace_data'
 
@@ -48,7 +50,7 @@ def main():
     project_folder = os.getcwd().split('Kinematics')[0] + 'Kinematics'
 
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_Str
+    Robot_Str = CONST_ROBOT_TYPE
 
     # Example: 
     #   Robot workspace dataset (x, y, z).

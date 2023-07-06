@@ -50,6 +50,9 @@ def main():
 
     # Deselect all objects in the current scene.
     Lib.Blender.Utilities.Deselect_All()
+
+    # Initialization of the structure of the main parameters of the robot.
+    Robot_Str = Parameters.ABB_IRB_120_L_Ax_Str
     
     # Removes joint viewpoints if they exist in the current scene.
     i = 0
@@ -59,9 +62,6 @@ def main():
         else:
             break     
         i += 1
-
-    # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_L_Ax_Str
 
     """
     Description:

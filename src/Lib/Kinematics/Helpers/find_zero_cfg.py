@@ -8,6 +8,13 @@ import Lib.Kinematics.Core
 #   ../Lib/Manipulator/Parameters
 import Lib.Parameters.Robot as Parameters
 
+"""
+Description:
+    Initialization of constants.
+"""
+# Set the structure of the main parameters of the robot.
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+
 def main():
     """
     Description:
@@ -18,7 +25,7 @@ def main():
     """
     
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_Str
+    Robot_Str = CONST_ROBOT_TYPE
 
     """
     Description:

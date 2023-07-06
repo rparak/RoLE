@@ -17,6 +17,8 @@ import Lib.Kinematics.Core
 Description:
     Initialization of constants.
 """
+# Set the structure of the main parameters of the robot.
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_R_Str
 # Number of randomly generated samples.
 CONST_SIZE = 1000
 
@@ -28,7 +30,7 @@ def main():
     """
 
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_Str
+    Robot_Str = CONST_ROBOT_TYPE
 
     """
     Description:

@@ -10,6 +10,13 @@ import sympy as sp
 #   ../Lib/Manipulator/Parameters
 import Lib.Parameters.Robot as Parameters
 
+"""
+Description:
+    Initialization of constants.
+"""
+# Set the structure of the main parameters of the robot.
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+
 def __DH_Modified(theta: float, a: float, d: float, alpha: float) -> sp.Matrix:
     """
     Description:
@@ -69,7 +76,7 @@ def main():
     """
 
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_L_Ax_Str
+    Robot_Str = CONST_ROBOT_TYPE
 
     # Initialize a string containing the symbol assigned with the variable.
     theta = [sp.symbols(f'theta[{i}]') for i in range(len(Robot_Str.Theta.Name))]

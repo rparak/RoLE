@@ -10,6 +10,13 @@ import Lib.Parameters.Robot as Parameters
 #   ../Lib/Workspace/Core
 import Lib.Workspace.Core
 
+"""
+Description:
+    Initialization of constants.
+"""
+# Set the structure of the main parameters of the robot.
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+
 def main():
     """
     Description:
@@ -24,7 +31,7 @@ def main():
     project_folder = os.getcwd().split('Kinematics')[0] + 'Kinematics'
 
     # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_Str
+    Robot_Str = CONST_ROBOT_TYPE
 
     # Input File: Absolute orientation of the joints.
     CONST_FILE_NAME_IN = 'abs_joint_pos_data'
