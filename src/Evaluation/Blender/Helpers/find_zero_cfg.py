@@ -11,8 +11,14 @@ import Lib.Blender.Utilities
 import Lib.Kinematics.Core
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
-#   ../Lib/Transformation/Core
-from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
+"""
+Description:
+    Open Viewpoint.blend from the Blender folder and copy + paste this script and run it.
+
+    Terminal:
+        $ cd Documents/GitHub/Industrial_Robots_Kinematics/Blender/Helpers
+        $ blender Viewpoint.blend
+"""
 
 """
 Notes:
