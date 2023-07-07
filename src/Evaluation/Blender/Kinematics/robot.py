@@ -19,6 +19,18 @@ import Lib.Parameters.Robot as Parameters
 
 """
 Description:
+    Open {robot_name}.blend from the Blender folder and copy + paste this script and run it.
+
+    Terminal:
+        $ cd Documents/GitHub/Industrial_Robots_Kinematics/Blender/Robot
+        $ blender {robot_name}.blend
+
+    Note:
+        Where the variable 'robot_name' is the name of the controlled robot to be used.
+"""
+
+"""
+Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.

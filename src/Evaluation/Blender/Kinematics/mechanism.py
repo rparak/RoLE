@@ -19,6 +19,18 @@ import Lib.Parameters.Mechanism as Parameters
 
 """
 Description:
+    Open {mechanism_name}.blend from the Blender folder and copy + paste this script and run it.
+
+    Terminal:
+        $ cd Documents/GitHub/Industrial_Robots_Kinematics/Blender/Mechanism
+        $ blender {mechanism_name}.blend
+
+    Note:
+        Where the variable 'mechanism_name' is the name of the controlled mechanism to be used.
+"""
+
+"""
+Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled mechanism.
