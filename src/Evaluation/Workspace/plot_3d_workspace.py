@@ -105,7 +105,6 @@ def main():
     axis.set_zlabel(r'z-axis in metres')
     #   Grid:
     axis.xaxis._axinfo['grid'].update({'linewidth': 0.25, 'linestyle': '--'})
-    
     axis.yaxis._axinfo['grid'].update({'linewidth': 0.25, 'linestyle': '--'})
     axis.zaxis._axinfo['grid'].update({'linewidth': 0.25, 'linestyle': '--'})
     #   Others:
