@@ -37,6 +37,9 @@ Description:
 CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
+# Animation stop(t_0), start(t_1) time in seconds.
+CONST_T_0 = 0.0
+CONST_T_1 = 2.0
 
 def main():
     """
@@ -62,19 +65,19 @@ def main():
     Robot_ID_0_Cls.Reset('Zero')
     
     # The first frame on which the animation starts.
-    bpy.context.scene.frame_start = np.int32(0.0)
+    np.int32(CONST_T_0 * (bpy.context.scene.render.fps / bpy.context.scene.render.fps_base))
 
     print('[INFO] Absolute Joint Positions (desired):')
     for i, th_i in enumerate(Robot_ID_0_Cls.Parameters.Theta.Home):
         print(f'[INFO] >> Joint_{i}({th_i:.3f})')
 
     # Set the absolute position of the robot joints.
-    Robot_ID_0_Cls.Set_Absolute_Joint_Position(Robot_ID_0_Cls.Parameters.Theta.Home, 0.0, 2.0)
+    Robot_ID_0_Cls.Set_Absolute_Joint_Position(Robot_ID_0_Cls.Parameters.Theta.Home, CONST_T_0, CONST_T_1)
 
     # The last frame on which the animation stops.
     #   Note:
     #       Convert the time in seconds to the FPS value from the Blender settings.
-    bpy.context.scene.frame_end = np.int32(2.0 * (bpy.context.scene.render.fps / bpy.context.scene.render.fps_base))
+    bpy.context.scene.frame_end = np.int32(CONST_T_1 * (bpy.context.scene.render.fps / bpy.context.scene.render.fps_base))
 
     # Get the the absolute positions of the robot's joints.
     print('[INFO] Absolute Joint Positions (actual):')
