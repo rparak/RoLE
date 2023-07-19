@@ -349,10 +349,10 @@ Robot Type - ABB IRB 14000 (Right):
         Joint 6: [+/- 229.0] [°]
 
     Denavit-Hartenberg (DH) Standard:
-        theta_zero = [  0.0,    0.0,    0.0,  -1.57,  3.14,    0.0,   0.0]
-        a          = [0.030, -0.030, 0.0405, 0.0405, 0.027, -0.027,   0.0]
-        d          = [  0.1,    0.0, 0.2515,    0.0, 0.265,    0.0, 0.036]
-        alpha      = [-1.57,   1.57,  -1.57,  -1.57, -1.57,   1.57,   0.0]
+        theta_zero = [   0.0,   0.0,    0.0,  -1.57,  3.14,    0.0,   0.0]
+        a          = [-0.030, 0.030, 0.0405, 0.0405, 0.027, -0.027,   0.0]
+        d          = [   0.1,   0.0, 0.2515,    0.0, 0.265,    0.0, 0.036]
+        alpha      = [ -1.57,  1.57,  -1.57,  -1.57, -1.57,   1.57,   0.0]
 """
 ABB_IRB_14000_R_Str = Robot_Parameters_Str(Name = 'ABB_IRB_14000_R', Id=1)
 # Homogeneous transformation matrix of the base of the right arm (T_Base @ T_Base_R)
@@ -426,10 +426,10 @@ Robot Type - ABB IRB 14000 (Left):
         Joint 6: [+/- 229.0] [°]
 
     Denavit-Hartenberg (DH) Standard:
-        theta_zero = [  0.0,    0.0,    0.0,  -1.57,  3.14,    0.0,   0.0]
-        a          = [0.030, -0.030, 0.0405, 0.0405, 0.027, -0.027,   0.0]
-        d          = [  0.1,    0.0, 0.2515,    0.0, 0.265,    0.0, 0.036]
-        alpha      = [-1.57,   1.57,  -1.57,  -1.57, -1.57,   1.57,   0.0]
+        theta_zero = [   0.0,   0.0,    0.0,  -1.57,  3.14,    0.0,   0.0]
+        a          = [-0.030, 0.030, 0.0405, 0.0405, 0.027, -0.027,   0.0]
+        d          = [   0.1,   0.0, 0.2515,    0.0, 0.265,    0.0, 0.036]
+        alpha      = [ -1.57,  1.57,  -1.57,  -1.57, -1.57,   1.57,   0.0]
 """
 ABB_IRB_14000_L_Str = Robot_Parameters_Str(Name = 'ABB_IRB_14000_L', Id=1)
 # Homogeneous transformation matrix of the base of the left arm (T_Base @ T_Base_L)
