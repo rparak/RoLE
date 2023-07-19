@@ -1,0 +1,218 @@
+<?xml version="1.0" ?>
+<robot name="Universal_Robots_UR3">
+  <!-- Part: Base -->
+  <link name="Base_Link">
+    <visual>
+      <geometry>
+        <mesh filename="./Base.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="./Base.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0"
+               iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <!-- Part: Joint Index 0 -->
+  <joint name="Joint_0" type="revolute">
+    <parent link="Base_Link"/>
+    <child link="Link_0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.1519"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="Link_0">
+    <visual>
+      <geometry>
+        <mesh filename="./Joint_0.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="./Joint_0.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0"
+               iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <!-- Part: Joint Index 1 -->
+  <joint name="Joint_1" type="revolute">
+    <parent link="Link_0"/>
+    <child link="Link_1"/>
+    <origin rpy="1.5707963267948966 0.0 0.0" xyz="0.0 0.0 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="Link_1">
+    <visual>
+      <geometry>
+        <mesh filename="./Joint_1.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="./Joint_1.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0"
+               iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <!-- Part: Joint Index 2 -->
+  <joint name="Joint_2" type="revolute">
+    <parent link="Link_1"/>
+    <child link="Link_2"/>
+    <origin rpy="0.0 0.0 0.0" xyz="-0.24365 0.0 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="Link_2">
+    <visual>
+      <geometry>
+        <mesh filename="./Joint_2.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="./Joint_2.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0"
+               iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <!-- Part: Joint Index 3 -->
+  <joint name="Joint_3" type="revolute">
+    <parent link="Link_2"/>
+    <child link="Link_3"/>
+    <origin rpy="0.0 0.0 0.0" xyz="-0.2132499 0.0 0.11235"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="Link_3">
+    <visual>
+      <geometry>
+        <mesh filename="./Joint_3.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="./Joint_3.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0"
+               iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0"
+               iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <!-- Part: Joint Index 4 -->
+  <joint name="Joint_4" type="revolute">
+    <parent link="Link_3"/>
+    <child link="Link_4"/>
+    <origin rpy="-4.71238898038469 0.0 0.0" xyz="0.0 -0.08535 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="Link_4">
+    <visual>
+      <geometry>
+        <mesh filename="./Joint_4.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="./Joint_4.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0"
+               iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <!-- Part: Joint Index 5 -->
+  <joint name="Joint_5" type="revolute">
+    <parent link="Link_4"/>
+    <child link="Link_5"/>
+    <origin rpy="4.71238898038469 0.0 0.0" xyz="0.0 0.0819 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="Link_5">
+    <visual>
+      <geometry>
+        <mesh filename="./Joint_5.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="./Joint_5.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0"
+               iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <!-- Part: End-Effector -->
+  <joint name="EE" type="fixed">
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+    <parent link="Link_5"/>
+    <child link="EE_Link"/>
+  </joint>
+  <link name="EE_Link"/>
+</robot>
