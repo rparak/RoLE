@@ -18,7 +18,7 @@ def Cube_MOI(m: float, Size: tp.List[float]) -> tp.Tuple[float]:
     """
     
     # Abbreviations.
-    division_part = m / 12.0
+    division_part = m * 0.0833
     x_square = Size[0] ** 2; y_square = Size[1] ** 2
     z_square = Size[2] ** 2
 
