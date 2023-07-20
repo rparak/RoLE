@@ -11,6 +11,8 @@ import Lib.Blender.Utilities
 import Lib.Kinematics.Core
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
+#   ../Lib/Blender/Parameters/Camera
+import Lib.Blender.Parameters.Camera
 
 """
 Description:
@@ -39,6 +41,15 @@ Notes:
             e) Set the object to the desired orientation.
 """
 
+"""
+Description:
+    Initialization of constants.
+"""
+# Set the structure of the main parameters of the robot.
+CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
+# Set the structure of the main parameters of the camera.
+CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
+
 def main():
     """
     Description:
@@ -50,10 +61,14 @@ def main():
 
     # Deselect all objects in the current scene.
     Lib.Blender.Utilities.Deselect_All()
-
-    # Initialization of the structure of the main parameters of the robot.
-    Robot_Str = Parameters.ABB_IRB_120_L_Ax_Str
     
+    # Remove animation data from objects (Clear keyframes).
+    Lib.Blender.Utilities.Remove_Animation_Data()
+
+    # Set the camera (object) transformation and projection.
+    if Lib.Blender.Utilities.Object_Exist('Camera'):
+        Lib.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
+
     # Removes joint viewpoints if they exist in the current scene.
     i = 0
     while True:
@@ -63,6 +78,9 @@ def main():
             break     
         i += 1
 
+    # Initialization of the structure of the main parameters of the robot.
+    Robot_Str = CONST_ROBOT_TYPE
+    
     """
     Description:
         Find the zero configuration of the homogeneous matrix of each joint using the modified 

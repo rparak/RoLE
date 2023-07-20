@@ -34,7 +34,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_L_Str
+CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 # Animation stop(t_0), start(t_1) time in seconds.
@@ -71,6 +71,10 @@ def main():
     for i, th_i in enumerate(Robot_ID_0_Cls.Parameters.Theta.Home):
         print(f'[INFO] >> Joint_{i}({th_i:.3f})')
 
+    import numpy as np
+    
+    pos = np.array([0.0, 0.0, -0.1, 0.0])
+    
     # Set the absolute position of the robot joints.
     Robot_ID_0_Cls.Set_Absolute_Joint_Position(Robot_ID_0_Cls.Parameters.Theta.Home, CONST_T_0, CONST_T_1)
 
