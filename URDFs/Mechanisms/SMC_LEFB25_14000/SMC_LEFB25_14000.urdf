@@ -1,0 +1,87 @@
+<?xml version="1.0" ?>
+<robot name="SMC_LEFB25_14000">
+  <!-- Part: Base -->
+  <link name="Base_Link">
+    <visual>
+      <geometry>
+        <mesh filename="/Mesh/Visual/Base.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="/Mesh/Visual/Base.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <!-- Part: Joint L -->
+  <joint name="Joint_L" type="prismatic">
+    <parent link="Base_Link"/>
+    <child link="Link_L"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.168499"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="0.0" lower="0.0" upper="1.4" velocity="1.0"/>
+  </joint>
+  <link name="Link_L">
+    <visual>
+      <geometry>
+        <mesh filename="/Mesh/Visual/Joint_L.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="/Mesh/Visual/Joint_L.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <!-- Part: Shuttle -->
+  <joint name="Shuttle" type="fixed">
+    <parent link="Link_L"/>
+    <child link="Link_Shuttle"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="0.0" lower="0.0" upper="0.0" velocity="1.0"/>
+  </joint>
+  <link name="Link_Shuttle">
+    <visual>
+      <geometry>
+        <mesh filename="/Mesh/Visual/Shuttle.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="/Mesh/Visual/Shuttle.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  <!-- Part: End-Effector -->
+  <joint name="EE" type="fixed">
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.019998"/>
+    <parent link="Link_Shuttle"/>
+    <child link="EE_Link"/>
+  </joint>
+  <link name="EE_Link"/>
+</robot>
