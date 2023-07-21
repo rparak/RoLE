@@ -60,7 +60,7 @@ def Save(file_path: str, data: tp.List[tp.Union[float, bool]], format: str, sepa
         (2) data [Dictionary of different types of data <float, bool, etc.>]: Individual data.
         (3) format [string]: The format of the saved file.
                              Note:
-                                'pkl' : Pickle file; 'txt' : Text file.
+                                'pkl' : Pickle file; 'txt' : Text file, 'urdf' : Unified Robotics Description Format.
         (3) separator [string]: Separator between data.
     """
     
@@ -69,7 +69,7 @@ def Save(file_path: str, data: tp.List[tp.Union[float, bool]], format: str, sepa
         with open(file_path + f'.{format}', 'wb') as f:
             # Write the input data to a file using the file object (f).
             pkl.dump(data, f)
-    elif format == 'txt':
+    elif format in ['txt', 'urdf']:
         with open(file_path + f'.{format}', 'a+') as f:
             # Write the data to the file.
             for data_i in data[:-1]:

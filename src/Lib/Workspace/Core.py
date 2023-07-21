@@ -2,11 +2,16 @@
 import numpy as np
 # Time (Time access and conversions)
 import time
+# Typing (Support for type hints)
+import typing as tp
 # OS (Operating system interfaces)
 import os
 # Custom Script:
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core
+# Custom Script:
+#   ../Lib/Parameters/Robot
+import Lib.Parameters.Robot as Parameters
 
 """
 Description: 
@@ -14,7 +19,7 @@ Description:
 """
 CONST_NONE_VALUE = -1
 
-def Get_Number_of_Samples(name):
+def Get_Number_of_Samples(name: str) -> tp.List[float]:
     """
     Description:
         Get the number of samples for joint orientation combinations to generate the workspace 
@@ -31,6 +36,7 @@ def Get_Number_of_Samples(name):
                                            Note:
                                             Where n is the number of joints.
     """
+    
     return {
         'Universal_Robots_UR3': [30 + 1, 30 + 1, 30 + 1, 3, 3, 0],
         'ABB_IRB_120': [30 + 1, 30 + 1, 30 + 1, 3, 3, 0],
@@ -40,7 +46,7 @@ def Get_Number_of_Samples(name):
         'EPSON_LS3_B401S': [30 + 1, 30 + 1, 30 + 1, 0]
     }[name]
 
-def Convert_Orientation_Data_To_String(data):
+def Convert_Orientation_Data_To_String(data: tp.List[float]) -> tp.List[str]:
     """
     Description:
         Delete redundant input data of absolute joint orientation and convert to a string.
@@ -67,7 +73,7 @@ def Convert_Orientation_Data_To_String(data):
 
     return output_string
 
-def Generate_Absolute_Joint_Orientation(file_path, N, theta):
+def Generate_Absolute_Joint_Orientation(file_path: str, N: int, theta: tp.List[float]) -> None:
     """
     Description:
         Generate the absolute orientation of the joints to calculate the robot's workspace 
@@ -127,7 +133,7 @@ def Generate_Absolute_Joint_Orientation(file_path, N, theta):
 
     print(f'[INFO] Total Time: {(time.time() - t_0):.3f} in seconds')
 
-def Generate_Workspace_XYZ(Robot_Str, file_path_in, file_path_out):
+def Generate_Workspace_XYZ(Robot_Str: Parameters.Robot_Parameters_Str, file_path_in: str, file_path_out: str) -> None:
     """
     Description:
         Generate x, y, z positions of the workspace from the absolute orientation of the joints.
