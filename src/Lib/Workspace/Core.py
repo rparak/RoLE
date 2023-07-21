@@ -34,6 +34,7 @@ def Get_Number_of_Samples(name):
     return {
         'Universal_Robots_UR3': [30 + 1, 30 + 1, 30 + 1, 3, 3, 0],
         'ABB_IRB_120': [30 + 1, 30 + 1, 30 + 1, 3, 3, 0],
+        'ABB_IRB_120_L_Ax': [10 + 1, 30 + 1, 30 + 1, 30 + 1, 3, 3, 0],
         'ABB_IRB_14000_R': [30 + 1, 30 + 1, 30 + 1, 10 + 1, 3, 0, 0],
         'ABB_IRB_14000_L': [30 + 1, 30 + 1, 30 + 1, 10 + 1, 3, 0, 0],
         'EPSON_LS3_B401S': [30 + 1, 30 + 1, 30 + 1, 0]
@@ -54,7 +55,6 @@ def Convert_Orientation_Data_To_String(data):
     """
 
     output_string = []
-
     for data_i in data:
         if data_i != CONST_NONE_VALUE:
             output_string.append(str(data_i)); output_string.append(',')
