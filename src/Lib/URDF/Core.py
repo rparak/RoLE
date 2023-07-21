@@ -1,7 +1,17 @@
 # Typing (Support for type hints)
 import typing as tp
+# OS (Operating system interfaces)
+import os
+# Custom Script:
+#   ../Lib/Kinematics/Core
+import Lib.Kinematics.Core
+# Custom Script:
+#   ../Lib/Parameters/Robot
+import Lib.Parameters.Robot as Parameters
+#   ../Lib/Utilities/File_IO
+import Lib.Utilities.File_IO as File_IO
 
-def Get_Physical_Properties(name: str) -> tp.Dict[float]:
+def Get_Physical_Properties(name: str) -> tp.Tuple[float]:
     """
     Description:
         Get the defined physical properties of the robotic structure.
@@ -20,25 +30,157 @@ def Get_Physical_Properties(name: str) -> tp.Dict[float]:
     Returns:
         (1) parameter [Dictionary {'mass', Vector<float> 1xn, etc.}]: Defined physical properties of the robotic 
                                                                       structure.
+                                                                        Note:
+                                                                            Where n is the number of joints + base.
     """
 
     return {
-        'Universal_Robots_UR3': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
-                                 'effort': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
+        'Universal_Robots_UR3': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
+                                 'effort': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
                                  'velocity': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]},
-        'ABB_IRB_120': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
-                        'effort': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
+        'ABB_IRB_120': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
+                        'effort': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
                         'velocity': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]},
-        'ABB_IRB_120_L_Ax': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
-                             'effort': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
-                             'velocity': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]},
-        'ABB_IRB_14000_R': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
-                            'effort': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
-                            'velocity': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]},
-        'ABB_IRB_14000_L': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
-                            'effort': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
-                            'velocity': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]},
-        'EPSON_LS3_B401S': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
-                            'effort': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
-                            'velocity': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]}
+        'ABB_IRB_120_L_Ax': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
+                             'effort': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+                             'velocity': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]},
+        'ABB_IRB_14000_R': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+                            'effort': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+                            'velocity': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]},
+        'ABB_IRB_14000_L': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
+                            'effort': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+                            'velocity': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]},
+        'EPSON_LS3_B401S': {'mass': [1.0, 1.0, 1.0, 1.0, 1.0], 
+                            'effort': [0.0, 0.0, 0.0, 0.0], 
+                            'velocity': [1.0, 1.0, 1.0, 1.0]}
     }[name]
+
+def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) -> None:
+    """
+    Description:
+        ...
+
+    Args:
+        (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (2) file_path [string]: The specified path where the file should be saved.
+                                Note:
+                                    Whitout an extension '*.urdf'.
+    """
+
+    # Get the defined physical properties of the robotic structure.
+    Robot_Physical_Properties = Get_Physical_Properties(Robot_Str.Name)
+
+    # ...
+    urdf_head_configuration = f'''<?xml version="1.0"?>\n<robot name="{Robot_Str.Name}">'''
+
+    # ...
+    urdf_base_configuration = f'''  <!-- Configuration of the part called 'Base 1'. -->
+  <link name="Base_Link_{1}">
+    <visual>
+      <geometry>
+        <mesh filename="/Mesh/Visual/Base.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="/Mesh/Visual/Base.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="{Robot_Physical_Properties['mass'][0]}"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>'''
+
+    """
+    Description:
+        Find the zero configuration of the homogeneous matrix of each joint using the modified 
+        forward kinematics calculation method.
+    """
+    Robot_Str.T.Zero_Cfg = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
+
+    urdf_core_configuration = []
+    for i in range(Robot_Str.Theta.Zero.shape[0]):
+        if i == 0:
+            parent_str = f'Base_Link_{i + 1}'
+          
+            # ...
+            T_i = Robot_Str.T.Base.Inverse() @ Robot_Str.T.Zero_Cfg[i]
+        else:
+            parent_str = f'Link_{i}'
+
+            # ...
+            T_i = Robot_Str.T.Zero_Cfg[i - 1].Inverse() @ Robot_Str.T.Zero_Cfg[i]
+
+        # ...
+        #   ...
+        joint_id = Robot_Str.Theta.Name[i].removesuffix(f'_{Robot_Str.Name}_ID_{Robot_Str.Id:03}').removeprefix('Joint_')
+        child_str = f'Link_{joint_id}'
+        #   ...
+        joint_type = 'revolute' if Robot_Str.Theta.Type[i] == 'R' else 'prismatic'
+        #   ...
+        joint_axis = '0 0 1' if Robot_Str.Theta.Axis[i] == 'Z' else '1 0 0'
+
+        # Get the translational and rotational part from the transformation matrix.
+        p = T_i.p; Euler_Angles = T_i.Get_Rotation('ZYX')
+
+        # ...
+        urdf_core_configuration.append(f'''  <!-- Configuration of the part called 'Joint {joint_id}'. -->
+  <joint name="Joint_{joint_id}" type="{joint_type}">
+    <parent link="{parent_str}"/>
+    <child link="{child_str}"/>
+    <origin rpy="{Euler_Angles.x} {Euler_Angles.y} {Euler_Angles.z}" xyz="{p.x} {p.y} {p.z}"/>
+    <axis xyz="{joint_axis}"/>
+    <limit effort="{Robot_Physical_Properties['effort'][i]}" lower="{Robot_Str.Theta.Limit[i, 0]}" upper="{Robot_Str.Theta.Limit[i, 1]}" velocity="{Robot_Physical_Properties['velocity'][i]}"/>
+  </joint>
+  <link name="Link_{joint_id}">
+    <visual>
+      <geometry>
+        <mesh filename="/Mesh/Visual/Joint_{joint_id}.stl"/>
+      </geometry>
+      <material name="Custom_Color">
+        <color rgba="0.90 0.90 0.90 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="/Mesh/Visual/Joint_{joint_id}.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="{Robot_Physical_Properties['mass'][i + 1]}"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>''')
+        
+        # Release T_{i}.
+        del T_i
+
+    # ...
+    urdf_ee_configuration = '''  <!-- Configuration of the part called 'End-Effector (EE)'. -->
+  <joint name="EE" type="fixed">
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+    <parent link="Link_5"/>
+    <child link="EE_Link"/>
+  </joint>
+  <link name="EE_Link"/>'''
+
+    # ...
+    urdf_last_configuration = '</robot>'
+
+    # Remove the '*.urdf' file if it already exists.
+    if os.path.isfile(f'{file_path}.urdf'):
+        os.remove(f'{file_path}.urdf')
+
+    # Save the generated text to the '*.urdf' file.
+    File_IO.Save(file_path, urdf_head_configuration, 'urdf', '')
+    File_IO.Save(file_path, urdf_base_configuration, 'urdf', '')
+    for _,  urdf_core_configuration_i in enumerate(urdf_core_configuration):
+        File_IO.Save(file_path, urdf_core_configuration_i, 'urdf', '')
+    File_IO.Save(file_path, urdf_ee_configuration, 'urdf', '')
+    File_IO.Save(file_path, urdf_last_configuration, 'urdf', '')

@@ -3,7 +3,7 @@ import numpy as np
 # Typing (Support for type hints)
 import typing as tp
 
-def Cube_MOI(m: float, Size: tp.List[float]) -> tp.Dict[float]:
+def Cube_MOI(m: float, Size: tp.List[float]) -> tp.Tuple[float]:
     """
     Description:
         Obtain the moment of inertia (MOI) for the bounding box (cuboid).

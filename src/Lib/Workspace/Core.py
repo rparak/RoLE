@@ -139,7 +139,8 @@ def Generate_Workspace_XYZ(Robot_Str: Parameters.Robot_Parameters_Str, file_path
         Generate x, y, z positions of the workspace from the absolute orientation of the joints.
 
     Args:
-        (1, 2) file_path_in, file_path_out [string]: The specified path of the file with an extension '*.txt'.
+        (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (2, 3) file_path_in, file_path_out [string]: The specified path of the file with an extension '*.txt'.
                                                      Note:
                                                         *_in : as input data file
                                                         *_out : as output data file
