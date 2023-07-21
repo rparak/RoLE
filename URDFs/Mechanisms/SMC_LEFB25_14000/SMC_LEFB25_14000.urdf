@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <robot name="SMC_LEFB25_14000">
-  <!-- Part: Base -->
+  <!-- Configuration of the part called 'Base'. -->
   <link name="Base_Link">
     <visual>
       <geometry>
@@ -21,7 +21,7 @@
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
-  <!-- Part: Joint L -->
+  <!-- Configuration of the part called 'Joint L'. -->
   <joint name="Joint_L" type="prismatic">
     <parent link="Base_Link"/>
     <child link="Link_L"/>
@@ -49,7 +49,7 @@
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
-  <!-- Part: Shuttle -->
+  <!-- Configuration of the part called 'Shuttle'. -->
   <joint name="Shuttle" type="fixed">
     <parent link="Link_L"/>
     <child link="Link_Shuttle"/>
@@ -77,7 +77,7 @@
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
-  <!-- Part: End-Effector -->
+  <!-- Configuration of the part called 'End-Effector (EE)'. -->
   <joint name="EE" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.019998"/>
     <parent link="Link_Shuttle"/>

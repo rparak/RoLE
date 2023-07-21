@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <robot name="Viewpoint">
-  <link name="Viewpoint_Link">
+  <!-- Configuration of the part called 'Base'. -->
+  <link name="Base_Link">
     <visual>
       <geometry>
 	 	     <mesh filename="/Mesh/Visual/Viewpoint.stl" scale="1 1 1"/>
@@ -11,9 +12,10 @@
     </visual>
   </link>
   <joint name="X_Axis" type="fixed">
-    <parent link="Viewpoint_Link"/>
+    <parent link="Base_Link"/>
     <child link="X_Axis_Link"/>
   </joint>
+  <!-- Configuration of the part called 'X-Axis'. -->
   <link name="X_Axis_Link">
     <visual>
       <geometry>
@@ -24,8 +26,9 @@
       </material>
     </visual>
   </link>
+  <!-- Configuration of the part called 'Y-Axis'. -->
   <joint name="Y_Axis" type="fixed">
-    <parent link="Viewpoint_Link"/>
+    <parent link="Base_Link"/>
     <child link="Y_Axis_Link"/>
   </joint>
   <link name="Y_Axis_Link">
@@ -38,8 +41,9 @@
       </material>
     </visual>
   </link>
+  <!-- Configuration of the part called 'Z-Axis'. -->
   <joint name="Z_Axis" type="fixed">
-    <parent link="Viewpoint_Link"/>
+    <parent link="Base_Link"/>
     <child link="Z_Axis_Link"/>
   </joint>
   <link name="Z_Axis_Link">

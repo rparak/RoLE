@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <robot name="Universal_Robots_UR3">
-  <!-- Part: Base -->
+  <!-- Configuration of the part called 'Base'. -->
   <link name="Base_Link">
     <visual>
       <geometry>
@@ -21,7 +21,7 @@
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
-  <!-- Part: Joint 1 -->
+  <!-- Configuration of the part called 'Joint 1'. -->
   <joint name="Joint_1" type="revolute">
     <parent link="Base_Link"/>
     <child link="Link_1"/>
@@ -49,7 +49,7 @@
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
-  <!-- Part: Joint 2 -->
+  <!-- Configuration of the part called 'Joint 2'. -->
   <joint name="Joint_2" type="revolute">
     <parent link="Link_1"/>
     <child link="Link_2"/>
@@ -77,7 +77,7 @@
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
-  <!-- Part: Joint 3 -->
+  <!-- Configuration of the part called 'Joint 3'. -->
   <joint name="Joint_3" type="revolute">
     <parent link="Link_2"/>
     <child link="Link_3"/>
@@ -105,7 +105,7 @@
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
-  <!-- Part: Joint 4 -->
+  <!-- Configuration of the part called 'Joint 4'. -->
   <joint name="Joint_4" type="revolute">
     <parent link="Link_3"/>
     <child link="Link_4"/>
@@ -138,7 +138,7 @@
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
-  <!-- Part: Joint 5 -->
+  <!-- Configuration of the part called 'Joint 5'. -->
   <joint name="Joint_5" type="revolute">
     <parent link="Link_4"/>
     <child link="Link_5"/>
@@ -166,7 +166,7 @@
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
-  <!-- Part: Joint 6 -->
+  <!-- Configuration of the part called 'Joint 6'. -->
   <joint name="Joint_6" type="revolute">
     <parent link="Link_5"/>
     <child link="Link_6"/>
@@ -194,7 +194,7 @@
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
-  <!-- Part: End-Effector -->
+  <!-- Configuration of the part called 'End-Effector (EE)'. -->
   <joint name="EE" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
     <parent link="Link_5"/>
