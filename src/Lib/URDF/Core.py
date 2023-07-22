@@ -89,7 +89,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Visual/Base.stl"/>
+        <mesh filename="/Mesh/Collision/Base.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -151,7 +151,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_{joint_id}.stl"/>
+        <mesh filename="/Mesh/Collision/Joint_{joint_id}.stl"/>
       </geometry>
     </collision>
     <inertial>
