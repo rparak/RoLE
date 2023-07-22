@@ -77,5 +77,9 @@ def main():
             OBB_i = Lib.Collider.Core.OBB_Cls(Box_i)
             OBB_i.Transformation(HTM_Cls(None, np.float32))
 
+            # To evaluate the correct position/rotation of the box, find the vertices of the object.
+            for j, verts_j in enumerate(OBB_i.Vertices):
+                bpy.data.objects[f'Vertex_ID_0_{j}'].location = verts_j
+
 if __name__ == '__main__':
     main()
