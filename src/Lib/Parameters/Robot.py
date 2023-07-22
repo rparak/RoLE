@@ -9,6 +9,10 @@ import typing as tp
 from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
 #   ../Lib/Transformation/Utilities/Mathematics
 import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Lib/Primitives/Core
+from Lib.Primitives.Core import Box_Cls
+#   ../Lib/Primitives/Core
+from Lib.Collider.Core import OBB_Cls
 
 @dataclass
 class DH_Parameters_Str:
@@ -133,6 +137,12 @@ class Robot_Parameters_Str:
     # Homogeneous transformation matrix (T) parameters.
     #   Unit [__T_Parameters_Str(object)]
     T: T_Parameters_Str = field(default_factory=T_Parameters_Str)
+    # Colliders of the robot structure that are defined 
+    # as Oriented Bounding Boxes (OBBs).
+    #   Generated from the program, see below:
+    #       ./src/Evaluation/Blender/Collider/gen_colliders.py
+    #   Unit [Vector<OBB_Cls(object)>]
+    Collider: tp.List[OBB_Cls] = field(default=OBB_Cls)
 
 """
 Robot Type - Universal Robots UR3:
@@ -201,6 +211,19 @@ Universal_Robots_UR3_Str.Theta.Name = [f'Joint_1_{Universal_Robots_UR3_Str.Name}
                                        f'Joint_6_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}']
 Universal_Robots_UR3_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R']
 Universal_Robots_UR3_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z']
+# Colliders of the robot structure that are defined as Oriented Bounding Boxes (OBBs).
+#   Note:
+#       The parts of the structure are all the joints plus the base of the robot.
+#
+#   Generated from the program, see below:
+#       ./src/Evaluation/Blender/Collider/gen_colliders.py
+Universal_Robots_UR3_Str.Collider = [OBB_Cls(Box_Cls([-0.0000000e+00, 1.0453165e-05,-4.3024998e-02], [0.1280682 ,0.12802283,0.08605])),
+                                     OBB_Cls(Box_Cls([-0.00013836, 0.00405386, 0.00438859], [0.0909885 ,0.09989548,0.12292284])),
+                                     OBB_Cls(Box_Cls([ 0.11825755, 0.00013293,-0.11552516], [0.32829255,0.09097768,0.12305035])),
+                                     OBB_Cls(Box_Cls([ 1.0402446e-01, 6.1560422e-06,-2.9420309e-02], [0.28304172,0.07503453,0.09708148])),
+                                     OBB_Cls(Box_Cls([-7.1357936e-06,-7.8261830e-04, 6.0972441e-03], [0.06444171,0.09066747,0.07680538])),
+                                     OBB_Cls(Box_Cls([-2.0563602e-06, 1.7603282e-03, 6.0971491e-03], [0.06443175,0.08872084,0.07680354])),
+                                     OBB_Cls(Box_Cls([-6.9087371e-05, 3.2648966e-03, 1.9623118e-02], [0.06297702,0.06961451,0.03935568]))]
 
 """
 Robot Type - ABB IRB 120:

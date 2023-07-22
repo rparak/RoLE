@@ -1,7 +1,7 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <robot name="Universal_Robots_UR3">
-  <!-- Configuration of the part called 'Base'. -->
-  <link name="Base_Link">
+  <!-- Configuration of the part called 'Base 1'. -->
+  <link name="Base_Link_1">
     <visual>
       <geometry>
         <mesh filename="/Mesh/Visual/Base.stl"/>
@@ -12,22 +12,22 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Visual/Base.stl"/>
+        <mesh filename="/Mesh/Collision/Base.stl"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="1.0"/>
+      <mass value="2.0"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <inertia ixx="0.003964155046810525" ixy="0.0" ixz="0.0" iyy="0.0039660902836474235" iyz="0.0" izz="0.00546303198868738"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 1'. -->
   <joint name="Joint_1" type="revolute">
-    <parent link="Base_Link"/>
+    <parent link="Base_Link_1"/>
     <child link="Link_1"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.1519"/>
+    <origin rpy="-0.0 0.0 -0.0" xyz="0.0 0.0 0.15189999341964722"/>
     <axis xyz="0 0 1"/>
-    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <limit effort="56.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="3.14"/>
   </joint>
   <link name="Link_1">
     <visual>
@@ -40,22 +40,22 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_1.stl"/>
+        <mesh filename="/Mesh/Collision/Joint_1.stl"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="1.0"/>
+      <mass value="2.0"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <inertia ixx="0.0030417851096008384" ixy="0.0" ixz="0.0" iyy="0.0038965959905329483" iyz="0.0" izz="0.00417984912807433"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 2'. -->
   <joint name="Joint_2" type="revolute">
     <parent link="Link_1"/>
     <child link="Link_2"/>
-    <origin rpy="1.5707963267948966 0.0 0.0" xyz="0.0 0.0 0.0"/>
+    <origin rpy="1.5707963705062866 0.0 -0.0" xyz="0.0 0.0 0.0"/>
     <axis xyz="0 0 1"/>
-    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <limit effort="56.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="3.14"/>
   </joint>
   <link name="Link_2">
     <visual>
@@ -68,22 +68,22 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_2.stl"/>
+        <mesh filename="/Mesh/Collision/Joint_2.stl"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="1.0"/>
+      <mass value="3.42"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <inertia ixx="0.0330618568472581" ixy="0.0" ixz="0.0" iyy="0.03501744225505062" iyz="0.0" izz="0.006671553452826262"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 3'. -->
   <joint name="Joint_3" type="revolute">
     <parent link="Link_2"/>
     <child link="Link_3"/>
-    <origin rpy="0.0 0.0 0.0" xyz="-0.24365 0.0 0.0"/>
+    <origin rpy="-0.0 0.0 -0.0" xyz="-0.24365000426769257 0.0 0.0"/>
     <axis xyz="0 0 1"/>
-    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <limit effort="28.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="3.14"/>
   </joint>
   <link name="Link_3">
     <visual>
@@ -96,22 +96,22 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_3.stl"/>
+        <mesh filename="/Mesh/Collision/Joint_3.stl"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="1.0"/>
+      <mass value="1.26"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <inertia ixx="0.008999392101288263" ixy="0.0" ixz="0.0" iyy="0.009397669264033988" iyz="0.0" izz="0.0015801421405306358"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 4'. -->
   <joint name="Joint_4" type="revolute">
     <parent link="Link_3"/>
     <child link="Link_4"/>
-    <origin rpy="0.0 0.0 0.0" xyz="-0.2132499 0.0 0.11235"/>
+    <origin rpy="-0.0 0.0 -0.0" xyz="-0.21324999630451202 0.0 0.11235000193119049"/>
     <axis xyz="0 0 1"/>
-    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <limit effort="12.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="6.28"/>
   </joint>
   <link name="Link_4">
     <visual>
@@ -124,27 +124,22 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_4.stl"/>
+        <mesh filename="/Mesh/Collision/Joint_4.stl"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="1.0"/>
+      <mass value="0.8"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
-    </inertial>
-    <inertial>
-      <mass value="1.0"/>
-      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <inertia ixx="0.00082455833997227" ixy="0.0" ixz="0.0" iyy="0.0006698520141088706" iyz="0.0" izz="0.0009409339559921621"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 5'. -->
   <joint name="Joint_5" type="revolute">
     <parent link="Link_4"/>
     <child link="Link_5"/>
-    <origin rpy="1.5707963267948966 0.0 0.0" xyz="0.0 -0.08535 0.0"/>
+    <origin rpy="1.5707963705062866 0.0 -0.0" xyz="0.0 -0.08534999191761017 0.0"/>
     <axis xyz="0 0 1"/>
-    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <limit effort="12.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="6.28"/>
   </joint>
   <link name="Link_5">
     <visual>
@@ -157,22 +152,22 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_5.stl"/>
+        <mesh filename="/Mesh/Collision/Joint_5.stl"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="1.0"/>
+      <mass value="0.8"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <inertia ixx="0.0008012019465261055" ixy="0.0" ixz="0.0" iyy="0.0006697476259500734" iyz="0.0" izz="0.0009176442743822638"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 6'. -->
   <joint name="Joint_6" type="revolute">
     <parent link="Link_5"/>
     <child link="Link_6"/>
-    <origin rpy="-1.5707963267948966 0.0 0.0" xyz="0.0 0.0819 0.0"/>
+    <origin rpy="-1.5707963705062866 0.0 -0.0" xyz="0.0 0.08190000057220459 -7.450580596923828e-09"/>
     <axis xyz="0 0 1"/>
-    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="1.0"/>
+    <limit effort="12.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="6.28"/>
   </joint>
   <link name="Link_6">
     <visual>
@@ -185,13 +180,13 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_6.stl"/>
+        <mesh filename="/Mesh/Collision/Joint_6.stl"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="1.0"/>
+      <mass value="0.35"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <inertia ixx="0.0002569221720890753" ixy="0.0" ixz="0.0" iyy="0.0001607890977203789" iyz="0.0" izz="0.00018644765931814317"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'End-Effector (EE)'. -->

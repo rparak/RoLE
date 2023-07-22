@@ -10,6 +10,8 @@ import Lib.Kinematics.Core
 import Lib.Parameters.Robot as Parameters
 #   ../Lib/Utilities/File_IO
 import Lib.Utilities.File_IO as File_IO
+#   ../Lib/Utilities/MOI
+import Lib.Utilities.MOI as MOI
 
 def Get_Physical_Properties(name: str) -> tp.Tuple[float]:
     """
@@ -77,6 +79,9 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
     urdf_head_configuration = f'''<?xml version="1.0"?>\n<robot name="{Robot_Str.Name}">'''
 
     # ...
+    base_moi = MOI.Cube_MOI(Robot_Physical_Properties['mass'][0], Robot_Str.Collider[0].Size)
+
+    # ...
     urdf_base_configuration = f'''  <!-- Configuration of the part called 'Base 1'. -->
   <link name="Base_Link_{1}">
     <visual>
@@ -95,7 +100,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
     <inertial>
       <mass value="{Robot_Physical_Properties['mass'][0]}"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <inertia ixx="{base_moi['I_xx']}" ixy="0.0" ixz="0.0" iyy="{base_moi['I_yy']}" iyz="0.0" izz="{base_moi['I_zz']}"/>
     </inertial>
   </link>'''
 
@@ -127,7 +132,14 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
         joint_type = 'revolute' if Robot_Str.Theta.Type[i] == 'R' else 'prismatic'
         #   ...
         joint_axis = '0 0 1' if Robot_Str.Theta.Axis[i] == 'Z' else '1 0 0'
-
+        #   ...
+        if Robot_Str.Theta.Axis[i] == 'Z':
+          joint_moi = MOI.Cube_MOI(Robot_Physical_Properties['mass'][i + 1], [Robot_Str.Collider[i + 1].Size[2],
+                                                                              Robot_Str.Collider[i + 1].Size[1],
+                                                                              Robot_Str.Collider[i + 1].Size[0]])
+        else:
+          joint_moi = MOI.Cube_MOI(Robot_Physical_Properties['mass'][i + 1], Robot_Str.Collider[i + 1].Size)
+        
         # Get the translational and rotational part from the transformation matrix.
         p = T_i.p; Euler_Angles = T_i.Get_Rotation('ZYX')
 
@@ -157,7 +169,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
     <inertial>
       <mass value="{Robot_Physical_Properties['mass'][i + 1]}"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <inertia ixx="{joint_moi['I_xx']}" ixy="0.0" ixz="0.0" iyy="{joint_moi['I_yy']}" iyz="0.0" izz="{joint_moi['I_zz']}"/>
     </inertial>
   </link>''')
         
@@ -165,10 +177,10 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
         del T_i
 
     # ...
-    urdf_ee_configuration = '''  <!-- Configuration of the part called 'End-Effector (EE)'. -->
+    urdf_ee_configuration = f'''  <!-- Configuration of the part called 'End-Effector (EE)'. -->
   <joint name="EE" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
-    <parent link="Link_5"/>
+    <parent link="Link_{i}"/>
     <child link="EE_Link"/>
   </joint>
   <link name="EE_Link"/>'''

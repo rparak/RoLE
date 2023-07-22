@@ -25,19 +25,18 @@ def main():
     Description:
         ...
 
-        Note:
-            More information can be found here:
-                ../Lib/URDF/Core.py
+        More information can be found here:
+            ../Lib/URDF/Core.py
     """
 
     # Locate the path to the project folder.
-    project_folder = os.getcwd().split('Kinematics')[0] + 'Kinematics'
+    project_folder = os.getcwd().split('Industrial_Robots_Kinematics')[0] + 'Industrial_Robots_Kinematics'
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
     # ...
-    Lib.URDF.Core.Generate_URDF(Robot_Str, 'output')
+    Lib.URDF.Core.Generate_URDF(Robot_Str, f'{project_folder}/URDFs/Robots/{Robot_Str.Name}/{Robot_Str.Name}')
 
 if __name__ == "__main__":
     sys.exit(main())
