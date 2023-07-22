@@ -64,24 +64,21 @@ def main():
     # Reset the absolute position of the robot joints to the 'Zero'.
     Robot_ID_0_Cls.Reset('Zero')
     
+    # Get the FPS (Frames Per Seconds) value from the Blender settings.
+    fps = bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
+
     # The first frame on which the animation starts.
-    np.int32(CONST_T_0 * (bpy.context.scene.render.fps / bpy.context.scene.render.fps_base))
+    bpy.context.scene.frame_start = np.int32(CONST_T_0 * fps)
 
     print('[INFO] Absolute Joint Positions (desired):')
     for i, th_i in enumerate(Robot_ID_0_Cls.Parameters.Theta.Home):
         print(f'[INFO] >> Joint_{i}({th_i:.3f})')
 
-    import numpy as np
-    
-    pos = np.array([0.0, 0.0, -0.1, 0.0])
-    
     # Set the absolute position of the robot joints.
     Robot_ID_0_Cls.Set_Absolute_Joint_Position(Robot_ID_0_Cls.Parameters.Theta.Home, CONST_T_0, CONST_T_1)
 
     # The last frame on which the animation stops.
-    #   Note:
-    #       Convert the time in seconds to the FPS value from the Blender settings.
-    bpy.context.scene.frame_end = np.int32(CONST_T_1 * (bpy.context.scene.render.fps / bpy.context.scene.render.fps_base))
+    bpy.context.scene.frame_end = np.int32(CONST_T_1 * fps)
 
     # Get the the absolute positions of the robot's joints.
     print('[INFO] Absolute Joint Positions (actual):')
