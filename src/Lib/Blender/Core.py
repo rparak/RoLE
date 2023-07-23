@@ -631,7 +631,7 @@ class Robot_Cls(object):
 
                     if th_i_type == 'R':
                         # Identification of joint type: R - Revolute
-                        bpy.data.objects[th_i_name].rotation_euler = (Transformation.Get_Rotation_Matrix(ax_i, th_i) @ T_i_zero_cfg).Get_Rotation(self.__axes_sequence_cfg).all()
+                        bpy.data.objects[th_i_name].rotation_euler = (T_i_zero_cfg @ Transformation.Get_Rotation_Matrix(ax_i, th_i)).Get_Rotation(self.__axes_sequence_cfg).all()
                     elif th_i_type == 'P':
                         # Identification of joint type: P - Prismatic
                         bpy.data.objects[th_i_name].location = (Transformation.Get_Translation_Matrix(ax_i, th_i) @ T_i_zero_cfg).p.all()
