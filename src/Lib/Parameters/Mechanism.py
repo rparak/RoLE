@@ -40,8 +40,13 @@ class Theta_Parameters_Str(object):
     #       Unit [string]
     Type: str = ''
     #   Identification of the axis of the absolute position of the joint. 
+    #       Note: 'X', 'Y', 'Z'
     #       Unit [string]
     Axis: str = ''
+    #   Identification of the axis direction.
+    #       Note: (+1) - Positive, (-1) - Negative
+    #       Unit [int]
+    Direction: int = 0
 
 @dataclass
 class T_Parameters_Str:
@@ -130,6 +135,7 @@ SMC_LEFB25_14000_0_1_Str.Theta.Limit = np.array([0.0, 1.4], dtype=np.float32)
 SMC_LEFB25_14000_0_1_Str.Theta.Name = f'Joint_L_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}'
 SMC_LEFB25_14000_0_1_Str.Theta.Type = 'P'
 SMC_LEFB25_14000_0_1_Str.Theta.Axis = 'Y'
+SMC_LEFB25_14000_0_1_Str.Theta.Direction = 1
 # Colliders of the mechanism structure that are defined as Oriented Bounding Boxes (OBBs).
 #   Note:
 #       The parts of the structure are the joint plus the base of the mechanism 
@@ -170,6 +176,7 @@ SMC_LEFB25_14000_0_2_Str.Theta.Limit = np.array([0.0, 1.4], dtype=np.float32)
 SMC_LEFB25_14000_0_2_Str.Theta.Name = f'Joint_L_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}'
 SMC_LEFB25_14000_0_2_Str.Theta.Type = 'P'
 SMC_LEFB25_14000_0_2_Str.Theta.Axis = 'Y'
+SMC_LEFB25_14000_0_2_Str.Theta.Direction = 1
 # Colliders of the mechanism structure that are defined as Oriented Bounding Boxes (OBBs).
 #   Note:
 #       The parts of the structure are the joint plus the base of the mechanism 
