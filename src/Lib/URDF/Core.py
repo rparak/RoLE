@@ -189,7 +189,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
     <parent link="Link_{i}"/>
     <child link="EE_Link"/>
   </joint>
-  <link name="EE_Link"/>'''
+  <link name="EE_Link"/>\n</link>'''
 
     # ...
     urdf_last_configuration = '</robot>'
