@@ -392,6 +392,7 @@ def Transform_Object_To_Wireframe(name: str, thickness: float) -> None:
     # Add the modifier (wireframe) and set the desired thickness.
     bpy.ops.object.modifier_add(type='WIREFRAME')
     bpy.context.object.modifiers['Wireframe'].thickness = thickness
+    bpy.ops.object.modifier_apply(modifier="Wireframe")
     # Release the object from the selection.
     bpy.data.objects[name].select_set(False)
 
