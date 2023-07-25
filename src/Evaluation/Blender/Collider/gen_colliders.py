@@ -85,8 +85,11 @@ def main():
         # Remove all materials from the created object.
         Lib.Blender.Utilities.Remove_Object_Material(obj_i_name_new)
 
+        # Origin (o), Size (s)
+        o = np.round((-1) * Centroid, 5) + [0.0, 0.0, 0.0]; s = np.round(Size, 5) + [0.0, 0.0, 0.0]
+        
         # Display results.
-        print(f'[INFO] Str.Collider[{i}] = OBB_Cls(Box_Cls({np.array2string((-1) * Centroid, separator=",")}, {np.array2string(Size, separator=",")}))')
+        print(f'[INFO] Str.Collider[{i}] = OBB_Cls(Box_Cls([{o[0]:.05f}, {o[1]:.05f}, {o[2]:.05f}], [{s[0]:.05f}, {s[1]:.05f}, {s[2]:.05f}]))')
         i += 1
 
 if __name__ == '__main__':
