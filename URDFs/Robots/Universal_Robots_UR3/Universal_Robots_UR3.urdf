@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot name="Universal_Robots_UR3">
   <!-- Configuration of the part called 'Base 1'. -->
-  <link name="Base_Link_1">
+  <link name="Base_Link">
     <visual>
       <geometry>
         <mesh filename="/Mesh/Visual/Base.stl"/>
@@ -18,16 +18,16 @@
     <inertial>
       <mass value="2.0"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.003964155046810525" ixy="0.0" ixz="0.0" iyy="0.0039660902836474235" iyz="0.0" izz="0.00546303198868738"/>
+      <inertia ixx="0.0039641550" ixy="0.0" ixz="0.0" iyy="0.0039660903" iyz="0.0" izz="0.0054630320"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 1'. -->
   <joint name="Joint_1" type="revolute">
     <parent link="Base_Link_1"/>
     <child link="Link_1"/>
-    <origin rpy="-0.0 0.0 -0.0" xyz="0.0 0.0 0.15189999341964722"/>
+    <origin rpy="0.0000000000 0.0000000000 0.0000000000" xyz="0.00000 0.00000 0.15190"/>
     <axis xyz="0 0 1"/>
-    <limit effort="56.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="3.14"/>
+    <limit effort="56.0" lower="-3.1415927410" upper="3.1415927410" velocity="3.14"/>
   </joint>
   <link name="Link_1">
     <visual>
@@ -46,16 +46,16 @@
     <inertial>
       <mass value="2.0"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0030417851096008384" ixy="0.0" ixz="0.0" iyy="0.0038965959905329483" iyz="0.0" izz="0.00417984912807433"/>
+      <inertia ixx="0.0030417851" ixy="0.0" ixz="0.0" iyy="0.0038965960" iyz="0.0" izz="0.0041798491"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 2'. -->
   <joint name="Joint_2" type="revolute">
     <parent link="Link_1"/>
     <child link="Link_2"/>
-    <origin rpy="1.5707963705062866 0.0 -0.0" xyz="0.0 0.0 0.0"/>
+    <origin rpy="1.5707963705 0.0000000000 0.0000000000" xyz="0.00000 0.00000 0.00000"/>
     <axis xyz="0 0 1"/>
-    <limit effort="56.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="3.14"/>
+    <limit effort="56.0" lower="-3.1415927410" upper="3.1415927410" velocity="3.14"/>
   </joint>
   <link name="Link_2">
     <visual>
@@ -74,16 +74,16 @@
     <inertial>
       <mass value="3.42"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0330618568472581" ixy="0.0" ixz="0.0" iyy="0.03501744225505062" iyz="0.0" izz="0.006671553452826262"/>
+      <inertia ixx="0.0330618568" ixy="0.0" ixz="0.0" iyy="0.0350174423" iyz="0.0" izz="0.0066715535"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 3'. -->
   <joint name="Joint_3" type="revolute">
     <parent link="Link_2"/>
     <child link="Link_3"/>
-    <origin rpy="-0.0 0.0 -0.0" xyz="-0.24365000426769257 0.0 0.0"/>
+    <origin rpy="0.0000000000 0.0000000000 0.0000000000" xyz="-0.24365 0.00000 0.00000"/>
     <axis xyz="0 0 1"/>
-    <limit effort="28.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="3.14"/>
+    <limit effort="28.0" lower="-3.1415927410" upper="3.1415927410" velocity="3.14"/>
   </joint>
   <link name="Link_3">
     <visual>
@@ -102,16 +102,16 @@
     <inertial>
       <mass value="1.26"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.008999392101288263" ixy="0.0" ixz="0.0" iyy="0.009397669264033988" iyz="0.0" izz="0.0015801421405306358"/>
+      <inertia ixx="0.0089993921" ixy="0.0" ixz="0.0" iyy="0.0093976693" iyz="0.0" izz="0.0015801421"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 4'. -->
   <joint name="Joint_4" type="revolute">
     <parent link="Link_3"/>
     <child link="Link_4"/>
-    <origin rpy="-0.0 0.0 -0.0" xyz="-0.21324999630451202 0.0 0.11235000193119049"/>
+    <origin rpy="0.0000000000 0.0000000000 0.0000000000" xyz="-0.21325 0.00000 0.11235"/>
     <axis xyz="0 0 1"/>
-    <limit effort="12.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="6.28"/>
+    <limit effort="12.0" lower="-3.1415927410" upper="3.1415927410" velocity="6.28"/>
   </joint>
   <link name="Link_4">
     <visual>
@@ -130,16 +130,16 @@
     <inertial>
       <mass value="0.8"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.00082455833997227" ixy="0.0" ixz="0.0" iyy="0.0006698520141088706" iyz="0.0" izz="0.0009409339559921621"/>
+      <inertia ixx="0.0008245583" ixy="0.0" ixz="0.0" iyy="0.0006698520" iyz="0.0" izz="0.0009409340"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 5'. -->
   <joint name="Joint_5" type="revolute">
     <parent link="Link_4"/>
     <child link="Link_5"/>
-    <origin rpy="1.5707963705062866 0.0 -0.0" xyz="0.0 -0.08534999191761017 0.0"/>
+    <origin rpy="1.5707963705 0.0000000000 0.0000000000" xyz="0.00000 -0.08535 0.00000"/>
     <axis xyz="0 0 1"/>
-    <limit effort="12.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="6.28"/>
+    <limit effort="12.0" lower="-3.1415927410" upper="3.1415927410" velocity="6.28"/>
   </joint>
   <link name="Link_5">
     <visual>
@@ -158,16 +158,16 @@
     <inertial>
       <mass value="0.8"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0008012019465261055" ixy="0.0" ixz="0.0" iyy="0.0006697476259500734" iyz="0.0" izz="0.0009176442743822638"/>
+      <inertia ixx="0.0008012019" ixy="0.0" ixz="0.0" iyy="0.0006697476" iyz="0.0" izz="0.0009176443"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 6'. -->
   <joint name="Joint_6" type="revolute">
     <parent link="Link_5"/>
     <child link="Link_6"/>
-    <origin rpy="-1.5707963705062866 0.0 -0.0" xyz="0.0 0.08190000057220459 -7.450580596923828e-09"/>
+    <origin rpy="-1.5707963705 0.0000000000 0.0000000000" xyz="0.00000 0.08190 -0.00000"/>
     <axis xyz="0 0 1"/>
-    <limit effort="12.0" lower="-3.1415927410125732" upper="3.1415927410125732" velocity="6.28"/>
+    <limit effort="12.0" lower="-3.1415927410" upper="3.1415927410" velocity="6.28"/>
   </joint>
   <link name="Link_6">
     <visual>
@@ -186,14 +186,15 @@
     <inertial>
       <mass value="0.35"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="0.0002569221720890753" ixy="0.0" ixz="0.0" iyy="0.0001607890977203789" iyz="0.0" izz="0.00018644765931814317"/>
+      <inertia ixx="0.0002569222" ixy="0.0" ixz="0.0" iyy="0.0001607891" iyz="0.0" izz="0.0001864477"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'End-Effector (EE)'. -->
   <joint name="EE" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
-    <parent link="Link_5"/>
+    <parent link="Link_6"/>
     <child link="EE_Link"/>
   </joint>
   <link name="EE_Link"/>
+  </link>
 </robot>

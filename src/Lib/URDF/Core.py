@@ -83,7 +83,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
 
     # ...
     urdf_base_configuration = f'''  <!-- Configuration of the part called 'Base 1'. -->
-  <link name="Base_Link_{1}">
+  <link name="Base_Link">
     <visual>
       <geometry>
         <mesh filename="/Mesh/Visual/Base.stl"/>
@@ -100,7 +100,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
     <inertial>
       <mass value="{Robot_Physical_Properties['mass'][0]}"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="{base_moi['I_xx']}" ixy="0.0" ixz="0.0" iyy="{base_moi['I_yy']}" iyz="0.0" izz="{base_moi['I_zz']}"/>
+      <inertia ixx="{base_moi['I_xx']:.10f}" ixy="0.0" ixz="0.0" iyy="{base_moi['I_yy']:.10f}" iyz="0.0" izz="{base_moi['I_zz']:.10f}"/>
     </inertial>
   </link>'''
 
@@ -147,16 +147,16 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
           joint_moi = MOI.Cube_MOI(Robot_Physical_Properties['mass'][i + 1], Robot_Str.Collider[i + 1].Size)
         
         # Get the translational and rotational part from the transformation matrix.
-        p = T_i.p; Euler_Angles = T_i.Get_Rotation('ZYX')
+        p = T_i.p; Euler_Angles = T_i.Get_Rotation('ZYX') + [0.0, 0.0, 0.0]
 
         # ...
         urdf_core_configuration.append(f'''  <!-- Configuration of the part called 'Joint {joint_id}'. -->
   <joint name="Joint_{joint_id}" type="{joint_type}">
     <parent link="{parent_str}"/>
     <child link="{child_str}"/>
-    <origin rpy="{Euler_Angles.x} {Euler_Angles.y} {Euler_Angles.z}" xyz="{p.x} {p.y} {p.z}"/>
+    <origin rpy="{Euler_Angles.x:.10f} {Euler_Angles.y:.10f} {Euler_Angles.z:.10f}" xyz="{p.x:.05f} {p.y:.05f} {p.z:.05f}"/>
     <axis xyz="{joint_axis}"/>
-    <limit effort="{Robot_Physical_Properties['effort'][i]}" lower="{Robot_Str.Theta.Limit[i, 0]}" upper="{Robot_Str.Theta.Limit[i, 1]}" velocity="{Robot_Physical_Properties['velocity'][i]}"/>
+    <limit effort="{Robot_Physical_Properties['effort'][i]}" lower="{Robot_Str.Theta.Limit[i, 0]:.10f}" upper="{Robot_Str.Theta.Limit[i, 1]:.10f}" velocity="{Robot_Physical_Properties['velocity'][i]}"/>
   </joint>
   <link name="Link_{joint_id}">
     <visual>
@@ -175,7 +175,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
     <inertial>
       <mass value="{Robot_Physical_Properties['mass'][i + 1]}"/>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-      <inertia ixx="{joint_moi['I_xx']}" ixy="0.0" ixz="0.0" iyy="{joint_moi['I_yy']}" iyz="0.0" izz="{joint_moi['I_zz']}"/>
+      <inertia ixx="{joint_moi['I_xx']:.10f}" ixy="0.0" ixz="0.0" iyy="{joint_moi['I_yy']:.10f}" iyz="0.0" izz="{joint_moi['I_zz']:.10f}"/>
     </inertial>
   </link>''')
         
@@ -186,10 +186,11 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, file_path: str) ->
     urdf_ee_configuration = f'''  <!-- Configuration of the part called 'End-Effector (EE)'. -->
   <joint name="EE" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
-    <parent link="Link_{i}"/>
+    <parent link="Link_{i + 1}"/>
     <child link="EE_Link"/>
   </joint>
-  <link name="EE_Link"/>\n</link>'''
+  <link name="EE_Link"/>
+  </link>'''
 
     # ...
     urdf_last_configuration = '</robot>'

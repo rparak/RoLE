@@ -143,9 +143,9 @@ SMC_LEFB25_14000_0_1_Str.Theta.Direction = 1
 #
 #   Generated from the program, see below:
 #       ./src/Evaluation/Blender/Collider/gen_colliders.py
-SMC_LEFB25_14000_0_1_Str.Collider = [OBB_Cls(Box_Cls([-0.        ,-0.70199645,-0.08296357], [0.13778271,1.6629045 ,0.16592714])),
-                                     OBB_Cls(Box_Cls([ 9.4063580e-08,-2.2394583e-05, 4.5259958e-03], [0.04993392,0.10204284,0.00904999])),
-                                     OBB_Cls(Box_Cls([-2.1790713e-04,-9.8347664e-07,-2.5078734e-02], [0.18963645,0.2393545 ,0.05015953]))]
+SMC_LEFB25_14000_0_1_Str.Collider = [OBB_Cls(Box_Cls([ 0.        ,-0.70199645,-0.08296357], [0.13778271,1.6629045 ,0.16592714])),
+                                     OBB_Cls(Box_Cls([ 9.40635800e-08,-2.23945826e-05, 4.52599581e-03], [0.04993392,0.10204284,0.00904999])),
+                                     OBB_Cls(Box_Cls([-2.17907131e-04,-9.83476639e-07,-2.50787344e-02], [0.18963645,0.23935451,0.05015953]))]
 
 """
 Mechanism Type - SMC LEFB25UNZS 14000C (ID = 2):
@@ -184,4 +184,6 @@ SMC_LEFB25_14000_0_2_Str.Theta.Direction = 1
 #
 #   Generated from the program, see below:
 #       ./src/Evaluation/Blender/Collider/gen_colliders.py
-SMC_LEFB25_14000_0_2_Str.Collider = 0.0
+SMC_LEFB25_14000_0_2_Str.Collider = [OBB_Cls(Box_Cls([ 0.        ,-0.70199645,-0.08296357], [0.13778271,1.6629045 ,0.16592714])),
+                                     OBB_Cls(Box_Cls([ 9.40635800e-08,-2.23945826e-05, 4.52599581e-03], [0.04993392,0.10204284,0.00904999])),
+                                     OBB_Cls(Box_Cls([-2.17907131e-04,-9.83476639e-07,-2.50787344e-02], [0.18963645,0.23935451,0.05015953]))]

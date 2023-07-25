@@ -246,6 +246,18 @@ class Box_Cls(object):
         return self.__size
 
     @property
+    def Origin(self) -> tp.List[float]:
+        """
+        Description:
+            Get the origin of the box.
+
+        Returns:
+            (1) parameter [Vector<float> 1x3]: Box origin (X, Y, Z).
+        """
+
+        return self.__origin
+    
+    @property
     def Vertices(self) -> tp.List[tp.List[float]]:
         """
         Description:
@@ -286,7 +298,3 @@ class Box_Cls(object):
         """
 
         return HTM_Cls(None, np.float32).Translation(self.__centroid)
-
-
-
-
