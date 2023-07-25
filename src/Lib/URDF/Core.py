@@ -69,7 +69,8 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
 
     Args:
         (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (2) use_mesh [bool]: 
+        (2) use_mesh [bool]: Use a mesh to represent a visual/collision object. Otherwise, use a sphere to 
+                             represent the object.
         (3) file_path [string]: The specified path where the file should be saved.
                                 Note:
                                     Whitout an extension '*.urdf'.

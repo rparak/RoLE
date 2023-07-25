@@ -3,6 +3,8 @@ import sys
 #   Add access if it is not in the system path.
 if '../' + 'src' not in sys.path:
     sys.path.append('../..')
+# Numpy (Array computing) [pip3 install numpy]
+import numpy as np
 # Custom Script:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
@@ -37,14 +39,15 @@ def main():
 
     for i, T_i in enumerate(Robot_Str.T.Zero_Cfg):
         # Get the translational and rotational part from the transformation matrix.
-        p = T_i.p; Euler_Angles = T_i.Get_Rotation('ZYX'); Quaternions = T_i.Get_Rotation('QUATERNION')
+        p = np.round(T_i.p.all(), 5) + [0.0, 0.0, 0.0]; Euler_Angles = np.round(T_i.Get_Rotation('ZYX').all(), 5) + [0.0, 0.0, 0.0]
+        Quaternions = np.round(T_i.Get_Rotation('QUATERNION').all(), 5) + [0.0, 0.0, 0.0, 0.0]
 
         # Zero configuration of the homogeneous matrix in the current episode.
         #   Joint_{i}: p, R (Euler Angles and Quaternions)
         print(f'[INFO] Homogeneous matrix T_{i} in iteration {i}:')
-        print(f'[INFO] >> p: [{p.x:.3f}, {p.y:.3f}, {p.z:.3f}]')
-        print(f'[INFO] >> Euler Angles: [{Euler_Angles.x:.3f}, {Euler_Angles.y:.3f}, {Euler_Angles.z:.3f}]')
-        print(f'[INFO] >> Quaternions: [{Quaternions.w:.5f}, {Quaternions.x:.5f}, {Quaternions.y:.5f}, {Quaternions.z:.5f}]')
+        print(f'[INFO] >> p: [{p[0]:.05f}, {p[1]:.05f}, {p[2]:.05f}]')
+        print(f'[INFO] >> Euler Angles: [{Euler_Angles[0]:.05f}, {Euler_Angles[1]:.05f}, {Euler_Angles[2]:.05f}]')
+        print(f'[INFO] >> Quaternions: [{Quaternions[0]:.05f}, {Quaternions[1]:.05f}, {Quaternions[2]:.05f}, {Quaternions[3]:.05f}]')
     
 if __name__ == '__main__':
     main()
