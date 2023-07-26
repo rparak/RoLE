@@ -97,7 +97,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
 
     # ...
     urdf_base_configuration = f'''  <!-- Configuration of the part called 'Base 1'. -->
-  <link name="Base_Link">
+  <link name="base_link">
     <visual>
       <geometry>
         {visual_geometry}
@@ -114,7 +114,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     <inertial>
       <mass value="{Robot_Physical_Properties['mass'][0]}"/>
       <origin rpy="0.0 0.0 0.0" xyz="{bbox_origin_base[0]:.05f} {bbox_origin_base[1]:.05f} {bbox_origin_base[2]:.05f}"/>
-      <inertia ixx="{base_moi['I_xx']:.10f}" ixy="0.0" ixz="0.0" iyy="{base_moi['I_yy']:.10f}" iyz="0.0" izz="{base_moi['I_zz']:.10f}"/>
+      <inertia ixx="{base_moi['I_xx']:.05f}" ixy="0.0" ixz="0.0" iyy="{base_moi['I_yy']:.05f}" iyz="0.0" izz="{base_moi['I_zz']:.05f}"/>
     </inertial>
   </link>'''
 
@@ -125,15 +125,16 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     """
     Robot_Str.T.Zero_Cfg = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
 
+    # ...
     urdf_core_configuration = []
     for i in range(Robot_Str.Theta.Zero.shape[0]):
         if i == 0:
-            parent_str = f'Base_Link'
+            parent_str = f'base_link'
           
             # ...
             T_i = Robot_Str.T.Base.Inverse() @ Robot_Str.T.Zero_Cfg[i]
         else:
-            parent_str = f'Link_{i}'
+            parent_str = f'link_{i}'
 
             # ...
             T_i = Robot_Str.T.Zero_Cfg[i - 1].Inverse() @ Robot_Str.T.Zero_Cfg[i]
@@ -141,7 +142,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
         # ...
         #   ...
         joint_id = Robot_Str.Theta.Name[i].removesuffix(f'_{Robot_Str.Name}_ID_{Robot_Str.Id:03}').removeprefix('Joint_')
-        child_str = f'Link_{joint_id}'
+        child_str = f'link_{joint_id}'
         #   ...
         joint_type = 'revolute' if Robot_Str.Theta.Type[i] == 'R' else 'prismatic'
         #   ...
@@ -161,8 +162,14 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
           joint_moi = MOI.Cube_MOI(Robot_Physical_Properties['mass'][i + 1], Robot_Str.Collider[i + 1].Size)
         
         # Get the translational and rotational part from the transformation matrix.
-        p = np.round(T_i.p.all(), 5) + [0.0, 0.0, 0.0]; Euler_Angles = np.round(T_i.Get_Rotation('ZYX').all(), 5) + [0.0, 0.0, 0.0]
- 
+        p = ['0.0', '0.0', '0.0']; ea = ['0.0', '0.0', '0.0']
+        for i, (p_i, ea_i) in enumerate(zip(np.round(T_i.p.all(), 5) + [0.0, 0.0, 0.0], 
+                                            np.round(T_i.Get_Rotation('ZYX').all(), 5) + [0.0, 0.0, 0.0])):
+          if p_i != 0.0:
+             p[i] = f'{p_i:.05f}'
+          if ea_i != 0.0:
+             ea[i] = f'{ea_i:.05f}'
+
         # ...
         bbox_origin_i = ((-1) * Robot_Str.Collider[i + 1].Origin) + [0.0, 0.0, 0.0]
 
@@ -175,14 +182,14 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
 
         # ...
         urdf_core_configuration.append(f'''  <!-- Configuration of the part called 'Joint {joint_id}'. -->
-  <joint name="Joint_{joint_id}" type="{joint_type}">
+  <joint name="joint_{joint_id}" type="{joint_type}">
     <parent link="{parent_str}"/>
     <child link="{child_str}"/>
-    <origin rpy="{Euler_Angles[0]:.10f} {Euler_Angles[1]:.10f} {Euler_Angles[2]:.10f}" xyz="{p[0]:.05f} {p[1]:.05f} {p[2]:.05f}"/>
+    <origin rpy="{ea[0]} {ea[1]} {ea[2]}" xyz="{p[0]} {p[1]} {p[2]}"/>
     <axis xyz="{joint_axis}"/>
-    <limit effort="{Robot_Physical_Properties['effort'][i]}" lower="{Robot_Str.Theta.Limit[i, 0]:.10f}" upper="{Robot_Str.Theta.Limit[i, 1]:.10f}" velocity="{Robot_Physical_Properties['velocity'][i]}"/>
+    <limit effort="{Robot_Physical_Properties['effort'][i]}" lower="{Robot_Str.Theta.Limit[i, 0]:.05f}" upper="{Robot_Str.Theta.Limit[i, 1]:.05f}" velocity="{Robot_Physical_Properties['velocity'][i]}"/>
   </joint>
-  <link name="Link_{joint_id}">
+  <link name="link_{joint_id}">
     <visual>
       <geometry>
         {visual_geometry_i}
@@ -199,7 +206,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     <inertial>
       <mass value="{Robot_Physical_Properties['mass'][i + 1]}"/>
       <origin rpy="0.0 0.0 0.0" xyz="{bbox_origin_i[0]:.05f} {bbox_origin_i[1]:.05f} {bbox_origin_i[2]:.05f}"/>
-      <inertia ixx="{joint_moi['I_xx']:.10f}" ixy="0.0" ixz="0.0" iyy="{joint_moi['I_yy']:.10f}" iyz="0.0" izz="{joint_moi['I_zz']:.10f}"/>
+      <inertia ixx="{joint_moi['I_xx']:.05f}" ixy="0.0" ixz="0.0" iyy="{joint_moi['I_yy']:.05f}" iyz="0.0" izz="{joint_moi['I_zz']:.05f}"/>
     </inertial>
   </link>''')
         
@@ -208,12 +215,12 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
 
     # ...
     urdf_ee_configuration = f'''  <!-- Configuration of the part called 'End-Effector (EE)'. -->
-  <joint name="EE" type="fixed">
+  <joint name="tool0" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
-    <parent link="Link_{i + 1}"/>
-    <child link="EE_Link"/>
+    <parent link="link_{i + 1}"/>
+    <child link="tool0_link"/>
   </joint>
-  <link name="EE_Link"/>'''
+  <link name="tool0_link"/>'''
 
     # ...
     urdf_last_configuration = '</robot>'
