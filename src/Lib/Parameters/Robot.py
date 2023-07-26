@@ -184,6 +184,7 @@ Universal_Robots_UR3_Str.T.Base = HTM_Cls([[1.0, 0.0, 0.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
 Universal_Robots_UR3_Str.T.End_Effector = HTM_Cls(None, np.float32)
 # Denavit-Hartenberg (DH)
+# file:///home/romanp/Downloads/Camera-Based_Method_for_Identification_of_the_Layo.pdf
 Universal_Robots_UR3_Str.DH.Standard = np.array([[0.0,      0.0,  0.1519,   1.5707963267948966],
                                                  [0.0, -0.24365,     0.0,                  0.0],
                                                  [0.0, -0.21325,     0.0,                  0.0],

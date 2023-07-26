@@ -4,7 +4,7 @@
   <link name="base_link">
     <visual>
       <geometry>
-        <mesh filename="/Mesh/Visual/Base.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -12,7 +12,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Base.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -26,13 +26,13 @@
     <parent link="base_link"/>
     <child link="link_1"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.15190"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0.0 0.0 1"/>
     <limit effort="28.0" lower="-3.14159" upper="3.14159" velocity="3.14"/>
   </joint>
   <link name="link_1">
     <visual>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_1.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -40,7 +40,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_1.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -54,13 +54,13 @@
     <parent link="link_1"/>
     <child link="link_2"/>
     <origin rpy="1.57080 0.0 0.0" xyz="0.0 0.0 0.0"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0.0 0.0 1"/>
     <limit effort="28.0" lower="-3.14159" upper="3.14159" velocity="3.14"/>
   </joint>
   <link name="link_2">
     <visual>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_2.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -68,7 +68,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_2.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -82,13 +82,13 @@
     <parent link="link_2"/>
     <child link="link_3"/>
     <origin rpy="0.0 0.0 0.0" xyz="-0.24365 0.0 0.0"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0.0 0.0 1"/>
     <limit effort="28.0" lower="-3.14159" upper="3.14159" velocity="3.14"/>
   </joint>
   <link name="link_3">
     <visual>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_3.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -96,7 +96,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_3.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -110,13 +110,13 @@
     <parent link="link_3"/>
     <child link="link_4"/>
     <origin rpy="0.0 0.0 0.0" xyz="-0.21325 0.0 0.11235"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0.0 0.0 1"/>
     <limit effort="28.0" lower="-3.14159" upper="3.14159" velocity="3.14"/>
   </joint>
   <link name="link_4">
     <visual>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_4.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -124,7 +124,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_4.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -138,13 +138,13 @@
     <parent link="link_4"/>
     <child link="link_5"/>
     <origin rpy="1.57080 0.0 0.0" xyz="0.0 -0.08535 0.0"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0.0 0.0 1"/>
     <limit effort="28.0" lower="-3.14159" upper="3.14159" velocity="3.14"/>
   </joint>
   <link name="link_5">
     <visual>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_5.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -152,7 +152,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_5.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -166,13 +166,13 @@
     <parent link="link_5"/>
     <child link="link_6"/>
     <origin rpy="-1.57080 0.0 0.0" xyz="0.0 0.08190 0.0"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0.0 0.0 1"/>
     <limit effort="28.0" lower="-3.14159" upper="3.14159" velocity="3.14"/>
   </joint>
   <link name="link_6">
     <visual>
       <geometry>
-        <mesh filename="/Mesh/Visual/Joint_6.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -180,7 +180,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_6.stl"/>
+        <sphere radius="0.01"/>
       </geometry>
     </collision>
     <inertial>

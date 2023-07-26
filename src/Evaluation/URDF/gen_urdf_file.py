@@ -36,7 +36,7 @@ def main():
     Robot_Str = CONST_ROBOT_TYPE
 
     # ...
-    Lib.URDF.Core.Generate_URDF(Robot_Str, True, f'{project_folder}/URDFs/Robots/{Robot_Str.Name}/{Robot_Str.Name}')
+    Lib.URDF.Core.Generate_URDF(Robot_Str, False, f'{project_folder}/URDFs/Robots/{Robot_Str.Name}/{Robot_Str.Name}')
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -79,6 +79,8 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     # Get the defined physical properties of the robotic structure.
     Robot_Physical_Properties = Get_Physical_Properties(Robot_Str.Name)
 
+    print(Robot_Str.T.Base)
+    
     # ...
     urdf_head_configuration = f'''<?xml version="1.0"?>\n<robot name="{Robot_Str.Name}">'''
 
@@ -128,6 +130,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     # ...
     urdf_core_configuration = []
     for i in range(Robot_Str.Theta.Zero.shape[0]):
+
         if i == 0:
             parent_str = f'base_link'
           
@@ -141,14 +144,15 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
 
         # ...
         #   ...
-        joint_id = Robot_Str.Theta.Name[i].removesuffix(f'_{Robot_Str.Name}_ID_{Robot_Str.Id:03}').removeprefix('Joint_')
+        #joint_id = Robot_Str.Theta.Name[i].removesuffix(f'_{Robot_Str.Name}_ID_{Robot_Str.Id:03}').removeprefix('Joint_')
+        joint_id = i + 1
         child_str = f'link_{joint_id}'
         #   ...
         joint_type = 'revolute' if Robot_Str.Theta.Type[i] == 'R' else 'prismatic'
         #   ...
         if Robot_Str.Theta.Axis[i] == 'Z':
           # ...
-          joint_axis = f'0 0 {int(Robot_Str.Theta.Direction[i])}'
+          joint_axis = f'0.0 0.0 {int(Robot_Str.Theta.Direction[i])}'
 
           # ...
           joint_moi = MOI.Cube_MOI(Robot_Physical_Properties['mass'][i + 1], [Robot_Str.Collider[i + 1].Size[2],
