@@ -78,8 +78,6 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
 
     # Get the defined physical properties of the robotic structure.
     Robot_Physical_Properties = Get_Physical_Properties(Robot_Str.Name)
-
-    print(Robot_Str.T.Base)
     
     # ...
     urdf_head_configuration = f'''<?xml version="1.0"?>\n<robot name="{Robot_Str.Name}">'''
@@ -115,8 +113,8 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     </collision>
     <inertial>
       <mass value="{Robot_Physical_Properties['mass'][0]}"/>
-      <origin rpy="0.0 0.0 0.0" xyz="{bbox_origin_base[0]:.05f} {bbox_origin_base[1]:.05f} {bbox_origin_base[2]:.05f}"/>
-      <inertia ixx="{base_moi['I_xx']:.05f}" ixy="0.0" ixz="0.0" iyy="{base_moi['I_yy']:.05f}" iyz="0.0" izz="{base_moi['I_zz']:.05f}"/>
+      <origin rpy="0.0 0.0 0.0" xyz="{bbox_origin_base[0]:.10f} {bbox_origin_base[1]:.10f} {bbox_origin_base[2]:.10f}"/>
+      <inertia ixx="{base_moi['I_xx']:.10f}" ixy="0.0" ixz="0.0" iyy="{base_moi['I_yy']:.10f}" iyz="0.0" izz="{base_moi['I_zz']:.10f}"/>
     </inertial>
   </link>'''
 
@@ -144,15 +142,14 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
 
         # ...
         #   ...
-        #joint_id = Robot_Str.Theta.Name[i].removesuffix(f'_{Robot_Str.Name}_ID_{Robot_Str.Id:03}').removeprefix('Joint_')
-        joint_id = i + 1
+        joint_id = Robot_Str.Theta.Name[i].removesuffix(f'_{Robot_Str.Name}_ID_{Robot_Str.Id:03}').removeprefix('Joint_')
         child_str = f'link_{joint_id}'
         #   ...
         joint_type = 'revolute' if Robot_Str.Theta.Type[i] == 'R' else 'prismatic'
         #   ...
         if Robot_Str.Theta.Axis[i] == 'Z':
           # ...
-          joint_axis = f'0.0 0.0 {int(Robot_Str.Theta.Direction[i])}'
+          joint_axis = f'0 0 {int(Robot_Str.Theta.Direction[i])}'
 
           # ...
           joint_moi = MOI.Cube_MOI(Robot_Physical_Properties['mass'][i + 1], [Robot_Str.Collider[i + 1].Size[2],
@@ -167,12 +164,12 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
         
         # Get the translational and rotational part from the transformation matrix.
         p = ['0.0', '0.0', '0.0']; ea = ['0.0', '0.0', '0.0']
-        for i, (p_i, ea_i) in enumerate(zip(np.round(T_i.p.all(), 5) + [0.0, 0.0, 0.0], 
+        for j, (p_i, ea_i) in enumerate(zip(np.round(T_i.p.all(), 5) + [0.0, 0.0, 0.0], 
                                             np.round(T_i.Get_Rotation('ZYX').all(), 5) + [0.0, 0.0, 0.0])):
           if p_i != 0.0:
-             p[i] = f'{p_i:.05f}'
+             p[j] = f'{p_i:.10f}'
           if ea_i != 0.0:
-             ea[i] = f'{ea_i:.05f}'
+             ea[j] = f'{ea_i:.10f}'
 
         # ...
         bbox_origin_i = ((-1) * Robot_Str.Collider[i + 1].Origin) + [0.0, 0.0, 0.0]
@@ -191,7 +188,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     <child link="{child_str}"/>
     <origin rpy="{ea[0]} {ea[1]} {ea[2]}" xyz="{p[0]} {p[1]} {p[2]}"/>
     <axis xyz="{joint_axis}"/>
-    <limit effort="{Robot_Physical_Properties['effort'][i]}" lower="{Robot_Str.Theta.Limit[i, 0]:.05f}" upper="{Robot_Str.Theta.Limit[i, 1]:.05f}" velocity="{Robot_Physical_Properties['velocity'][i]}"/>
+    <limit effort="{Robot_Physical_Properties['effort'][i]}" lower="{Robot_Str.Theta.Limit[i, 0]:.10f}" upper="{Robot_Str.Theta.Limit[i, 1]:.10f}" velocity="{Robot_Physical_Properties['velocity'][i]}"/>
   </joint>
   <link name="link_{joint_id}">
     <visual>
@@ -209,8 +206,8 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     </collision>
     <inertial>
       <mass value="{Robot_Physical_Properties['mass'][i + 1]}"/>
-      <origin rpy="0.0 0.0 0.0" xyz="{bbox_origin_i[0]:.05f} {bbox_origin_i[1]:.05f} {bbox_origin_i[2]:.05f}"/>
-      <inertia ixx="{joint_moi['I_xx']:.05f}" ixy="0.0" ixz="0.0" iyy="{joint_moi['I_yy']:.05f}" iyz="0.0" izz="{joint_moi['I_zz']:.05f}"/>
+      <origin rpy="0.0 0.0 0.0" xyz="{bbox_origin_i[0]:.10f} {bbox_origin_i[1]:.10f} {bbox_origin_i[2]:.10f}"/>
+      <inertia ixx="{joint_moi['I_xx']:.10f}" ixy="0.0" ixz="0.0" iyy="{joint_moi['I_yy']:.10f}" iyz="0.0" izz="{joint_moi['I_zz']:.10f}"/>
     </inertial>
   </link>''')
         
@@ -221,7 +218,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     urdf_ee_configuration = f'''  <!-- Configuration of the part called 'End-Effector (EE)'. -->
   <joint name="tool0" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
-    <parent link="link_{i + 1}"/>
+    <parent link="link_{Robot_Str.Theta.Zero.shape[0]}"/>
     <child link="tool0_link"/>
   </joint>
   <link name="tool0_link"/>'''
