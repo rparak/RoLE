@@ -113,7 +113,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     </collision>
     <inertial>
       <mass value="{Robot_Physical_Properties['mass'][0]}"/>
-      <origin rpy="0.0 0.0 0.0" xyz="{bbox_origin_base[0]:.10f} {bbox_origin_base[1]:.10f} {bbox_origin_base[2]:.10f}"/>
+      <origin rpy="0.0 0.0 0.0" xyz="{bbox_origin_base[0]:.05f} {bbox_origin_base[1]:.05f} {bbox_origin_base[2]:.05f}"/>
       <inertia ixx="{base_moi['I_xx']:.10f}" ixy="0.0" ixz="0.0" iyy="{base_moi['I_yy']:.10f}" iyz="0.0" izz="{base_moi['I_zz']:.10f}"/>
     </inertial>
   </link>'''
@@ -167,7 +167,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
         for j, (p_i, ea_i) in enumerate(zip(np.round(T_i.p.all(), 5) + [0.0, 0.0, 0.0], 
                                             np.round(T_i.Get_Rotation('ZYX').all(), 5) + [0.0, 0.0, 0.0])):
           if p_i != 0.0:
-             p[j] = f'{p_i:.10f}'
+             p[j] = f'{p_i:.05f}'
           if ea_i != 0.0:
              ea[j] = f'{ea_i:.10f}'
 
@@ -186,7 +186,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
   <joint name="joint_{joint_id}" type="{joint_type}">
     <parent link="{parent_str}"/>
     <child link="{child_str}"/>
-    <origin rpy="{ea[0]} {ea[1]} {ea[2]}" xyz="{p[0]} {p[1]} {p[2]}"/>
+    <origin rpy="{ea[0]} {ea[2]} {ea[1]}" xyz="{p[0]} {p[1]} {p[2]}"/>
     <axis xyz="{joint_axis}"/>
     <limit effort="{Robot_Physical_Properties['effort'][i]}" lower="{Robot_Str.Theta.Limit[i, 0]:.10f}" upper="{Robot_Str.Theta.Limit[i, 1]:.10f}" velocity="{Robot_Physical_Properties['velocity'][i]}"/>
   </joint>
@@ -206,7 +206,7 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
     </collision>
     <inertial>
       <mass value="{Robot_Physical_Properties['mass'][i + 1]}"/>
-      <origin rpy="0.0 0.0 0.0" xyz="{bbox_origin_i[0]:.10f} {bbox_origin_i[1]:.10f} {bbox_origin_i[2]:.10f}"/>
+      <origin rpy="0.0 0.0 0.0" xyz="{bbox_origin_i[0]:.05f} {bbox_origin_i[1]:.05f} {bbox_origin_i[2]:.05f}"/>
       <inertia ixx="{joint_moi['I_xx']:.10f}" ixy="0.0" ixz="0.0" iyy="{joint_moi['I_yy']:.10f}" iyz="0.0" izz="{joint_moi['I_zz']:.10f}"/>
     </inertial>
   </link>''')

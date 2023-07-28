@@ -18,7 +18,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 
 def main():
     """
@@ -36,7 +36,9 @@ def main():
     Robot_Str = CONST_ROBOT_TYPE
 
     # ...
-    Lib.URDF.Core.Generate_URDF(Robot_Str, True, f'{project_folder}/URDFs/Robots/{Robot_Str.Name}/{Robot_Str.Name}')
+    Lib.URDF.Core.Generate_URDF(Robot_Str, False, f'{project_folder}/URDFs/Robots/{Robot_Str.Name}/{Robot_Str.Name}')
+
+    # display ...
 
 if __name__ == "__main__":
     sys.exit(main())

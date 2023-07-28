@@ -17,7 +17,7 @@
     </collision>
     <inertial>
       <mass value="2.0"/>
-      <origin rpy="0.0 0.0 0.0" xyz="0.0000000000 -0.0000100000 0.0430199988"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.00000 -0.00001 0.04302"/>
       <inertia ixx="0.0039640343" ixy="0.0" ixz="0.0" iyy="0.0039661672" iyz="0.0" izz="0.0054629882"/>
     </inertial>
   </link>
@@ -25,7 +25,7 @@
   <joint name="joint_1" type="revolute">
     <parent link="base_link"/>
     <child link="link_1"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.1518999934"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.15190"/>
     <axis xyz="0 0 1"/>
     <limit effort="56.0" lower="-3.1415927410" upper="3.1415927410" velocity="3.14"/>
   </joint>
@@ -45,7 +45,7 @@
     </collision>
     <inertial>
       <mass value="2.0"/>
-      <origin rpy="0.0 0.0 0.0" xyz="0.0001400000 -0.0040500001 -0.0043899999"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.00014 -0.00405 -0.00439"/>
       <inertia ixx="0.0030419810" ixy="0.0" ixz="0.0" iyy="0.0038965251" iyz="0.0" izz="0.0041798834"/>
     </inertial>
   </link>
@@ -73,7 +73,7 @@
     </collision>
     <inertial>
       <mass value="3.42"/>
-      <origin rpy="0.0 0.0 0.0" xyz="-0.1182600036 -0.0001300000 0.1155299991"/>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.11826 -0.00013 0.11553"/>
       <inertia ixx="0.0330614975" ixy="0.0" ixz="0.0" iyy="0.0350169383" iyz="0.0" izz="0.0066716490"/>
     </inertial>
   </link>
@@ -81,7 +81,7 @@
   <joint name="joint_3" type="revolute">
     <parent link="link_2"/>
     <child link="link_3"/>
-    <origin rpy="0.0 0.0 0.0" xyz="-0.2436500043 0.0 0.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="-0.24365 0.0 0.0"/>
     <axis xyz="0 0 1"/>
     <limit effort="28.0" lower="-3.1415927410" upper="3.1415927410" velocity="3.14"/>
   </joint>
@@ -101,7 +101,7 @@
     </collision>
     <inertial>
       <mass value="1.26"/>
-      <origin rpy="0.0 0.0 0.0" xyz="-0.1040199995 -0.0000100000 0.0294199996"/>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.10402 -0.00001 0.02942"/>
       <inertia ixx="0.0089992181" ixy="0.0" ixz="0.0" iyy="0.0093975363" iyz="0.0" izz="0.0015800406"/>
     </inertial>
   </link>
@@ -109,7 +109,7 @@
   <joint name="joint_4" type="revolute">
     <parent link="link_3"/>
     <child link="link_4"/>
-    <origin rpy="0.0 0.0 0.0" xyz="-0.2132499963 0.0 0.1123500019"/>
+    <origin rpy="0.0 0.0 0.0" xyz="-0.21325 0.0 0.11235"/>
     <axis xyz="0 0 1"/>
     <limit effort="12.0" lower="-3.1415927410" upper="3.1415927410" velocity="6.28"/>
   </joint>
@@ -129,7 +129,7 @@
     </collision>
     <inertial>
       <mass value="0.8"/>
-      <origin rpy="0.0 0.0 0.0" xyz="0.0000100000 0.0007800000 -0.0060999999"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.00001 0.00078 -0.00610"/>
       <inertia ixx="0.0008245741" ixy="0.0" ixz="0.0" iyy="0.0006698846" iyz="0.0" izz="0.0009410118"/>
     </inertial>
   </link>
@@ -137,7 +137,7 @@
   <joint name="joint_5" type="revolute">
     <parent link="link_4"/>
     <child link="link_5"/>
-    <origin rpy="1.5707999468 0.0 0.0" xyz="0.0 -0.0853499994 0.0"/>
+    <origin rpy="1.5707999468 0.0 0.0" xyz="0.0 -0.08535 0.0"/>
     <axis xyz="0 0 1"/>
     <limit effort="12.0" lower="-3.1415927410" upper="3.1415927410" velocity="6.28"/>
   </joint>
@@ -157,7 +157,7 @@
     </collision>
     <inertial>
       <mass value="0.8"/>
-      <origin rpy="0.0 0.0 0.0" xyz="0.0000000000 -0.0017600000 -0.0060999999"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.00000 -0.00176 -0.00610"/>
       <inertia ixx="0.0008011770" ixy="0.0" ixz="0.0" iyy="0.0006696964" iyz="0.0" izz="0.0009175981"/>
     </inertial>
   </link>
@@ -165,7 +165,7 @@
   <joint name="joint_6" type="revolute">
     <parent link="link_5"/>
     <child link="link_6"/>
-    <origin rpy="-1.5707999468 0.0 0.0" xyz="0.0 0.0819000006 0.0"/>
+    <origin rpy="-1.5707999468 0.0 0.0" xyz="0.0 0.08190 0.0"/>
     <axis xyz="0 0 1"/>
     <limit effort="12.0" lower="-3.1415927410" upper="3.1415927410" velocity="6.28"/>
   </joint>
@@ -185,7 +185,7 @@
     </collision>
     <inertial>
       <mass value="0.35"/>
-      <origin rpy="0.0 0.0 0.0" xyz="0.0000700000 -0.0032599999 -0.0196199995"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.00007 -0.00326 -0.01962"/>
       <inertia ixx="0.0002569148" ixy="0.0" ixz="0.0" iyy="0.0001608100" iyz="0.0" izz="0.0001864393"/>
     </inertial>
   </link>

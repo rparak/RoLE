@@ -247,7 +247,7 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
     """
     
     T_i = Robot_Parameters_Str.T.Base; T_zero_cfg = []
-    for i, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type, 
+    for i, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type, 
                                                              Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using modified DH parameters.
         if th_i_type == 'R':

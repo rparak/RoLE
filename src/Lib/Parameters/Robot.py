@@ -296,6 +296,19 @@ ABB_IRB_120_Str.Theta.Name = [f'Joint_1_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_S
 ABB_IRB_120_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_120_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 ABB_IRB_120_Str.Theta.Direction = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
+# Colliders of the robot structure that are defined as Oriented Bounding Boxes (OBBs).
+#   Note:
+#       The parts of the structure are all the joints plus the base of the robot.
+#
+#   Generated from the program, see below:
+#       ./src/Evaluation/Blender/Collider/gen_colliders.py
+ABB_IRB_120_Str.Collider = [OBB_Cls(Box_Cls([0.06060, 0.00000, -0.08317], [0.30120, 0.18052, 0.16633])),
+                            OBB_Cls(Box_Cls([0.00000, 0.00000, 0.03631], [0.21500, 0.21700, 0.19738])),
+                            OBB_Cls(Box_Cls([-0.12301, 0.00000, 0.00025], [0.38941, 0.14486, 0.21926])),
+                            OBB_Cls(Box_Cls([-0.04555, -0.03259, -0.00175], [0.18799, 0.24401, 0.11550])),
+                            OBB_Cls(Box_Cls([-0.00691, -0.00047, 0.05666], [0.10608, 0.12694, 0.19348])),
+                            OBB_Cls(Box_Cls([0.00000, -0.00006, 0.00000], [0.08200, 0.13189, 0.06962])),
+                            OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00650], [0.04000, 0.03983, 0.01300]))]
 
 """
 Robot Type - ABB IRB 120 with SMC Linear Axis (LEJSH63NZA 800):
