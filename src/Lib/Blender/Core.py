@@ -273,10 +273,12 @@ class Mechanism_Cls(object):
 
         if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
             # Identification of joint type: R - Revolute
-            return bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler[ax_i_id_num]
+            theta = bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler[ax_i_id_num]
         elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
             # Identification of joint type: P - Prismatic
-            return bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location[ax_i_id_num]
+            theta = bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location[ax_i_id_num]
+
+        return theta * self.__Mechanism_Parameters_Str.Theta.Direction
         
     @property
     def T_EE(self) -> tp.List[tp.List[float]]:
@@ -348,6 +350,9 @@ class Mechanism_Cls(object):
             bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_mode = self.__axes_sequence_cfg
             if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
 
+                # Change of axis direction in individual joints.
+                th = theta * self.__Mechanism_Parameters_Str.Theta.Direction
+
                 # Insert a keyframe of the object (Joint_0) into the frame at time t(0). 
                 Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', t_0 * self.__fps, 'ALL')
 
@@ -355,12 +360,12 @@ class Mechanism_Cls(object):
                     # Identification of joint type: R - Revolute
                     bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler = (self.__Mechanism_Parameters_Str.T.Slider @ 
                                                                                                    Transformation.Get_Rotation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
-                                                                                                                                      theta)).Get_Rotation(self.__axes_sequence_cfg).all()
+                                                                                                                                      th)).Get_Rotation(self.__axes_sequence_cfg).all()
                 elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
                     # Identification of joint type: P - Prismatic
                     bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location = (self.__Mechanism_Parameters_Str.T.Slider @ 
                                                                                              Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
-                                                                                                                                   theta)).p.all()
+                                                                                                                                   th)).p.all()
                     
                 # Insert a keyframe of the object (Joint_0) into the frame at time t(1). 
                 Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', t_1 * self.__fps, 'ALL')
@@ -554,7 +559,7 @@ class Robot_Cls(object):
     
                 th[i] = th_actual - th_init
 
-        return th
+        return th * self.__Robot_Parameters_Str.Theta.Direction
     
     @property
     def T_EE(self) -> tp.List[tp.List[float]]:
@@ -565,6 +570,7 @@ class Robot_Cls(object):
         Returns:
             (1) parameter [Matrix<float> 4x4]: Homogeneous transformation matrix of the End-Effector.
         """
+
         return Kinematics.Forward_Kinematics(self.Theta, 'Modified', self.__Robot_Parameters_Str)[1]
 
     def __Update(self) -> None:
@@ -621,20 +627,23 @@ class Robot_Cls(object):
             # Get the zero configuration of each joint.
             T_zero_cfg = self.__Get_Zero_Joint_Cfg()
 
-            for i, (th_i, th_i_name, T_i_zero_cfg, th_i_limit, ax_i, th_i_type) in enumerate(zip(theta, self.__Robot_Parameters_Str.Theta.Name, 
-                                                                                                 T_zero_cfg, self.__Robot_Parameters_Str.Theta.Limit,
-                                                                                                 self.__Robot_Parameters_Str.Theta.Axis, self.__Robot_Parameters_Str.Theta.Type)): 
+            for i, (th_i, th_i_name, T_i_zero_cfg, th_i_limit, ax_i, th_i_type, th_i_dir) in enumerate(zip(theta, self.__Robot_Parameters_Str.Theta.Name, T_zero_cfg, 
+                                                                                                           self.__Robot_Parameters_Str.Theta.Limit, self.__Robot_Parameters_Str.Theta.Axis, 
+                                                                                                           self.__Robot_Parameters_Str.Theta.Type, self.__Robot_Parameters_Str.Theta.Direction)): 
                 bpy.data.objects[th_i_name].rotation_mode = self.__axes_sequence_cfg
                 if th_i_limit[0] <= th_i <= th_i_limit[1]:
                     # Insert a keyframe of the object (Joint_{i}) into the frame at time t(0). 
                     Lib.Blender.Utilities.Insert_Key_Frame(th_i_name, 'matrix_basis', t_0 * self.__fps, 'ALL')
 
+                    # Change of axis direction in individual joints.
+                    th_new = th_i * th_i_dir
+
                     if th_i_type == 'R':
                         # Identification of joint type: R - Revolute
-                        bpy.data.objects[th_i_name].rotation_euler = (T_i_zero_cfg @ Transformation.Get_Rotation_Matrix(ax_i, th_i)).Get_Rotation(self.__axes_sequence_cfg).all()
+                        bpy.data.objects[th_i_name].rotation_euler = (T_i_zero_cfg @ Transformation.Get_Rotation_Matrix(ax_i, th_new)).Get_Rotation(self.__axes_sequence_cfg).all()
                     elif th_i_type == 'P':
                         # Identification of joint type: P - Prismatic
-                        bpy.data.objects[th_i_name].location = (Transformation.Get_Translation_Matrix(ax_i, th_i) @ T_i_zero_cfg).p.all()
+                        bpy.data.objects[th_i_name].location = (Transformation.Get_Translation_Matrix(ax_i, th_new) @ T_i_zero_cfg).p.all()
 
                     # Insert a keyframe of the object (Joint_{i}) into the frame at time t(1). 
                     Lib.Blender.Utilities.Insert_Key_Frame(th_i_name, 'matrix_basis', t_1 * self.__fps, 'ALL')

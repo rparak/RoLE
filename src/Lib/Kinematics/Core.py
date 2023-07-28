@@ -7,6 +7,8 @@ import typing as tp
 import Lib.Parameters.Robot as Parameters
 #   ../Lib/Kinematics/Utilities/Forward_Kinematics
 import Lib.Kinematics.Utilities.Forward_Kinematics as Utilities
+#   ../Lib/Kinematics/Utilities/General
+import Lib.Kinematics.Utilities.General as General
 #   ../Lib/Transformation/Core
 from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls, Vector3_Cls
 
@@ -80,18 +82,12 @@ def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: P
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
-                                      is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
-        (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+        (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
-    
-    T_i = Robot_Parameters_Str.T.Base; th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit, Robot_Parameters_Str.DH.Standard, 
-                                                                         Robot_Parameters_Str.Theta.Type, Robot_Parameters_Str.Theta.Axis)):
+
+    T_i = Robot_Parameters_Str.T.Base
+    for _, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type, 
+                                                             Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using standard DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
@@ -104,11 +100,8 @@ def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: P
                 # Translation along the X axis.
                 T_i = T_i @ DH_Standard(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
-        # Check that the desired absolute joint positions are not out of limit.
-        th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
-
-    # th_limit_err[], T_Base @ T_n @ T_EE
-    return (th_limit_err, T_i @ Robot_Parameters_Str.T.End_Effector)
+    # T_Base @ T_n @ T_EE
+    return T_i @ Robot_Parameters_Str.T.End_Effector
 
 def DH_Modified(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.List[float]]:
     """
@@ -142,18 +135,12 @@ def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: P
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
-                                      is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
-        (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+        (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
     
-    T_i = Robot_Parameters_Str.T.Base; th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit, Robot_Parameters_Str.DH.Modified, 
-                                                                         Robot_Parameters_Str.Theta.Type, Robot_Parameters_Str.Theta.Axis)):
+    T_i = Robot_Parameters_Str.T.Base
+    for _, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type, 
+                                                             Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using modified DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
@@ -166,11 +153,8 @@ def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: P
                 # Translation along the X axis.
                 T_i = T_i @ DH_Modified(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
-        # Check that the desired absolute joint positions are not out of limit.
-        th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
-
-    # th_limit_err[], T_Base @ T_n @ T_EE
-    return (th_limit_err, T_i @ Robot_Parameters_Str.T.End_Effector)
+    # T_Base @ T_n @ T_EE
+    return T_i @ Robot_Parameters_Str.T.End_Effector
 
 def Forward_Kinematics(theta: tp.List[float], method: str, Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                               tp.List[tp.List[float]]]:
@@ -193,11 +177,17 @@ def Forward_Kinematics(theta: tp.List[float], method: str, Robot_Parameters_Str:
         (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
 
+    # Check that the desired absolute joint positions are not out of limit.
+    th_limit_err = General.Check_Theta_Limit(theta, Robot_Parameters_Str)
+
+    # Change of axis direction in individual joints.
+    th = theta * Robot_Parameters_Str.Theta.Direction
+
     return {
-        'Standard': lambda th, r_param_str: __Forward_Kinematics_Standard(th, r_param_str),
-        'Modified': lambda th, r_param_str: __Forward_Kinematics_Modified(th, r_param_str),
-        'Fast': lambda th, r_param_str:  Utilities.FKFast_Solution(th, r_param_str)
-    }[method](theta, Robot_Parameters_Str)
+        'Standard': lambda th, th_err, r_param_str: (th_err, __Forward_Kinematics_Standard(th, r_param_str)),
+        'Modified': lambda th, th_err, r_param_str: (th_err, __Forward_Kinematics_Modified(th, r_param_str)),
+        'Fast': lambda th, th_err, r_param_str: (th_err, Utilities.FKFast_Solution(th, r_param_str))
+    }[method](th, th_limit_err, Robot_Parameters_Str)
 
 def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                                             tp.List[tp.List[tp.List[float]]]]:
@@ -210,20 +200,14 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
-                                      is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
-        (2) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
+        (1) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
                                                Note:
                                                 Where n is the number of joints.
     """
     
-    T_i = Robot_Parameters_Str.T.Base; T_zero_cfg = []; th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit, Robot_Parameters_Str.DH.Standard, 
-                                                                         Robot_Parameters_Str.Theta.Type, Robot_Parameters_Str.Theta.Axis)):
+    T_i = Robot_Parameters_Str.T.Base; T_zero_cfg = []
+    for i, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type, 
+                                                             Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using standard DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
@@ -236,9 +220,6 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
                 # Translation along the X axis.
                 T_i = T_i @ DH_Standard(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
-        # Check that the desired absolute joint positions are not out of limit.
-        th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
-
         # Addition of a homogeneous matrix configuration in the current 
         # episode (joint absolute position i).
         if theta.size - 1 == i:
@@ -246,8 +227,8 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
         else:
             T_zero_cfg.append(T_i)
 
-    # th_limit_err[], T_i[]
-    return (th_limit_err, T_zero_cfg)
+    # T_i[]
+    return T_zero_cfg
 
 def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                                             tp.List[tp.List[tp.List[float]]]]:
@@ -260,20 +241,14 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
-                                      is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
-        (2) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
+        (1) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
                                                Note:
                                                 Where n is the number of joints.
     """
     
-    T_i = Robot_Parameters_Str.T.Base; T_zero_cfg = []; th_limit_err = [False] * theta.size
-    for i, (th_i, th_i_limit, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit, Robot_Parameters_Str.DH.Modified, 
-                                                                         Robot_Parameters_Str.Theta.Type, Robot_Parameters_Str.Theta.Axis)):
+    T_i = Robot_Parameters_Str.T.Base; T_zero_cfg = []
+    for i, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type, 
+                                                             Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using modified DH parameters.
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
@@ -286,9 +261,6 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
                 # Translation along the X axis.
                 T_i = T_i @ DH_Modified(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
-        # Check that the desired absolute joint positions are not out of limit.
-        th_limit_err[i] = True if th_i_limit[0] <= th_i <= th_i_limit[1] else False
-        
         # Addition of a homogeneous matrix configuration in the current 
         # episode (joint absolute position i).
         if theta.size - 1 == i:
@@ -296,7 +268,8 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
         else:
             T_zero_cfg.append(T_i)
 
-    return (th_limit_err, T_zero_cfg)
+    # T_i[]
+    return T_zero_cfg
 
 def Get_Individual_Joint_Configuration(theta: tp.List[float], method: str, Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                                               tp.List[tp.List[tp.List[float]]]]:
@@ -322,10 +295,16 @@ def Get_Individual_Joint_Configuration(theta: tp.List[float], method: str, Robot
                                             Where n is the number of joints.
     """
     
+    # Check that the desired absolute joint positions are not out of limit.
+    th_limit_err = General.Check_Theta_Limit(theta, Robot_Parameters_Str)
+
+    # Change of axis direction in individual joints.
+    th = theta * Robot_Parameters_Str.Theta.Direction
+
     return {
-        'Standard': lambda th, r_param_str: __Get_Individual_Joint_Configuration_Standard(th, r_param_str),
-        'Modified': lambda th, r_param_str: __Get_Individual_Joint_Configuration_Modified(th, r_param_str)
-    }[method](theta, Robot_Parameters_Str)
+        'Standard': lambda th, th_err, r_param_str: (th_err, __Get_Individual_Joint_Configuration_Standard(th, r_param_str)),
+        'Modified': lambda th, th_err, r_param_str: (th_err, __Get_Individual_Joint_Configuration_Modified(th, r_param_str))
+    }[method](th, th_limit_err, Robot_Parameters_Str)
 
 def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[float]]:
     """
@@ -362,15 +341,18 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
                                             n is equal to the number of joints
     """
     
+    # Change of axis direction in individual joints.
+    th = theta * Robot_Parameters_Str.Theta.Direction
+
     # Get the configuration of the homogeneous matrix of each joint using the 
     # modified forward kinematics calculation method.
-    T_Cfg_Arr = __Get_Individual_Joint_Configuration_Modified(theta, Robot_Parameters_Str)[1]
+    T_Cfg_Arr = __Get_Individual_Joint_Configuration_Modified(th, Robot_Parameters_Str)[1]
 
     # Get the translation part from the homogeneous transformation matrix 
     # of the end-effector.
     T_n_p_ee = T_Cfg_Arr[-1].p
 
-    J = np.zeros((6, theta.size)); z_i = Vector3_Cls(None, T_n_p_ee.Type)
+    J = np.zeros((6, th.size)); z_i = Vector3_Cls(None, T_n_p_ee.Type)
     for i, (T_Cfg_i, th_i_type) in enumerate(zip(T_Cfg_Arr, Robot_Parameters_Str.Theta.Type)):
         z_i[:] = T_Cfg_i[0:3, 2]
         if th_i_type == 'R':

@@ -5,8 +5,6 @@ import typing as tp
 # Custom Script:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
-#   ../Lib/Kinematics/Utilities/General
-import Lib.Kinematics.Utilities.General
 
 def __FKF_Universal_Robots_UR3(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                          tp.List[tp.List[float]]]:
@@ -19,36 +17,23 @@ def __FKF_Universal_Robots_UR3(theta: tp.List[float], Robot_Parameters_Str: Para
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
-                                      is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
-        (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+        (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
     
-    # Check that the desired absolute joint positions are not out of limit.
-    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
-
     """
     Description:
         Abbreviations for individual functions. Used to speed up calculations.
     """
-
     # Cosine / Sine functions: Default notation.
     c_th_0 = np.cos(theta[0]); c_th_1 = np.cos(theta[1]); c_th_3 = np.cos(theta[3]); c_th_4 = np.cos(theta[4]); c_th_5 = np.cos(theta[5])
     s_th_0 = np.sin(theta[0]); s_th_1 = np.sin(theta[1]); s_th_3 = np.sin(theta[3]); s_th_4 = np.sin(theta[4]); s_th_5 = np.sin(theta[5])
-
     # Angles:
     th_12_t1 = theta[1] + theta[2]; th_13_t1 = th_12_t1 + theta[3]; th_14_t1 = th_13_t1 - theta[4]; th_14_t2 = th_13_t1 + theta[4]
     th_04_t1 = -theta[0] + th_14_t1; th_04_t2 = -theta[0] + th_14_t2; th_04_t3 = theta[0] + th_14_t1
     th_04_t4 = theta[0] + th_14_t2; th_012_t1 = theta[0] + th_12_t1; th_012_t2 = -theta[0] + th_12_t1
-
     # Additional Sine function:
     s_th_04 = s_th_0*s_th_4; s_th_13_t1 = np.sin(th_13_t1); s_th_04_t1 = np.sin(th_04_t1); s_th_012_t1 = np.sin(th_012_t2)
     s_th_04_t2 = np.sin(th_04_t3); s_th_04_t3 = np.sin(th_04_t4)
-
     # Additional Cosine function:
     c_th_04_t1 = 0.25*np.cos(th_04_t1); c_th_04_t2 = 0.25*np.cos(th_04_t2); c_th_04_t3 = 0.25*np.cos(th_04_t3); c_th_04_t4 = 0.25*np.cos(th_04_t4)
     c_th_012_t1 = np.cos(th_012_t1); c_th_012_t2 = 0.5*c_th_012_t1; c_th_012_t3 = np.cos(th_012_t2); c_th_012_t4 = 0.5*c_th_012_t3
@@ -79,8 +64,8 @@ def __FKF_Universal_Robots_UR3(theta: tp.List[float], Robot_Parameters_Str: Para
     T[3,2] = 0.0
     T[3,3] = 1.0
 
-    # th_limit_err[], T_Base @ T_n @ T_EE
-    return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
+    # T_Base @ T_n @ T_EE
+    return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
 def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                 tp.List[tp.List[float]]]:
@@ -93,36 +78,23 @@ def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
-                                      is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
-        (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+        (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
-    
-    # Check that the desired absolute joint positions are not out of limit.
-    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
 
     """
     Description:
         Abbreviations for individual functions. Used to speed up calculations.
     """
-
     # Cosine / Sine functions: Default notation.
     c_th_0 = np.cos(theta[0]); c_th_2 = np.cos(theta[2]); c_th_3 = np.cos(theta[3]); c_th_4 = np.cos(theta[4])
     s_th_0 = np.sin(theta[0]); s_th_2 = np.sin(theta[2]); s_th_3 = np.sin(theta[3]); s_th_4 = np.sin(theta[4])
-
     # Angles:
     th_12_t1 = theta[1] + theta[2]; th_12_t2 = -theta[1] - theta[2]; th_0123_t1 = theta[0] + th_12_t2 + theta[3]
     th_0123_t2 = theta[0] + th_12_t1 + theta[3]; th_0123_t3 = -theta[0] + th_12_t1 + theta[3]; th_0123_t4 = theta[0] + th_12_t1 - theta[3]
-
     # Additional Sine functions:
     s_th_1PI2 = np.sin(theta[1] - 1.5707963267948966); s_th_5PI = np.sin(theta[5] + 3.141592653589793); s_th_12 = np.sin(th_12_t1)
     s_th_0123_t1 = np.sin(th_0123_t3); s_th_0123_t2 = np.sin(th_0123_t1)
     s_th_0123_t3 = np.sin(th_0123_t4); s_th_0123_t4 = np.sin(th_0123_t2)
-
     # Additional Cosine functions:
     c_th_1PI2 = np.cos(theta[1] - 1.5707963267948966); c_th_5PI = np.cos(theta[5] + 3.141592653589793); c_th_12_t1 = np.cos(th_12_t1)
     c_th_0123_t1 = np.cos(th_0123_t3); c_th_0123_t2 = np.cos(th_0123_t1)
@@ -165,8 +137,8 @@ def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
     T[3,2] = 0.0
     T[3,3] = 1.0
 
-    # th_limit_err[], T_Base @ T_n @ T_EE
-    return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
+    # T_Base @ T_n @ T_EE
+    return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
 def __FKF_ABB_IRB_120_L_Ax(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                     tp.List[tp.List[float]]]:
@@ -180,39 +152,26 @@ def __FKF_ABB_IRB_120_L_Ax(theta: tp.List[float], Robot_Parameters_Str: Paramete
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
-                                      is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
-        (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+        (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
     
-    # Check that the desired absolute joint positions are not out of limit.
-    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
-
     """
     Description:
         Abbreviations for individual functions. Used to speed up calculations.
     """
-
     # Cosine / Sine functions: Default notation.
     c_th_1 = np.cos(theta[1]); c_th_3 = np.cos(theta[3]); c_th_4 = np.cos(theta[4]); c_th_5 = np.cos(theta[5])
     s_th_1 = np.sin(theta[1]); s_th_3 = np.sin(theta[3]); s_th_4 = np.sin(theta[4]); s_th_5 = np.sin(theta[5])
-    
     # Angles:
     th_23_t1 = theta[2] + theta[3]
     th_1234_t11 = theta[1] + th_23_t1 + theta[4]; th_1234_t12 = -theta[1] + th_23_t1 + theta[4]
     th_1234_t2 = theta[1] - theta[2] - theta[3] + theta[4]
     th_1234_t3 = theta[1] + th_23_t1 - theta[4]
-
     # Additional Sine functions:
     s_th_1234_t12 = np.sin(th_1234_t12); s_th_1234_t2 = np.sin(th_1234_t2); s_th_1234_t3 = np.sin(th_1234_t3)
     s_th_1234_t11 = np.sin(th_1234_t11); s_th_23_t1 = np.sin(th_23_t1); s_th_3_v = 0.301999979970156*s_th_3
     s_th_1_v = 0.301999979970156*s_th_1
     s_th_6PI = np.sin(theta[6] + 3.141592653589793); s_th_2PI2 = np.sin(theta[2] - 1.5707963267948966)
-
     # Additional Cosine functions:
     c_th_23_t1 = np.cos(th_23_t1); c_th_cos_1234_t12 = np.cos(th_1234_t12); c_th_1234_t2 = np.cos(th_1234_t2)
     c_th_1234_t3 = np.cos(th_1234_t3); c_th_cos_1234_t11 = np.cos(th_1234_t11); c_th_123_t1 = c_th_1*c_th_23_t1
@@ -254,8 +213,8 @@ def __FKF_ABB_IRB_120_L_Ax(theta: tp.List[float], Robot_Parameters_Str: Paramete
     T[3,2] = 0.0
     T[3,3] = 1.0
 
-    # th_limit_err[], T_Base @ T_n @ T_EE
-    return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
+    # T_Base @ T_n @ T_EE
+    return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
 def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                     tp.List[tp.List[float]]]:
@@ -271,36 +230,23 @@ def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameter
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
-                                      is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
-        (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+        (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
         
-    # Check that the desired absolute joint positions are not out of limit.
-    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
-
     """
     Description:
         Abbreviations for individual functions. Used to speed up calculations.
     """
-
     # Cosine / Sine functions: Default notation.
     c_th_0 = np.cos(theta[0]); c_th_1 = np.cos(theta[1]); c_th_2 = np.cos(theta[2]); c_th_5 = np.cos(theta[5]); c_th_6 = np.cos(theta[6])
     s_th_0 = np.sin(theta[0]); s_th_1 = np.sin(theta[1]); s_th_2 = np.sin(theta[2]); s_th_5 = np.sin(theta[5]); s_th_6 = np.sin(theta[6])
-
     # Angles:
     th_02_t1 = theta[0] - theta[1] + theta[2]; th_02_t2 = -theta[0] + theta[1] + theta[2]; th_02_t3 = theta[0] + theta[1] + theta[2]
     th_02_t4 = theta[0] + theta[1] - theta[2]
-
     # Additional Sine function:
     s_th_3PI2 = np.sin(theta[3] - 1.5707963267948966); s_th_4PI = np.sin(theta[4] + 3.141592653589793)
     s_th_02_t1 = np.sin(th_02_t1); s_th_02_t2 = np.sin(th_02_t2); s_th_02_t3 = np.sin(th_02_t3)
     s_th_02_t4 = np.sin(th_02_t4); s_th_01_t1 = s_th_0*s_th_1
-
     # Additional Cosine function:
     c_th_3PI2 = np.cos(theta[3] - 1.5707963267948966); c_th_4PI = np.cos(theta[4] + 3.141592653589793)
     c_th_02_t1 = np.cos(th_02_t1); c_th_02_t2 = np.cos(th_02_t2); c_th_02_t3 = np.cos(th_02_t3)
@@ -348,8 +294,8 @@ def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameter
     T[3,2] = 0.0
     T[3,3] = 1.0
 
-    # th_limit_err[], T_Base @ T_n @ T_EE
-    return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
+    # T_Base @ T_n @ T_EE
+    return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
 def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                     tp.List[tp.List[float]]]:
@@ -365,36 +311,23 @@ def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameter
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
-                                      is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
-        (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+        (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
     
-    # Check that the desired absolute joint positions are not out of limit.
-    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
-
     """
     Description:
         Abbreviations for individual functions. Used to speed up calculations.
     """
-
     # Cosine / Sine functions: Default notation.
     c_th_0 = np.cos(theta[0]); c_th_1 = np.cos(theta[1]); c_th_2 = np.cos(theta[2]); c_th_5 = np.cos(theta[5]); c_th_6 = np.cos(theta[6])
     s_th_0 = np.sin(theta[0]); s_th_1 = np.sin(theta[1]); s_th_2 = np.sin(theta[2]); s_th_5 = np.sin(theta[5]); s_th_6 = np.sin(theta[6])
-
     # Angles:
     th_02_t1 = theta[0] - theta[1] + theta[2]; th_02_t2 = -theta[0] + theta[1] + theta[2]; th_02_t3 = theta[0] + theta[1] + theta[2]
     th_02_t4 = theta[0] + theta[1] - theta[2]
-
     # Additional Sine function:
     s_th_3PI2 = np.sin(theta[3] - 1.5707963267948966); s_th_4PI = np.sin(theta[4] + 3.141592653589793)
     s_th_02_t1 = np.sin(th_02_t1); s_th_02_t2 = np.sin(th_02_t2); s_th_02_t3 = np.sin(th_02_t3)
     s_th_02_t4 = np.sin(th_02_t4); s_th_01_t1 = s_th_0*s_th_1
-
     # Additional Cosine function:
     c_th_3PI2 = np.cos(theta[3] - 1.5707963267948966); c_th_4PI = np.cos(theta[4] + 3.141592653589793)
     c_th_02_t1 = np.cos(th_02_t1); c_th_02_t2 = np.cos(th_02_t2); c_th_02_t3 = np.cos(th_02_t3)
@@ -442,8 +375,8 @@ def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameter
     T[3,2] = 0.0
     T[3,3] = 1.0
 
-    # th_limit_err[], T_Base @ T_n @ T_EE
-    return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
+    # T_Base @ T_n @ T_EE
+    return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
 def __FKF_EPSON_LS3_B401S(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                     tp.List[tp.List[float]]]:
@@ -456,26 +389,15 @@ def __FKF_EPSON_LS3_B401S(theta: tp.List[float], Robot_Parameters_Str: Parameter
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
-                                      is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
-        (2) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
+        (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
     
-    # Check that the desired absolute joint positions are not out of limit.
-    th_limit_err = Lib.Kinematics.Utilities.General.Check_Theta_Limit(theta, Robot_Parameters_Str)
-
     """
     Description:
         Abbreviations for individual functions. Used to speed up calculations.
     """
-
     # Angles:
     th_01 = theta[0] + theta[1]; th_013 = th_01 - theta[3]
-
     # Sine / Cosine functions:
     c_th_013 = np.cos(th_013); s_th_013 = np.sin(th_013)
 
@@ -498,8 +420,8 @@ def __FKF_EPSON_LS3_B401S(theta: tp.List[float], Robot_Parameters_Str: Parameter
     T[3,2] = 0.0
     T[3,3] = 1.0
 
-    # th_limit_err[], T_Base @ T_n @ T_EE
-    return (th_limit_err, Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector)
+    # T_Base @ T_n @ T_EE
+    return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
 def FKFast_Solution(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                               tp.List[tp.List[float]]]:

@@ -346,10 +346,10 @@ ABB_IRB_120_L_Ax_Str.DH.Modified = np.array([[0.0,                   0.0, 0.113,
                                              [3.141592653589793,     0.0, 0.072, -1.5707963267948966]], dtype = np.float32)
 # Zero/Home absolute position of each joint.
 ABB_IRB_120_L_Ax_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float32)
-ABB_IRB_120_L_Ax_Str.Theta.Home = np.array([-0.400, Mathematics.Degree_To_Radian(90.0), 0.0, 0.0, 0.0, Mathematics.Degree_To_Radian(90.0), 0.0],
+ABB_IRB_120_L_Ax_Str.Theta.Home = np.array([0.400, Mathematics.Degree_To_Radian(90.0), 0.0, 0.0, 0.0, Mathematics.Degree_To_Radian(90.0), 0.0],
                                            dtype = np.float32)
 # Limits of absolute joint position.
-ABB_IRB_120_L_Ax_Str.Theta.Limit = np.array([[             -0.800,                0.0],
+ABB_IRB_120_L_Ax_Str.Theta.Limit = np.array([[                0.0,              0.800],
                                              [-2.8797932657906435, 2.8797932657906435], 
                                              [-1.9198621771937625, 1.9198621771937625], 
                                              [-1.9198621771937625, 1.2217304763960306], 
@@ -579,7 +579,7 @@ EPSON_LS3_B401S_Str.Theta.Home = np.array([Mathematics.Degree_To_Radian(90.0), M
 # Limits of absolute joint position.
 EPSON_LS3_B401S_Str.Theta.Limit = np.array([[-0.6981317007977318, 3.839724354387525], 
                                             [ -2.443460952792061, 2.443460952792061], 
-                                            [             -0.150,               0.0], 
+                                            [                0.0,             0.150], 
                                             [ -3.141592653589793, 3.141592653589793]], dtype = np.float32)
 # Parameters of the object (Blender robot arm).
 EPSON_LS3_B401S_Str.Theta.Name = [f'Joint_1_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}', 
