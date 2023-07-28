@@ -15,7 +15,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_R_Str
 
 def __DH_Modified(theta: float, a: float, d: float, alpha: float) -> sp.Matrix:
     """
