@@ -10,7 +10,9 @@ p.setTimeStep(1.0/100.0)
 p.setRealTimeSimulation(0)
 
 # quaternion: x, y, z, w
-urId = p.loadURDF('URDFs/Robots/Universal_Robots_UR3/Universal_Robots_UR3.urdf', [0.0, 0.0, 0.0], [0, 0, 0, 1], useFixedBase=True, flags=p.URDF_ENABLE_CACHED_GRAPHICS_SHAPES)
+#urId = p.loadURDF('URDFs/Robots/Universal_Robots_UR3/Universal_Robots_UR3.urdf', [0.0, 0.0, 0.0], [0, 0, 0, 1], useFixedBase=True, flags=p.URDF_ENABLE_CACHED_GRAPHICS_SHAPES)
+urId = p.loadURDF('URDFs/Robots/ABB_IRB_120/ABB_IRB_120.urdf', [0.0, 0.0, 0.0], [0, 0, 0, 1], useFixedBase=True, flags=p.URDF_ENABLE_CACHED_GRAPHICS_SHAPES)
+
 
 jointPositions = np.deg2rad([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 index = 0
@@ -31,10 +33,9 @@ for j in range(p.getNumJoints(urId)):
 
 # meters_per_second = degrees_per_second * (2 * pi * radius) / 360
     
-current_ee_pos = p.getLinkState(urId, 6)
-print(np.round(current_ee_pos[0], 3))
+#current_ee_pos = p.getLinkState(urId, 6)
+#print(np.round(current_ee_pos[0], 3))
 
-"""
 joint_orient = p.addUserDebugParameter("Joint", -50, 50, 0)
 while p.isConnected():
     p.setJointMotorControl2(urId, 1, p.POSITION_CONTROL, targetPosition=np.deg2rad(p.readUserDebugParameter(joint_orient)),
@@ -42,4 +43,3 @@ while p.isConnected():
 
     p.stepSimulation()
     time.sleep(1.0/100.0)
-"""

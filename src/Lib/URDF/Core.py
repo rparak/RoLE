@@ -146,21 +146,12 @@ def Generate_URDF(Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, fi
         child_str = f'link_{joint_id}'
         #   ...
         joint_type = 'revolute' if Robot_Str.Theta.Type[i] == 'R' else 'prismatic'
+        
         #   ...
-        if Robot_Str.Theta.Axis[i] == 'Z':
-          # ...
-          joint_axis = f'0 0 {int(Robot_Str.Theta.Direction[i])}'
+        joint_axis = f'0 0 {int(Robot_Str.Theta.Direction[i])}' if Robot_Str.Theta.Axis[i] == 'Z' else f'{int(Robot_Str.Theta.Direction[i])} 0 0'
 
-          # ...
-          joint_moi = MOI.Cube_MOI(Robot_Physical_Properties['mass'][i + 1], [Robot_Str.Collider[i + 1].Size[2],
-                                                                              Robot_Str.Collider[i + 1].Size[1],
-                                                                              Robot_Str.Collider[i + 1].Size[0]])
-        else:
-          # ...
-          joint_axis = f'{int(Robot_Str.Theta.Direction[i])} 0 0'
-
-          # ...
-          joint_moi = MOI.Cube_MOI(Robot_Physical_Properties['mass'][i + 1], Robot_Str.Collider[i + 1].Size)
+        # ...
+        joint_moi = MOI.Cube_MOI(Robot_Physical_Properties['mass'][i + 1], Robot_Str.Collider[i + 1].Size)
         
         # Get the translational and rotational part from the transformation matrix.
         p = ['0.0', '0.0', '0.0']; ea = ['0.0', '0.0', '0.0']

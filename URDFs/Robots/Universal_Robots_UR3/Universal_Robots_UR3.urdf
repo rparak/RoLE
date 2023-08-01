@@ -4,7 +4,7 @@
   <link name="base_link">
     <visual>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Visual/Base.stl"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -12,7 +12,7 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Collision/Base.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -32,7 +32,7 @@
   <link name="link_1">
     <visual>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Visual/Joint_1.stl"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -40,13 +40,13 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Collision/Joint_1.stl"/>
       </geometry>
     </collision>
     <inertial>
       <mass value="2.0"/>
       <origin rpy="0.0 0.0 0.0" xyz="0.00014 -0.00405 -0.00439"/>
-      <inertia ixx="0.0030419810" ixy="0.0" ixz="0.0" iyy="0.0038965251" iyz="0.0" izz="0.0041798834"/>
+      <inertia ixx="0.0041798834" ixy="0.0" ixz="0.0" iyy="0.0038965251" iyz="0.0" izz="0.0030419810"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 2'. -->
@@ -60,7 +60,7 @@
   <link name="link_2">
     <visual>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Visual/Joint_2.stl"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -68,13 +68,13 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Collision/Joint_2.stl"/>
       </geometry>
     </collision>
     <inertial>
       <mass value="3.42"/>
       <origin rpy="0.0 0.0 0.0" xyz="-0.11826 -0.00013 0.11553"/>
-      <inertia ixx="0.0330614975" ixy="0.0" ixz="0.0" iyy="0.0350169383" iyz="0.0" izz="0.0066716490"/>
+      <inertia ixx="0.0066716490" ixy="0.0" ixz="0.0" iyy="0.0350169383" iyz="0.0" izz="0.0330614975"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 3'. -->
@@ -88,7 +88,7 @@
   <link name="link_3">
     <visual>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Visual/Joint_3.stl"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -96,13 +96,13 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Collision/Joint_3.stl"/>
       </geometry>
     </collision>
     <inertial>
       <mass value="1.26"/>
       <origin rpy="0.0 0.0 0.0" xyz="-0.10402 -0.00001 0.02942"/>
-      <inertia ixx="0.0089992181" ixy="0.0" ixz="0.0" iyy="0.0093975363" iyz="0.0" izz="0.0015800406"/>
+      <inertia ixx="0.0015800406" ixy="0.0" ixz="0.0" iyy="0.0093975363" iyz="0.0" izz="0.0089992181"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 4'. -->
@@ -116,7 +116,7 @@
   <link name="link_4">
     <visual>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Visual/Joint_4.stl"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -124,13 +124,13 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Collision/Joint_4.stl"/>
       </geometry>
     </collision>
     <inertial>
       <mass value="0.8"/>
       <origin rpy="0.0 0.0 0.0" xyz="0.00001 0.00078 -0.00610"/>
-      <inertia ixx="0.0008245741" ixy="0.0" ixz="0.0" iyy="0.0006698846" iyz="0.0" izz="0.0009410118"/>
+      <inertia ixx="0.0009410118" ixy="0.0" ixz="0.0" iyy="0.0006698846" iyz="0.0" izz="0.0008245741"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 5'. -->
@@ -144,7 +144,7 @@
   <link name="link_5">
     <visual>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Visual/Joint_5.stl"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -152,13 +152,13 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Collision/Joint_5.stl"/>
       </geometry>
     </collision>
     <inertial>
       <mass value="0.8"/>
       <origin rpy="0.0 0.0 0.0" xyz="0.00000 -0.00176 -0.00610"/>
-      <inertia ixx="0.0008011770" ixy="0.0" ixz="0.0" iyy="0.0006696964" iyz="0.0" izz="0.0009175981"/>
+      <inertia ixx="0.0009175981" ixy="0.0" ixz="0.0" iyy="0.0006696964" iyz="0.0" izz="0.0008011770"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint 6'. -->
@@ -172,7 +172,7 @@
   <link name="link_6">
     <visual>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Visual/Joint_6.stl"/>
       </geometry>
       <material name="Custom_Color">
         <color rgba="0.90 0.90 0.90 1.0"/>
@@ -180,13 +180,13 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.01"/>
+        <mesh filename="/Mesh/Collision/Joint_6.stl"/>
       </geometry>
     </collision>
     <inertial>
       <mass value="0.35"/>
       <origin rpy="0.0 0.0 0.0" xyz="0.00007 -0.00326 -0.01962"/>
-      <inertia ixx="0.0002569148" ixy="0.0" ixz="0.0" iyy="0.0001608100" iyz="0.0" izz="0.0001864393"/>
+      <inertia ixx="0.0001864393" ixy="0.0" ixz="0.0" iyy="0.0001608100" iyz="0.0" izz="0.0002569148"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'End-Effector (EE)'. -->
