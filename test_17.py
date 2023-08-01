@@ -11,11 +11,14 @@ p.setRealTimeSimulation(0)
 
 # quaternion: x, y, z, w
 #urId = p.loadURDF('URDFs/Robots/Universal_Robots_UR3/Universal_Robots_UR3.urdf', [0.0, 0.0, 0.0], [0, 0, 0, 1], useFixedBase=True, flags=p.URDF_ENABLE_CACHED_GRAPHICS_SHAPES)
-urId = p.loadURDF('URDFs/Robots/ABB_IRB_120/ABB_IRB_120.urdf', [0.0, 0.0, 0.0], [0, 0, 0, 1], useFixedBase=True, flags=p.URDF_ENABLE_CACHED_GRAPHICS_SHAPES)
+#urId = p.loadURDF('URDFs/Robots/ABB_IRB_120/ABB_IRB_120.urdf', [0.0, 0.0, 0.0], [0, 0, 0, 1], useFixedBase=True, flags=p.URDF_ENABLE_CACHED_GRAPHICS_SHAPES)
 #urId = p.loadURDF('URDFs/Robots/EPSON_LS3_B401S/EPSON_LS3_B401S.urdf', [0.0, 0.0, 0.0], [0, 0, 0, 1], useFixedBase=True, flags=p.URDF_ENABLE_CACHED_GRAPHICS_SHAPES)
+urId = p.loadURDF('URDFs/Robots/ABB_IRB_120/ABB_IRB_120.urdf', [0.0, 0.0, 0.0], [0, 0, 0, 1], useFixedBase=True, flags=p.URDF_ENABLE_CACHED_GRAPHICS_SHAPES)
 
+#urId = p.loadURDF('URDFs/Robots/ABB_IRB_120_L_Ax/ABB_IRB_120_L_Ax.urdf', [0.0, 0.0, 0.0], [0, 0, 0, 1], useFixedBase=True, flags=p.URDF_ENABLE_CACHED_GRAPHICS_SHAPES)
 
-jointPositions = np.deg2rad([0.0, 0.0, 0.0, 0.0, 90.0, 0.0])
+"""
+jointPositions = np.deg2rad([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 index = 0
 for j in range(p.getNumJoints(urId)):
     info = p.getJointInfo(urId, j)
@@ -27,6 +30,7 @@ for j in range(p.getNumJoints(urId)):
                                 targetPosition=jointPositions[index],
                                 force=100.0)
         index=index+1
+"""
 
 #joint_orient = p.addUserDebugParameter("Joint", -180, 180, 0)
 
