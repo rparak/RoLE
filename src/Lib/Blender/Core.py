@@ -571,7 +571,7 @@ class Robot_Cls(object):
             (1) parameter [Matrix<float> 4x4]: Homogeneous transformation matrix of the End-Effector.
         """
 
-        return Kinematics.Forward_Kinematics(self.Theta, 'Modified', self.__Robot_Parameters_Str)[1]
+        return Kinematics.Forward_Kinematics(self.Theta, 'Fast', self.__Robot_Parameters_Str)[1]
 
     def __Update(self) -> None:
         """

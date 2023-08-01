@@ -233,6 +233,7 @@ def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameter
         (1) parameter [Matrix<float> 4x4]: Homogeneous end-effector transformation matrix.
     """
         
+
     """
     Description:
         Abbreviations for individual functions. Used to speed up calculations.
@@ -263,32 +264,33 @@ def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameter
     #   Duplicates P2
     aux_id_0 = s_th_1*c_th_2*c_th_3PI2; aux_id_1 = s_th_3PI2*c_th_1; aux_id_2 = aux_id_0 + aux_id_1
     aux_id_3 = s_th_1*s_th_3PI2*c_th_0; aux_id_4 = (s_th_02_t11 + v_c_th_02_t2 + v_c_th_02_t1 + v_c_th_02_t4 + v_c_th_02_t3)
-    aux_id_5 = (s_th_0_c_th_2 + v_s_th_02_t2 + v_s_th_02_t1 - v_s_th_02_t4 + v_s_th_02_t3)*s_th_4PI; aux_id_6 = aux_id_4*c_th_3PI2
-    aux_id_7 = (-aux_id_4*s_th_3PI2 - s_th_1*c_th_0*c_th_3PI2)*s_th_5; aux_id_8 = aux_id_6 - aux_id_3
-    aux_id_9 = (s_th_0_c_th_2 + v_s_th_02_t2 + v_s_th_02_t1 - v_s_th_02_t4 + v_s_th_02_t3)*c_th_4PI
-    aux_id_10 = (s_th_02_t12 - v_c_th_02_t2 - v_c_th_02_t1 - v_c_th_02_t4 - v_c_th_02_t3); aux_id_11 = (aux_id_10*c_th_3PI2 + aux_id_3)
+    aux_id_33 = (s_th_0_c_th_2 + v_s_th_02_t2 + v_s_th_02_t1 - v_s_th_02_t4 + v_s_th_02_t3)
+    aux_id_5 = aux_id_33*s_th_4PI; aux_id_6 = aux_id_4*c_th_3PI2; aux_id_7 = (-aux_id_4*s_th_3PI2 - s_th_1*c_th_0*c_th_3PI2)*s_th_5; aux_id_8 = aux_id_6 - aux_id_3
+    aux_id_9 = aux_id_33*c_th_4PI; aux_id_10 = (s_th_02_t12 - v_c_th_02_t2 - v_c_th_02_t1 - v_c_th_02_t4 - v_c_th_02_t3); aux_id_11 = (aux_id_10*c_th_3PI2 + aux_id_3)
     aux_id_12 = (aux_id_11*c_th_4PI - aux_id_5); aux_id_13 = aux_id_10*s_th_3PI2 - s_th_1*c_th_0*c_th_3PI2; aux_id_14 = (aux_id_13)*c_th_5
     aux_id_15 = (s_th_2*c_th_0 - v_s_th_02_t2 + v_s_th_02_t1 + v_s_th_02_t4 + v_s_th_02_t3)*c_th_3PI2; aux_id_23 = s_th_01_t1*s_th_3PI2
     aux_id_16 = (s_th_2*c_th_0 - v_s_th_02_t2 + v_s_th_02_t1 + v_s_th_02_t4 + v_s_th_02_t3)*s_th_3PI2; aux_id_17 = (-aux_id_15 + aux_id_23)*c_th_4PI
     aux_id_18 = (-c_th_0*c_th_2 + v_c_th_02_t2 - v_c_th_02_t1 + v_c_th_02_t4 - v_c_th_02_t3)*s_th_4PI; aux_id_19 = (aux_id_16 + s_th_01_t1*c_th_3PI2)
     aux_id_20 = aux_id_19*s_th_5; aux_id_21 = -aux_id_17 + aux_id_18; aux_id_22 = (aux_id_21)*s_th_5; aux_id_24 = (aux_id_2)*c_th_4PI; aux_id_25 = -aux_id_24 - s_th_124PI
     aux_id_26 = (aux_id_25)*c_th_5; aux_id_27 = (aux_id_25)*s_th_5; aux_id_28 = -s_th_1*s_th_3PI2*c_th_2 + c_th_1*c_th_3PI2; aux_id_29 = (aux_id_28)*s_th_5; aux_id_30 = (aux_id_28)*c_th_5
-    aux_id_31 = (aux_id_2)*s_th_4PI - s_th_1*s_th_2*c_th_4PI
+    aux_id_31 = (aux_id_2)*s_th_4PI - s_th_1*s_th_2*c_th_4PI; aux_id_32 = aux_id_10*c_th_3PI2 + aux_id_3; aux_id_34 = aux_id_32*c_th_4PI; aux_id_35 = (-aux_id_34 + aux_id_5)
+    aux_id_36 = (c_th_0*c_th_2 - v_c_th_02_t2 + v_c_th_02_t1 - v_c_th_02_t4 + v_c_th_02_t3); aux_id_37 = s_th_0*s_th_1*s_th_3PI2; aux_id_38 = -(aux_id_0 + aux_id_1)*c_th_4PI
+    aux_id_39 = s_th_0*s_th_1*c_th_3PI2
 
     # Computation of the homogeneous end-effector transformation matrix {T}
     T = np.array(np.identity(4), dtype=np.float32)
     T[0,0] = -((-(aux_id_8)*c_th_4PI - aux_id_5)*c_th_5 + aux_id_7)*c_th_6 - ((aux_id_8)*s_th_4PI - aux_id_9)*s_th_6
     T[0,1] = (((-aux_id_6 + aux_id_3)*c_th_4PI - aux_id_5)*c_th_5 + aux_id_7)*s_th_6 - ((aux_id_4*c_th_3PI2 - aux_id_3)*s_th_4PI - aux_id_9)*c_th_6
     T[0,2] = -aux_id_12*s_th_5 + aux_id_14
-    T[0,3] = -0.036*aux_id_12*s_th_5 + 0.027*aux_id_12*c_th_5 + 0.027*(aux_id_13)*s_th_5 + 0.036*aux_id_14 - 0.027*aux_id_11*c_th_4PI + 0.265*aux_id_10*s_th_3PI2 - 0.0405*aux_id_10*c_th_3PI2 + 0.027*aux_id_5 - 0.0405*s_th_02_t12 - 0.0405*aux_id_3 - 0.265*s_th_1*c_th_0*c_th_3PI2 + 0.251500010453034*s_th_1*c_th_0 - 0.03*c_th_0*c_th_1 + 0.03*c_th_0 + 0.010125*c_th_02_t2 + 0.0101250012797019*c_th_02_t1 + 0.010125*c_th_02_t4 + 0.0101249986747384*c_th_02_t3
-    T[1,0] = (-(aux_id_17 + (c_th_0*c_th_2 - v_c_th_02_t2 + v_c_th_02_t1 - v_c_th_02_t4 + v_c_th_02_t3)*s_th_4PI)*c_th_5 + aux_id_20)*c_th_6 + ((-aux_id_15 + aux_id_23)*s_th_4PI - (c_th_0*c_th_2 - v_c_th_02_t2 + v_c_th_02_t1 - v_c_th_02_t4 + v_c_th_02_t3)*c_th_4PI)*s_th_6
+    T[0,3] = 0.036*aux_id_35*s_th_5 - 0.027*aux_id_35*c_th_5 + 0.027*(aux_id_13)*s_th_5 + 0.036*(aux_id_13)*c_th_5 - 0.027*aux_id_34 + 0.265*aux_id_10*s_th_3PI2 - 0.0405*aux_id_10*c_th_3PI2 + 0.027*aux_id_5 - 0.0405*s_th_02_t12 - 0.0405*aux_id_3 - 0.265*s_th_1*c_th_0*c_th_3PI2 + 0.251500010453034*s_th_1*c_th_0 + 0.03*c_th_0*c_th_1 - 0.03*c_th_0 + 0.010125*c_th_02_t2 + 0.0101250012797019*c_th_02_t1 + 0.010125*c_th_02_t4 + 0.0101249986747384*c_th_02_t3
+    T[1,0] = (-(aux_id_17 + aux_id_36*s_th_4PI)*c_th_5 + aux_id_20)*c_th_6 + ((-aux_id_15 + aux_id_23)*s_th_4PI - aux_id_36*c_th_4PI)*s_th_6
     T[1,1] = (-(aux_id_21)*c_th_5 - aux_id_20)*s_th_6 + ((-aux_id_15 + aux_id_23)*s_th_4PI + (-c_th_0*c_th_2 + v_c_th_02_t2 - v_c_th_02_t1 + v_c_th_02_t4 - v_c_th_02_t3)*c_th_4PI)*c_th_6
     T[1,2] = aux_id_22 - aux_id_19*c_th_5
-    T[1,3] = 0.036*aux_id_22- 0.027*(aux_id_21)*c_th_5 - 0.027*aux_id_20 - 0.036*aux_id_19*c_th_5 - 0.027*aux_id_17 - 0.265*aux_id_16 + 0.0405*aux_id_15 + 0.027*aux_id_18 - 0.0405*aux_id_23 - 0.265*s_th_01_t1*c_th_3PI2 + 0.251500010453034*s_th_01_t1 - 0.03*s_th_0*c_th_1 + 0.03*s_th_0 + 0.0405*s_th_2*c_th_0 - 0.010125*s_th_02_t2 + 0.010125*s_th_02_t1 + 0.010125*s_th_02_t4 + 0.010125*s_th_02_t3
+    T[1,3] = 0.036*(-(-aux_id_15 + aux_id_37)*c_th_4PI + aux_id_18)*s_th_5 - 0.027*(-(-aux_id_15 + aux_id_37)*c_th_4PI + aux_id_18)*c_th_5 - 0.027*(aux_id_16 + aux_id_39)*s_th_5 - 0.036*(aux_id_16 + aux_id_39)*c_th_5 + 0.027*(aux_id_15 - aux_id_37)*c_th_4PI - 0.265*aux_id_16 + 0.0405*aux_id_15 - 0.027*aux_id_36*s_th_4PI - 0.0405*aux_id_37 - 0.265*aux_id_39 + 0.251500010453034*s_th_0*s_th_1 + 0.03*s_th_0*c_th_1 - 0.03*s_th_0 + 0.0405*s_th_2*c_th_0 - 0.010125*s_th_02_t2 + 0.010125*s_th_02_t1 + 0.010125*s_th_02_t4 + 0.010125*s_th_02_t3
     T[2,0] = (aux_id_26 + aux_id_29)*c_th_6 + (aux_id_31)*s_th_6
     T[2,1] = -(aux_id_26 + aux_id_29)*s_th_6 + (aux_id_31)*c_th_6
     T[2,2] = aux_id_27 - aux_id_30
-    T[2,3] = 0.036*aux_id_27 - 0.027*aux_id_26 - 0.027*aux_id_29 - 0.036*aux_id_30 - 0.027*aux_id_24 - 0.027*s_th_124PI + 0.265*s_th_1*s_th_3PI2*c_th_2 - 0.0405*aux_id_0 - 0.0405*s_th_1*c_th_2 + 0.03*s_th_1 - 0.0405*aux_id_1 - 0.265*c_th_1*c_th_3PI2 + 0.251500010453034*c_th_1 + 0.1
+    T[2,3] = 0.036*(aux_id_38- s_th_124PI)*s_th_5 - 0.027*(aux_id_38- s_th_124PI)*c_th_5 - 0.027*(aux_id_28)*s_th_5 - 0.036*(aux_id_28)*c_th_5 - 0.027*(aux_id_0 + aux_id_1)*c_th_4PI - 0.027*s_th_124PI + 0.265*s_th_1*s_th_3PI2*c_th_2 - 0.0405*aux_id_0 - 0.0405*s_th_1*c_th_2 - 0.03*s_th_1 - 0.0405*aux_id_1 - 0.265*c_th_1*c_th_3PI2 + 0.251500010453034*c_th_1 + 0.1
     T[3,0] = 0.0
     T[3,1] = 0.0
     T[3,2] = 0.0
@@ -306,7 +308,7 @@ def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameter
         Note:
             YuMi's left hand.
 
-    Args:
+    Args:th_02_t1
         (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
@@ -344,32 +346,33 @@ def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameter
     #   Duplicates P2
     aux_id_0 = s_th_1*c_th_2*c_th_3PI2; aux_id_1 = s_th_3PI2*c_th_1; aux_id_2 = aux_id_0 + aux_id_1
     aux_id_3 = s_th_1*s_th_3PI2*c_th_0; aux_id_4 = (s_th_02_t11 + v_c_th_02_t2 + v_c_th_02_t1 + v_c_th_02_t4 + v_c_th_02_t3)
-    aux_id_5 = (s_th_0_c_th_2 + v_s_th_02_t2 + v_s_th_02_t1 - v_s_th_02_t4 + v_s_th_02_t3)*s_th_4PI; aux_id_6 = aux_id_4*c_th_3PI2
-    aux_id_7 = (-aux_id_4*s_th_3PI2 - s_th_1*c_th_0*c_th_3PI2)*s_th_5; aux_id_8 = aux_id_6 - aux_id_3
-    aux_id_9 = (s_th_0_c_th_2 + v_s_th_02_t2 + v_s_th_02_t1 - v_s_th_02_t4 + v_s_th_02_t3)*c_th_4PI
-    aux_id_10 = (s_th_02_t12 - v_c_th_02_t2 - v_c_th_02_t1 - v_c_th_02_t4 - v_c_th_02_t3); aux_id_11 = (aux_id_10*c_th_3PI2 + aux_id_3)
+    aux_id_33 = (s_th_0_c_th_2 + v_s_th_02_t2 + v_s_th_02_t1 - v_s_th_02_t4 + v_s_th_02_t3)
+    aux_id_5 = aux_id_33*s_th_4PI; aux_id_6 = aux_id_4*c_th_3PI2; aux_id_7 = (-aux_id_4*s_th_3PI2 - s_th_1*c_th_0*c_th_3PI2)*s_th_5; aux_id_8 = aux_id_6 - aux_id_3
+    aux_id_9 = aux_id_33*c_th_4PI; aux_id_10 = (s_th_02_t12 - v_c_th_02_t2 - v_c_th_02_t1 - v_c_th_02_t4 - v_c_th_02_t3); aux_id_11 = (aux_id_10*c_th_3PI2 + aux_id_3)
     aux_id_12 = (aux_id_11*c_th_4PI - aux_id_5); aux_id_13 = aux_id_10*s_th_3PI2 - s_th_1*c_th_0*c_th_3PI2; aux_id_14 = (aux_id_13)*c_th_5
     aux_id_15 = (s_th_2*c_th_0 - v_s_th_02_t2 + v_s_th_02_t1 + v_s_th_02_t4 + v_s_th_02_t3)*c_th_3PI2; aux_id_23 = s_th_01_t1*s_th_3PI2
     aux_id_16 = (s_th_2*c_th_0 - v_s_th_02_t2 + v_s_th_02_t1 + v_s_th_02_t4 + v_s_th_02_t3)*s_th_3PI2; aux_id_17 = (-aux_id_15 + aux_id_23)*c_th_4PI
     aux_id_18 = (-c_th_0*c_th_2 + v_c_th_02_t2 - v_c_th_02_t1 + v_c_th_02_t4 - v_c_th_02_t3)*s_th_4PI; aux_id_19 = (aux_id_16 + s_th_01_t1*c_th_3PI2)
     aux_id_20 = aux_id_19*s_th_5; aux_id_21 = -aux_id_17 + aux_id_18; aux_id_22 = (aux_id_21)*s_th_5; aux_id_24 = (aux_id_2)*c_th_4PI; aux_id_25 = -aux_id_24 - s_th_124PI
     aux_id_26 = (aux_id_25)*c_th_5; aux_id_27 = (aux_id_25)*s_th_5; aux_id_28 = -s_th_1*s_th_3PI2*c_th_2 + c_th_1*c_th_3PI2; aux_id_29 = (aux_id_28)*s_th_5; aux_id_30 = (aux_id_28)*c_th_5
-    aux_id_31 = (aux_id_2)*s_th_4PI - s_th_1*s_th_2*c_th_4PI
+    aux_id_31 = (aux_id_2)*s_th_4PI - s_th_1*s_th_2*c_th_4PI; aux_id_32 = aux_id_10*c_th_3PI2 + aux_id_3; aux_id_34 = aux_id_32*c_th_4PI; aux_id_35 = (-aux_id_34 + aux_id_5)
+    aux_id_36 = (c_th_0*c_th_2 - v_c_th_02_t2 + v_c_th_02_t1 - v_c_th_02_t4 + v_c_th_02_t3); aux_id_37 = s_th_0*s_th_1*s_th_3PI2; aux_id_38 = -(aux_id_0 + aux_id_1)*c_th_4PI
+    aux_id_39 = s_th_0*s_th_1*c_th_3PI2
 
     # Computation of the homogeneous end-effector transformation matrix {T}
     T = np.array(np.identity(4), dtype=np.float32)
     T[0,0] = -((-(aux_id_8)*c_th_4PI - aux_id_5)*c_th_5 + aux_id_7)*c_th_6 - ((aux_id_8)*s_th_4PI - aux_id_9)*s_th_6
     T[0,1] = (((-aux_id_6 + aux_id_3)*c_th_4PI - aux_id_5)*c_th_5 + aux_id_7)*s_th_6 - ((aux_id_4*c_th_3PI2 - aux_id_3)*s_th_4PI - aux_id_9)*c_th_6
     T[0,2] = -aux_id_12*s_th_5 + aux_id_14
-    T[0,3] = -0.036*aux_id_12*s_th_5 + 0.027*aux_id_12*c_th_5 + 0.027*(aux_id_13)*s_th_5 + 0.036*aux_id_14 - 0.027*aux_id_11*c_th_4PI + 0.265*aux_id_10*s_th_3PI2 - 0.0405*aux_id_10*c_th_3PI2 + 0.027*aux_id_5 - 0.0405*s_th_02_t12 - 0.0405*aux_id_3 - 0.265*s_th_1*c_th_0*c_th_3PI2 + 0.251500010453034*s_th_1*c_th_0 - 0.03*c_th_0*c_th_1 + 0.03*c_th_0 + 0.010125*c_th_02_t2 + 0.0101250012797019*c_th_02_t1 + 0.010125*c_th_02_t4 + 0.0101249986747384*c_th_02_t3
-    T[1,0] = (-(aux_id_17 + (c_th_0*c_th_2 - v_c_th_02_t2 + v_c_th_02_t1 - v_c_th_02_t4 + v_c_th_02_t3)*s_th_4PI)*c_th_5 + aux_id_20)*c_th_6 + ((-aux_id_15 + aux_id_23)*s_th_4PI - (c_th_0*c_th_2 - v_c_th_02_t2 + v_c_th_02_t1 - v_c_th_02_t4 + v_c_th_02_t3)*c_th_4PI)*s_th_6
+    T[0,3] = 0.036*aux_id_35*s_th_5 - 0.027*aux_id_35*c_th_5 + 0.027*(aux_id_13)*s_th_5 + 0.036*(aux_id_13)*c_th_5 - 0.027*aux_id_34 + 0.265*aux_id_10*s_th_3PI2 - 0.0405*aux_id_10*c_th_3PI2 + 0.027*aux_id_5 - 0.0405*s_th_02_t12 - 0.0405*aux_id_3 - 0.265*s_th_1*c_th_0*c_th_3PI2 + 0.251500010453034*s_th_1*c_th_0 + 0.03*c_th_0*c_th_1 - 0.03*c_th_0 + 0.010125*c_th_02_t2 + 0.0101250012797019*c_th_02_t1 + 0.010125*c_th_02_t4 + 0.0101249986747384*c_th_02_t3
+    T[1,0] = (-(aux_id_17 + aux_id_36*s_th_4PI)*c_th_5 + aux_id_20)*c_th_6 + ((-aux_id_15 + aux_id_23)*s_th_4PI - aux_id_36*c_th_4PI)*s_th_6
     T[1,1] = (-(aux_id_21)*c_th_5 - aux_id_20)*s_th_6 + ((-aux_id_15 + aux_id_23)*s_th_4PI + (-c_th_0*c_th_2 + v_c_th_02_t2 - v_c_th_02_t1 + v_c_th_02_t4 - v_c_th_02_t3)*c_th_4PI)*c_th_6
     T[1,2] = aux_id_22 - aux_id_19*c_th_5
-    T[1,3] = 0.036*aux_id_22- 0.027*(aux_id_21)*c_th_5 - 0.027*aux_id_20 - 0.036*aux_id_19*c_th_5 - 0.027*aux_id_17 - 0.265*aux_id_16 + 0.0405*aux_id_15 + 0.027*aux_id_18 - 0.0405*aux_id_23 - 0.265*s_th_01_t1*c_th_3PI2 + 0.251500010453034*s_th_01_t1 - 0.03*s_th_0*c_th_1 + 0.03*s_th_0 + 0.0405*s_th_2*c_th_0 - 0.010125*s_th_02_t2 + 0.010125*s_th_02_t1 + 0.010125*s_th_02_t4 + 0.010125*s_th_02_t3
+    T[1,3] = 0.036*(-(-aux_id_15 + aux_id_37)*c_th_4PI + aux_id_18)*s_th_5 - 0.027*(-(-aux_id_15 + aux_id_37)*c_th_4PI + aux_id_18)*c_th_5 - 0.027*(aux_id_16 + aux_id_39)*s_th_5 - 0.036*(aux_id_16 + aux_id_39)*c_th_5 + 0.027*(aux_id_15 - aux_id_37)*c_th_4PI - 0.265*aux_id_16 + 0.0405*aux_id_15 - 0.027*aux_id_36*s_th_4PI - 0.0405*aux_id_37 - 0.265*aux_id_39 + 0.251500010453034*s_th_0*s_th_1 + 0.03*s_th_0*c_th_1 - 0.03*s_th_0 + 0.0405*s_th_2*c_th_0 - 0.010125*s_th_02_t2 + 0.010125*s_th_02_t1 + 0.010125*s_th_02_t4 + 0.010125*s_th_02_t3
     T[2,0] = (aux_id_26 + aux_id_29)*c_th_6 + (aux_id_31)*s_th_6
     T[2,1] = -(aux_id_26 + aux_id_29)*s_th_6 + (aux_id_31)*c_th_6
     T[2,2] = aux_id_27 - aux_id_30
-    T[2,3] = 0.036*aux_id_27 - 0.027*aux_id_26 - 0.027*aux_id_29 - 0.036*aux_id_30 - 0.027*aux_id_24 - 0.027*s_th_124PI + 0.265*s_th_1*s_th_3PI2*c_th_2 - 0.0405*aux_id_0 - 0.0405*s_th_1*c_th_2 + 0.03*s_th_1 - 0.0405*aux_id_1 - 0.265*c_th_1*c_th_3PI2 + 0.251500010453034*c_th_1 + 0.1
+    T[2,3] = 0.036*(aux_id_38- s_th_124PI)*s_th_5 - 0.027*(aux_id_38- s_th_124PI)*c_th_5 - 0.027*(aux_id_28)*s_th_5 - 0.036*(aux_id_28)*c_th_5 - 0.027*(aux_id_0 + aux_id_1)*c_th_4PI - 0.027*s_th_124PI + 0.265*s_th_1*s_th_3PI2*c_th_2 - 0.0405*aux_id_0 - 0.0405*s_th_1*c_th_2 - 0.03*s_th_1 - 0.0405*aux_id_1 - 0.265*c_th_1*c_th_3PI2 + 0.251500010453034*c_th_1 + 0.1
     T[3,0] = 0.0
     T[3,1] = 0.0
     T[3,2] = 0.0
