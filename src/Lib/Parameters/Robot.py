@@ -610,3 +610,14 @@ EPSON_LS3_B401S_Str.Theta.Name = [f'Joint_1_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON
 EPSON_LS3_B401S_Str.Theta.Type = ['R', 'R', 'P', 'R']
 EPSON_LS3_B401S_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z']
 EPSON_LS3_B401S_Str.Theta.Direction = np.array([1.0, 1.0, -1.0, 1.0], dtype=np.float16)
+# Colliders of the robot structure that are defined as Oriented Bounding Boxes (OBBs).
+#   Note:
+#       The parts of the structure are all the joints plus the base of the robot.
+#
+#   Generated from the program, see below:
+#       ./src/Evaluation/Blender/Collider/gen_colliders.py
+EPSON_LS3_B401S_Str.Collider = [OBB_Cls(Box_Cls([0.00000, 0.05875, -0.09830], [0.14000, 0.22650, 0.19660])),
+                                OBB_Cls(Box_Cls([-0.11001, 0.00000, -0.01900], [0.31957, 0.09958, 0.05400])),
+                                OBB_Cls(Box_Cls([-0.08931, 0.00000, -0.10894], [0.26735, 0.13073, 0.28968])),
+                                OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], [0.00200, 0.00200, 0.00200])),
+                                OBB_Cls(Box_Cls([0.00001, 0.00000, 0.16500], [0.02998, 0.02999, 0.33000]))]
