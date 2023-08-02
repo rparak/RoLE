@@ -18,7 +18,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
 
 def main():
     """
@@ -35,14 +35,10 @@ def main():
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
-    URDF_Generator_Cls_0 = Lib.URDF.Core.URDF_Generator_Cls(Robot_Str, True, False, [0.90, 0.90, 0.90, 1.0])
+    # ...
+    URDF_Generator_Cls_0 = Lib.URDF.Core.URDF_Generator_Cls(Robot_Str, True, True, [0.90, 0.90, 0.90, 1.0])
     URDF_Generator_Cls_0.Generate()
     URDF_Generator_Cls_0.Save(f'{project_folder}/URDFs/Robots/{Robot_Str.Name}/{Robot_Str.Name}')
-
-    # ...
-    #Lib.URDF.Core.Generate_URDF(Robot_Str, True, True, f'{project_folder}/URDFs/Robots/{Robot_Str.Name}/{Robot_Str.Name}')
-
-    # display ...
 
 if __name__ == "__main__":
     sys.exit(main())
