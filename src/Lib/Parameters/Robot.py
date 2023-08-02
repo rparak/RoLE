@@ -481,6 +481,21 @@ ABB_IRB_14000_R_Str.Theta.Name = [f'Joint_1_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_I
 ABB_IRB_14000_R_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_14000_R_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 ABB_IRB_14000_R_Str.Theta.Direction = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
+# Colliders of the robot structure that are defined as Oriented Bounding Boxes (OBBs).
+#   Note:
+#       The parts of the structure are all the joints plus the base of the robot.
+#
+#   Generated from the program, see below:
+#       ./src/Evaluation/Blender/Collider/gen_colliders.py
+ABB_IRB_14000_R_Str.Collider = [OBB_Cls(Box_Cls([0.11307, 0.00000, -0.18543], [0.49593, 0.40000, 0.57085])),
+                                OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], [0.00200, 0.00200, 0.00200])),
+                                OBB_Cls(Box_Cls([0.00867, -0.00780, 0.04144], [0.14013, 0.14044, 0.18074])),
+                                OBB_Cls(Box_Cls([-0.01831, 0.06249, 0.01221], [0.13314, 0.22109, 0.13158])),
+                                OBB_Cls(Box_Cls([-0.02064, -0.01583, 0.03952], [0.13622, 0.12657, 0.17557])),
+                                OBB_Cls(Box_Cls([-0.01870, -0.05825, 0.01533], [0.13341, 0.21283, 0.12563])),
+                                OBB_Cls(Box_Cls([-0.00856, -0.01428, 0.05104], [0.10046, 0.11180, 0.16608])),
+                                OBB_Cls(Box_Cls([0.01735, -0.01680, 0.01499], [0.10141, 0.09905, 0.12565])),
+                                OBB_Cls(Box_Cls([0.00017, 0.00020, 0.01621], [0.06302, 0.06302, 0.04352]))]
 
 """
 Robot Type - ABB IRB 14000 (Left):
@@ -556,6 +571,21 @@ ABB_IRB_14000_L_Str.Theta.Name = [f'Joint_1_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_I
 ABB_IRB_14000_L_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_14000_L_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 ABB_IRB_14000_L_Str.Theta.Direction = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
+# Colliders of the robot structure that are defined as Oriented Bounding Boxes (OBBs).
+#   Note:
+#       The parts of the structure are all the joints plus the base of the robot.
+#
+#   Generated from the program, see below:
+#       ./src/Evaluation/Blender/Collider/gen_colliders.py
+ABB_IRB_14000_L_Str.Collider = [OBB_Cls(Box_Cls([0.11307, 0.00000, -0.18543], [0.49593, 0.40000, 0.57085])),
+                                OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], [0.00200, 0.00200, 0.00200])),
+                                OBB_Cls(Box_Cls([0.00867, -0.00780, 0.04144], [0.14013, 0.14044, 0.18074])),
+                                OBB_Cls(Box_Cls([-0.01831, 0.06249, 0.01221], [0.13314, 0.22109, 0.13158])),
+                                OBB_Cls(Box_Cls([-0.02064, -0.01583, 0.03952], [0.13622, 0.12657, 0.17557])),
+                                OBB_Cls(Box_Cls([-0.01870, -0.05825, 0.01533], [0.13341, 0.21283, 0.12563])),
+                                OBB_Cls(Box_Cls([-0.00856, -0.01428, 0.05104], [0.10046, 0.11180, 0.16608])),
+                                OBB_Cls(Box_Cls([0.01735, -0.01680, 0.01499], [0.10141, 0.09905, 0.12565])),
+                                OBB_Cls(Box_Cls([0.00017, 0.00020, 0.01621], [0.06302, 0.06302, 0.04352]))]
 
 """
 Robot Type - Epson LS3-B401S:

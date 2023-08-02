@@ -10,8 +10,6 @@ import numpy as np
 # Custom Script:
 #   ../Lib/Blender/Utilities
 import Lib.Blender.Utilities
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
 #   ../Lib/Collider/Utilities
 import Lib.Collider.Utilities
 #   ../Lib/Transformation/Core
