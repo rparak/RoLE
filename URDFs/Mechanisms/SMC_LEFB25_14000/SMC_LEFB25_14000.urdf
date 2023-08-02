@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <robot name="SMC_LEFB25_14000">
-  <!-- Configuration of the part called 'Base'. -->
-  <link name="Base_Link">
+  <!-- Configuration of the part called 'Base 0'. -->
+  <link name="base_link">
     <visual>
       <geometry>
         <mesh filename="/Mesh/Visual/Base.stl"/>
@@ -22,14 +22,14 @@
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint L'. -->
-  <joint name="Joint_L" type="prismatic">
-    <parent link="Base_Link"/>
-    <child link="Link_L"/>
+  <joint name="joint_L" type="prismatic">
+    <parent link="base_link"/>
+    <child link="link_L"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.168499"/>
     <axis xyz="0 1 0"/>
     <limit effort="1.0" lower="0.0" upper="1.4" velocity="2.0"/>
   </joint>
-  <link name="Link_L">
+  <link name="link_L">
     <visual>
       <geometry>
         <mesh filename="/Mesh/Visual/Joint_L.stl"/>
@@ -50,14 +50,14 @@
     </inertial>
   </link>
   <!-- Configuration of the part called 'Shuttle'. -->
-  <joint name="Shuttle" type="fixed">
-    <parent link="Link_L"/>
-    <child link="Link_Shuttle"/>
+  <joint name="shuttle" type="fixed">
+    <parent link="link_L"/>
+    <child link="link_shuttle"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
     <axis xyz="0 1 0"/>
     <limit effort="0.0" lower="0.0" upper="0.0" velocity="0.0"/>
   </joint>
-  <link name="Link_Shuttle">
+  <link name="link_Shuttle">
     <visual>
       <geometry>
         <mesh filename="/Mesh/Visual/Shuttle.stl"/>
@@ -78,10 +78,10 @@
     </inertial>
   </link>
   <!-- Configuration of the part called 'End-Effector (EE)'. -->
-  <joint name="EE" type="fixed">
+  <joint name="ee" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.019998"/>
-    <parent link="Link_Shuttle"/>
-    <child link="EE_Link"/>
+    <parent link="link_shuttle"/>
+    <child link="ee_link"/>
   </joint>
-  <link name="EE_Link"/>
+  <link name="ee_link"/>
 </robot>

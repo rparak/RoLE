@@ -19,7 +19,6 @@ import Lib.Utilities.MOI as MOI
 
 class URDF_Generator_Cls(object):
     # URDF (Unified Robotics Description Format).
-
     def __init__(self, Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, is_external_axis: bool, rgba: str) -> None:
         self.__Robot_Str = Robot_Str
         self.__use_mesh = use_mesh
@@ -30,7 +29,7 @@ class URDF_Generator_Cls(object):
         self.__Robot_Properties = Utilities.Get_Physical_Properties(self.__Robot_Str.Name)
 
         if self.__is_external_axis == True:
-          self.__configuration = {'Base_0': '', 'Base_1': '', 'Core': [], 'EE': ''}
+          self.__configuration = {'Base_0': '', 'External': '', 'Base_n': '', 'Core': [], 'EE': ''}
         else:
           self.__configuration = {'Base_0': '', 'Core': [], 'EE': ''}
     
@@ -75,7 +74,7 @@ class URDF_Generator_Cls(object):
     </inertial>
   </link>'''
 
-    def __Configure_Base_n(self, n, i, parent_link: str, child_link: str):
+    def __Configure_Base_n(self, n, i, child_link: str, parent_link: str):
       # ...
       obj_geometry = self.__Object_Geometry(f'Base_{n}')
 
@@ -86,12 +85,12 @@ class URDF_Generator_Cls(object):
       bbox_origin = ((-1) *  self.__Robot_Str.Collider[i].Origin) + [0.0, 0.0, 0.0]
 
       return f'''  <!-- Configuration of the part called 'Base {n}'. -->
-  <joint name="base_{i}" type="fixed">
+  <joint name="base_{n}" type="fixed">
     <parent link="{parent_link}"/>
     <child link="{child_link}"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
   </joint>
-  <link name="base_link_{i}">
+  <link name="{child_link}">
     <visual>
       <geometry>
         {obj_geometry['visual']}
@@ -164,7 +163,7 @@ class URDF_Generator_Cls(object):
       return f'''  <!-- Configuration of the part called 'End-Effector (EE)'. -->
   <joint name="ee" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
-    <parent link="link_{self.__Robot_Str.Theta.Zero.shape[0]}"/>
+    <parent link="link_{len(self.__configuration['Core'])}"/>
     <child link="ee_link"/>
   </joint>
   <link name="ee_link"/>'''
@@ -184,29 +183,57 @@ class URDF_Generator_Cls(object):
         self.__Robot_Str.T.Zero_Cfg = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(self.__Robot_Str.Theta.Zero, 'Modified', 
                                                                                              self.__Robot_Str)[1]
         
-        for i, T_Zero_i in enumerate(self.__Robot_Str.T.Zero_Cfg):
-          if i == 0:
-            T_i = self.__Robot_Str.T.Base.Inverse() @ T_Zero_i
-          else:
+
+        if self.__is_external_axis == True:
+          # ..
+          child_id = self.__Robot_Str.Theta.Name[0].removesuffix(f'_{self.__Robot_Str.Name}_ID_{self.__Robot_Str.Id:03}').removeprefix('Joint_')
+
+          # ...
+          self.__configuration['External'] = self.__Configure_Core(0, 1, self.__Robot_Str.T.Base.Inverse() @ self.__Robot_Str.T.Zero_Cfg[0], 
+                                                                   child_id, f'link_{child_id}', 'base_link')
+          print(f'[INFO] >> Index 0-0: Parent(base_link) -> Child(link_{child_id})')
+          self.__configuration['Base_n'] = self.__Configure_Base_n(1, 2, 'base_link_1', f'link_{child_id}')
+          print(f'[INFO] >> Index 0-1: Parent(link_{child_id}) -> Child(base_link_1)')
+
+          # ...
+          for i, T_Zero_i in enumerate(self.__Robot_Str.T.Zero_Cfg[1::], start=1):
             T_i = self.__Robot_Str.T.Zero_Cfg[i - 1].Inverse() @ T_Zero_i
 
-          # ..
-          child_id = self.__Robot_Str.Theta.Name[i].removesuffix(f'_{self.__Robot_Str.Name}_ID_{self.__Robot_Str.Id:03}').removeprefix('Joint_')
+            # ..
+            child_id = self.__Robot_Str.Theta.Name[i].removesuffix(f'_{self.__Robot_Str.Name}_ID_{self.__Robot_Str.Id:03}').removeprefix('Joint_')
+            # ..
+            parent_link = 'base_link_1' if i == 1 else f'link_{i - 1}'
 
-          if self.__is_external_axis == True:
-            pass     
-          else:
+            # ..
+            self.__configuration['Core'].append(self.__Configure_Core(i, 2, T_i, child_id, f'link_{child_id}', parent_link))
+            print(f'[INFO] >> Index {i}: Parent({parent_link}) -> Child(link_{child_id})')
+
+            # Release T_{i}.
+            del T_i
+
+        else:
+          # ...
+          for i, T_Zero_i in enumerate(self.__Robot_Str.T.Zero_Cfg):
+            if i == 0:
+              T_i = self.__Robot_Str.T.Base.Inverse() @ T_Zero_i
+            else:
+              T_i = self.__Robot_Str.T.Zero_Cfg[i - 1].Inverse() @ T_Zero_i
+
+            # ..
+            child_id = self.__Robot_Str.Theta.Name[i].removesuffix(f'_{self.__Robot_Str.Name}_ID_{self.__Robot_Str.Id:03}').removeprefix('Joint_')
+            # ..
             parent_link = 'base_link' if i == 0 else f'link_{i}'
+
             # ..
             self.__configuration['Core'].append(self.__Configure_Core(i, 1, T_i, child_id, f'link_{child_id}', parent_link))
             print(f'[INFO] >> Index {i}: Parent({parent_link}) -> Child(link_{child_id})')
 
-          # Release T_{i}.
-          del T_i
+            # Release T_{i}.
+            del T_i
 
         # ...
         self.__configuration['EE'] = self.__Configure_EE()
-        print(f'[INFO] >> Index {i + 1}: Parent(link_{child_id}) -> Child(ee_link)')
+        print(f'[INFO] >> Index {self.__Robot_Str.Theta.Zero.shape[0]}: Parent(link_{child_id}) -> Child(ee_link)')
     
     def Save(self, file_path: str):
       # Remove the '*.urdf' file if it already exists.
@@ -216,6 +243,9 @@ class URDF_Generator_Cls(object):
       # Save the generated text to the '*.urdf' file.
       File_IO.Save(file_path, f'''<?xml version="1.0"?>\n<robot name="{self.__Robot_Str.Name}">''', 'urdf', '')
       File_IO.Save(file_path, self.__configuration['Base_0'], 'urdf', '')
+      if self.__is_external_axis == True:
+         File_IO.Save(file_path, self.__configuration['External'], 'urdf', '')
+         File_IO.Save(file_path, self.__configuration['Base_n'], 'urdf', '')
       for _,  configuration_core_i in enumerate(self.__configuration['Core']):
         File_IO.Save(file_path, configuration_core_i, 'urdf', '')
       File_IO.Save(file_path, self.__configuration['EE'], 'urdf', '')
