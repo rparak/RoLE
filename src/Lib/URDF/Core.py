@@ -18,8 +18,34 @@ import Lib.Utilities.File_IO as File_IO
 import Lib.Utilities.MOI as MOI
 
 class URDF_Generator_Cls(object):
+    """
+    Description:
+      ...
+
+    Initialization of the Class:
+        Args:
+          (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+          (2) use_mesh [bool]: Use a mesh to represent a visual/collision object. Otherwise, use a sphere to 
+                              represent the object.
+          (3) is_external_axis [bool]: Is the external axis part of the robot or not. For example, a linear track.
+          (4) rgba [Vector<float> 1x4]: 
+
+        Example:
+            Initialization:
+                # Assignment of the variables.
+                
+
+                # Initialization of the class.
+                Cls = 
+
+            Features:
+                # Functions of the class.
+                Cls.
+    
+    """
     # URDF (Unified Robotics Description Format).
     def __init__(self, Robot_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, is_external_axis: bool, rgba: str) -> None:
+        # ...
         self.__Robot_Str = Robot_Str
         self.__use_mesh = use_mesh
         self.__is_external_axis = is_external_axis
@@ -28,13 +54,14 @@ class URDF_Generator_Cls(object):
         # Get the defined physical properties of the robotic structure.
         self.__Robot_Properties = Utilities.Get_Physical_Properties(self.__Robot_Str.Name)
 
+        # ...
         if self.__is_external_axis == True:
           self.__configuration = {'Base_0': '', 'External': '', 'Base_n': '', 'Core': [], 'EE': ''}
         else:
           self.__configuration = {'Base_0': '', 'Core': [], 'EE': ''}
     
 
-    def __Object_Geometry(self, name: str):
+    def __Object_Geometry(self, name: str) -> tp.Tuple[str, str]:
       if self.__use_mesh == True:
           return {'visual': f'<mesh filename="/Mesh/Visual/{name}.stl"/>', 
                   'collision': f'<mesh filename="/Mesh/Visual/{name}.stl"/>'}
@@ -42,7 +69,7 @@ class URDF_Generator_Cls(object):
           return {'visual': '<sphere radius="0.01"/>', 
                   'collision': '<sphere radius="0.01"/>'}
       
-    def __Configure_Base_0(self):
+    def __Configure_Base_0(self) -> str:
       # ...
       obj_geometry = self.__Object_Geometry('Base')
 
@@ -74,7 +101,7 @@ class URDF_Generator_Cls(object):
     </inertial>
   </link>'''
 
-    def __Configure_Base_n(self, n, i, child_link: str, parent_link: str):
+    def __Configure_Base_n(self, n, i, child_link: str, parent_link: str) -> str:
       # ...
       obj_geometry = self.__Object_Geometry(f'Base_{n}')
 
@@ -111,7 +138,7 @@ class URDF_Generator_Cls(object):
     </inertial>
   </link>'''
     
-    def __Configure_Core(self, i: int, i_offset: int, T_i: tp.List[tp.List[float]], child_id: int, child_link: str, parent_link: str):
+    def __Configure_Core(self, i: int, i_offset: int, T_i: tp.List[tp.List[float]], child_id: int, child_link: str, parent_link: str) -> str:
       # ...
       j_type = 'revolute' if self.__Robot_Str.Theta.Type[i] == 'R' else 'prismatic'
       j_ax = f'0 0 {int(self.__Robot_Str.Theta.Direction[i])}' if self.__Robot_Str.Theta.Axis[i] == 'Z' else f'{int(self.__Robot_Str.Theta.Direction[i])} 0 0'
@@ -159,7 +186,7 @@ class URDF_Generator_Cls(object):
     </inertial>
   </link>'''
 
-    def __Configure_EE(self):
+    def __Configure_EE(self) -> str:
       return f'''  <!-- Configuration of the part called 'End-Effector (EE)'. -->
   <joint name="ee" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
@@ -168,7 +195,7 @@ class URDF_Generator_Cls(object):
   </joint>
   <link name="ee_link"/>'''
 
-    def Generate(self):
+    def Generate(self) -> None:
         print(f'[INFO] Generate a URDF file for the robot structure named {self.__Robot_Str.Name}.')
         print('[INFO] Identify links:')
 
@@ -235,7 +262,17 @@ class URDF_Generator_Cls(object):
         self.__configuration['EE'] = self.__Configure_EE()
         print(f'[INFO] >> Index {self.__Robot_Str.Theta.Zero.shape[0]}: Parent(link_{child_id}) -> Child(ee_link)')
     
-    def Save(self, file_path: str):
+    def Save(self, file_path: str) -> None:
+      """
+      Description:
+        ...
+      
+      Args:
+        (1) file_path [string]: The specified path where the file should be saved.
+                                Note:
+                                    Whitout an extension '*.urdf'.
+      """
+
       # Remove the '*.urdf' file if it already exists.
       if os.path.isfile(f'{file_path}.urdf'):
           os.remove(f'{file_path}.urdf')
