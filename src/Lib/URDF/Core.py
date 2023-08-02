@@ -327,11 +327,14 @@ class URDF_Generator_Cls(object):
             child_id = self.__Robot_Parameters_Str.Theta.Name[i].removesuffix(f'_{self.__Robot_Parameters_Str.Name}_ID_{self.__Robot_Parameters_Str.Id:03}').removeprefix('Joint_')
             
             # Express the parent link.
-            parent_link = 'base_link' if i == 0 else f'link_{i}'
+            parent_link = 'base_link' if i == 0 else f'link_{child_id_last}'
 
             # Get the URDF configuration of the joint in episode (i).
             self.__configuration['Core'].append(self.__Configure_Core(i, 1, T_i, child_id, f'link_{child_id}', parent_link))
             print(f'[INFO] >> Index {i}: Parent({parent_link}) -> Child(link_{child_id})')
+
+            # Save the child's last identifier.
+            child_id_last = child_id
 
             # Release T_{i}.
             del T_i

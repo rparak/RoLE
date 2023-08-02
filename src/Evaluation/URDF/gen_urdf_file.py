@@ -1,7 +1,7 @@
 # System (Default)
 import sys
 #   Add access if it is not in the system path.
-if '../' + 'src' not in sys.path:
+if '../../' + 'src' not in sys.path:
     sys.path.append('../..')
 # OS (Operating system interfaces)
 import os
@@ -16,7 +16,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_R_Str
 # Use a mesh to represent a visual/collision object.
 CONST_ENABLE_MESH = True
 # Is the external axis part of the robot or not. For example, a linear track.
