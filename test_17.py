@@ -46,11 +46,9 @@ jP = p.calculateInverseKinematics(urId, 6, [0.302, 0.0, 0.358], current_ee_pos[1
 print(np.round(jP, 3))
 """
 
-"""
-#joint_orient = p.addUserDebugParameter("Joint", 0.0, 0.8, 0)
+joint_orient = p.addUserDebugParameter("Joint", 0.0, 0.8, 0)
 while p.isConnected():
     #p.setJointMotorControl2(urId, 3, p.POSITION_CONTROL, targetPosition=np.deg2rad(p.readUserDebugParameter(joint_orient)), force=100.0)
-    #p.setJointMotorControl2(urId, 0, p.POSITION_CONTROL, targetPosition=p.readUserDebugParameter(joint_orient), force=100.0)
+    p.setJointMotorControl2(urId, 0, p.POSITION_CONTROL, targetPosition=p.readUserDebugParameter(joint_orient), force=100.0)
     p.stepSimulation()
     time.sleep(1.0/100.0)
-"""

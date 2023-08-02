@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <robot name="Universal_Robots_UR3">
-  <!-- Configuration of the part called 'Base 1'. -->
+  <!-- Configuration of the part called 'Base 0'. -->
   <link name="base_link">
     <visual>
       <geometry>
         <mesh filename="/Mesh/Visual/Base.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.90 0.90 0.90 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Base.stl"/>
+        <mesh filename="/Mesh/Visual/Base.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -35,12 +35,12 @@
         <mesh filename="/Mesh/Visual/Joint_1.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.90 0.90 0.90 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_1.stl"/>
+        <mesh filename="/Mesh/Visual/Joint_1.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -63,12 +63,12 @@
         <mesh filename="/Mesh/Visual/Joint_2.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.90 0.90 0.90 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_2.stl"/>
+        <mesh filename="/Mesh/Visual/Joint_2.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -91,12 +91,12 @@
         <mesh filename="/Mesh/Visual/Joint_3.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.90 0.90 0.90 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_3.stl"/>
+        <mesh filename="/Mesh/Visual/Joint_3.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -119,12 +119,12 @@
         <mesh filename="/Mesh/Visual/Joint_4.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.90 0.90 0.90 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_4.stl"/>
+        <mesh filename="/Mesh/Visual/Joint_4.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -147,12 +147,12 @@
         <mesh filename="/Mesh/Visual/Joint_5.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.90 0.90 0.90 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_5.stl"/>
+        <mesh filename="/Mesh/Visual/Joint_5.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -175,12 +175,12 @@
         <mesh filename="/Mesh/Visual/Joint_6.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.90 0.90 0.90 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="/Mesh/Collision/Joint_6.stl"/>
+        <mesh filename="/Mesh/Visual/Joint_6.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -190,10 +190,10 @@
     </inertial>
   </link>
   <!-- Configuration of the part called 'End-Effector (EE)'. -->
-  <joint name="tool0" type="fixed">
+  <joint name="ee" type="fixed">
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
     <parent link="link_6"/>
-    <child link="tool0_link"/>
+    <child link="ee_link"/>
   </joint>
-  <link name="tool0_link"/>
+  <link name="ee_link"/>
 </robot>

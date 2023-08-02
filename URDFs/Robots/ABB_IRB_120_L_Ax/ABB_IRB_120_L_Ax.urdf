@@ -7,7 +7,7 @@
         <mesh filename="/Mesh/Visual/Base.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.9 0.0 0.0 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
@@ -16,9 +16,9 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="21.0"/>
+      <mass value="46.0"/>
       <origin rpy="0.0 0.0 0.0" xyz="-0.33848 -0.03402 0.05515"/>
-      <inertia ixx="0.2004104521" ixy="0.0" ixz="0.0" iyy="2.4859917623" iyz="0.0" izz="2.6438379342"/>
+      <inertia ixx="0.4389943236" ixy="0.0" ixz="0.0" iyy="5.4455057650" iyz="0.0" izz="5.7912640463"/>
     </inertial>
   </link>
   <!-- Configuration of the part called 'Joint L'. -->
@@ -35,7 +35,7 @@
         <mesh filename="/Mesh/Visual/Joint_L.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.9 0.0 0.0 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
@@ -61,7 +61,7 @@
         <mesh filename="/Mesh/Visual/Base_1.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.9 0.0 0.0 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
@@ -89,7 +89,7 @@
         <mesh filename="/Mesh/Visual/Joint_1.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.9 0.0 0.0 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
@@ -117,7 +117,7 @@
         <mesh filename="/Mesh/Visual/Joint_2.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.9 0.0 0.0 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
@@ -145,7 +145,7 @@
         <mesh filename="/Mesh/Visual/Joint_3.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.9 0.0 0.0 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
@@ -173,7 +173,7 @@
         <mesh filename="/Mesh/Visual/Joint_4.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.9 0.0 0.0 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
@@ -201,7 +201,7 @@
         <mesh filename="/Mesh/Visual/Joint_5.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.9 0.0 0.0 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
@@ -229,7 +229,7 @@
         <mesh filename="/Mesh/Visual/Joint_6.stl"/>
       </geometry>
       <material name="Custom_Color">
-        <color rgba="0.9 0.0 0.0 1.0"/>
+        <color rgba="0.9 0.9 0.9 1.0"/>
       </material>
     </visual>
     <collision>
