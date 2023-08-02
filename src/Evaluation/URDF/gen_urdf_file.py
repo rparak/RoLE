@@ -16,11 +16,11 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_R_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
 # Use a mesh to represent a visual/collision object.
 CONST_ENABLE_MESH = True
 # Is the external axis part of the robot or not. For example, a linear track.
-CONST_IS_EXTERNAL_AXIS = False
+CONST_IS_EXTERNAL_AXIS = True
 
 def main():
     """
