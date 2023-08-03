@@ -18,6 +18,14 @@ import Lib.Blender.Core
 import Lib.Parameters.Robot as Parameters
 
 """
+j_5 = np.linspace(0.0, 1.57, int(fps * CONST_T_1))
+#print(j_5)
+for t in range(int(fps * CONST_T_1)):   
+    # Set the absolute position of the robot joints.
+    Robot_ID_0_Cls.Set_Absolute_Joint_Position(np.array([0.0, 0.0, 0.0, 0.0, j_5[t], 0.0]), t/fps, (t + 1)/fps)
+"""
+
+"""
 Description:
     Open {robot_name}.blend from the Blender folder and copy + paste this script and run it.
 
@@ -34,7 +42,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 # Animation stop(t_0), start(t_1) time in seconds.
