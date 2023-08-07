@@ -232,7 +232,7 @@ def Get_Object_Hierarchy(name: str) -> None:
     """
     
     for obj in bpy.data.objects:
-        if obj.parent == bpy.data.objects[name]:
+        if obj.name == bpy.data.objects[name]:
             # Print name of the current object (index i).
             print(obj.name)
             # Recursive call.

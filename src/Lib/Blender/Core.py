@@ -180,18 +180,20 @@ class Mechanism_Cls(object):
 
     Initialization of the Class:
         Args:
-            (1) Mechanism_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the mechanism.
-            (2) viewpoint_visibility [bool]: The state (enable/disable) of the mechanism slider viewpoint object visibility.
+            (1) Mechanism_Parameters_Str [Mechanism_Parameters_Str(object)]: The structure of the main parameters of the mechanism.
+            (2) visibility [Dictionary {string, string}]: The state to enable/disable the visibility of additional mechanism objects.
+                                                          Note:
+                                                            visibility = {'Viewpoint_EE': False/True, 'Colliders': False/True}
 
         Example:
             Initialization:
                 # Assignment of the variables.
                 #   Example for the SMC LEFB25UNZS 1400C mechanism.
                 Mechanism_Parameters_Str = Lib.Parameters.Mechanism.SMC_LEFB25_1400_0_1_Str
-                viewpoint_visibility = True
+                visibility = {'Viewpoint_EE': False, 'Colliders': False}
 
                 # Initialization of the class.
-                Cls = Mechanism_Cls(Mechanism_Parameters_Str, viewpoint_visibility)
+                Cls = Mechanism_Cls(Mechanism_Parameters_Str, visibility)
 
             Features:
                 # Properties of the class.
@@ -202,7 +204,7 @@ class Mechanism_Cls(object):
                 Cls.Set_Absolute_Joint_Position([0.0])
     """
         
-    def __init__(self, Mechanism_Parameters_Str: Lib.Parameters.Mechanism.Mechanism_Parameters_Str, viewpoint_visibility: bool) -> None:
+    def __init__(self, Mechanism_Parameters_Str: Lib.Parameters.Mechanism.Mechanism_Parameters_Str, visibility: tp.Dict[str, str]) -> None:
         try:
             assert Lib.Blender.Utilities.Object_Exist(f'{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}') == True
             
@@ -221,14 +223,14 @@ class Mechanism_Cls(object):
             self.__fps = bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
             
             # Enable or disable the visibility of the end-effector viewpoint.
-            self.__viewpoint_visibility = viewpoint_visibility
-            self.__Viewpoint_EE_Name = f'{self.__name}_Viewpoint_EE'
-            if Lib.Blender.Utilities.Object_Exist(self.__Viewpoint_EE_Name):
-                # Enable / disable the visibility of an object.
-                Lib.Blender.Utilities.Object_Visibility(self.__Viewpoint_EE_Name, self.__viewpoint_visibility)
-                # Set the transformation of the viewpoint object.
-                #   The object transformation will be set to the end-effector of the robot structure.
-                Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
+            if Lib.Blender.Utilities.Object_Exist(f'Viewpoint_EE_{self.__name}'):
+                Lib.Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', visibility['Viewpoint_EE'])
+
+            # Enable or disable the visibility of the colliders.
+            for _, collider_name in enumerate(self.__Mechanism_Parameters_Str.Collider.Name):
+                print(collider_name)
+                if Lib.Blender.Utilities.Object_Exist(collider_name):
+                    Lib.Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
@@ -409,20 +411,19 @@ class Robot_Cls(object):
     Initialization of the Class:
         Args:
             (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-            (2) viewpoint_visibility [bool]: The state (enable/disable) of the robot end-effector viewpoint object visibility.
-
-            # change to viewpoint visibility to generat visibility ...
-            # visibility = {'Viewpoint': False/True, 'Colliders': False/True, etc.}
+            (2) visibility [Dictionary {string, string}]: The state to enable/disable the visibility of additional robot objects.
+                                                          Note:
+                                                            visibility = {'Viewpoint_EE': False/True, 'Colliders': False/True}
 
         Example:
             Initialization:
                 # Assignment of the variables.
                 #   Example for the ABB IRB 120 robot.
                 Robot_Parameters_Str = Lib.Parameters.Robot.ABB_IRB_120_Str
-                viewpoint_visibility = True
+                visibility = {'Viewpoint_EE': False, 'Colliders': False}
 
                 # Initialization of the class.
-                Cls = Robot_Cls(Robot_Parameters_Str, viewpoint_visibility)
+                Cls = Robot_Cls(Robot_Parameters_Str, visibility)
 
             Features:
                 # Properties of the class.
@@ -433,7 +434,7 @@ class Robot_Cls(object):
                 Cls.Set_Absolute_Joint_Position([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     """
 
-    def __init__(self, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str, viewpoint_visibility: bool) -> None:
+    def __init__(self, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str, visibility: tp.Dict[str, str]) -> None:
         try:
             assert Lib.Blender.Utilities.Object_Exist(f'{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}') == True
             
@@ -455,15 +456,14 @@ class Robot_Cls(object):
             self.__fps = bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
             
             # Enable or disable the visibility of the end-effector viewpoint.
-            self.__viewpoint_visibility = viewpoint_visibility
-            self.__Viewpoint_EE_Name = f'{self.__name}_Viewpoint_EE'
-            if Lib.Blender.Utilities.Object_Exist(self.__Viewpoint_EE_Name):
-                # Enable / disable the visibility of an object.
-                Lib.Blender.Utilities.Object_Visibility(self.__Viewpoint_EE_Name, self.__viewpoint_visibility)
-                # Set the transformation of the viewpoint object.
-                #   The object transformation will be set to the end-effector of the robot structure.
-                Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
-            
+            if Lib.Blender.Utilities.Object_Exist(f'Viewpoint_EE_{self.__name}'):
+                Lib.Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', visibility['Viewpoint_EE'])
+
+            # Enable or disable the visibility of the colliders.
+            for _, collider_name in enumerate(self.__Robot_Parameters_Str.Collider.Name):
+                if Lib.Blender.Utilities.Object_Exist(collider_name):
+                    Lib.Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
+
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
             print(f'[ERROR] The robot object named <{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}> does not exist in the current scene.')

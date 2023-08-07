@@ -18,6 +18,9 @@ import Lib.Blender.Core
 import Lib.Parameters.Robot as Parameters
 
 """
+#   ../Lib/Kinematics/Core
+import Lib.Kinematics.Core as Kinematics
+
 T_Arr = Kinematics.Get_Individual_Joint_Configuration(Robot_ID_0_Cls.Parameters.Theta.Zero, 'Modified', CONST_ROBOT_TYPE)
 
 for i, T_Arr_i in enumerate(T_Arr[1]):
@@ -65,7 +68,7 @@ def main():
         Lib.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
     
     # Set the structure of the main parameters of the controlled robot.
-    Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, True)
+    Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, {'Viewpoint_EE': False, 'Colliders': False})
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
     # Reset the absolute position of the robot joints to the 'Zero'.

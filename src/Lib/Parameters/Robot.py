@@ -110,6 +110,27 @@ class T_Parameters_Str:
     Zero_Cfg: tp.List[tp.List[float]] = field(default_factory=list)
 
 @dataclass
+class Collider_Str:
+    """
+    Description:
+        The auxiliary structure of both the base and the joint colliders.
+
+        Note:
+            Generated from the program, see below:
+                ./src/Evaluation/Blender/Collider/gen_colliders.py
+    """
+
+    # The name of the colliders.
+    #   Unit [Vector<string>]
+    Name: tp.List[str] = field(default_factory=list)
+    # Colliders of the base.
+    #   Unit [Vector<OBB_Cls(object)>]
+    Base: tp.List[OBB_Cls] = field(default_factory=list)
+    # Colliders of the joints.
+    #   Unit [Vector<OBB_Cls(object)>]
+    Theta: tp.List[OBB_Cls] = field(default_factory=list)
+
+@dataclass
 class Robot_Parameters_Str:
     """
     Description:
@@ -134,20 +155,17 @@ class Robot_Parameters_Str:
     #   Unit [int]
     Id: int = 0
     # Denavit-Hartenberg (DH) parameters.
-    #   Unit [__DH_Parameters_Str(object)]
+    #   Unit [DH_Parameters_Str(object)]
     DH: DH_Parameters_Str = field(default_factory=DH_Parameters_Str)
     # Absolute joint position (theta) parameters.
-    #   Unit [__Theta_Parameters_Str(object)]
+    #   Unit [Theta_Parameters_Str(object)]
     Theta: Theta_Parameters_Str = field(default_factory=Theta_Parameters_Str)
     # Homogeneous transformation matrix (T) parameters.
-    #   Unit [__T_Parameters_Str(object)]
+    #   Unit [T_Parameters_Str(object)]
     T: T_Parameters_Str = field(default_factory=T_Parameters_Str)
-    # Colliders of the robot structure that are defined 
-    # as Oriented Bounding Boxes (OBBs).
-    #   Generated from the program, see below:
-    #       ./src/Evaluation/Blender/Collider/gen_colliders.py
-    #   Unit [Vector<OBB_Cls(object)>]
-    Collider: tp.List[OBB_Cls] = field(default=OBB_Cls)
+    # Colliders of the robot structure.
+    #   Unit [Collider_Str(object)]
+    Collider: Collider_Str = field(default_factory=Collider_Str)
 
 """
 Robot Type - Universal Robots UR3:
@@ -160,7 +178,7 @@ Robot Type - Universal Robots UR3:
         d          = [0.1519,      0.0,      0.0, 0.11235, 0.08535, 0.0819]
         alpha      = [  1.57,      0.0,      0.0,    1.57,   -1.57,    0.0]
 """
-Universal_Robots_UR3_Str = Robot_Parameters_Str(Name = 'Universal_Robots_UR3', Id=1)
+Universal_Robots_UR3_Str = Robot_Parameters_Str(Name='Universal_Robots_UR3', Id=1)
 # Homogeneous transformation matrix of the base.
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
@@ -190,14 +208,6 @@ Universal_Robots_UR3_Str.DH.Standard = np.array([[0.0,      0.0,  0.1519,   1.57
                                                  [0.0,      0.0, 0.11235,   1.5707963267948966],
                                                  [0.0,      0.0, 0.08535,  -1.5707963267948966],
                                                  [0.0,      0.0,  0.0819,                  0.0]], dtype=np.float32) 
-"""
-Universal_Robots_UR3_Str.DH.Modified = np.array([[0.0,      0.0,  0.1519,                  0.0],
-                                                 [0.0,      0.0,     0.0,   1.5707963267948966],
-                                                 [0.0, -0.24365,     0.0,                  0.0],
-                                                 [0.0, -0.21325, 0.11235,                  0.0],
-                                                 [0.0,      0.0, 0.08535,   1.5707963267948966],
-                                                 [0.0,      0.0,  0.0819,  -1.5707963267948966]], dtype=np.float32)
-"""
 Universal_Robots_UR3_Str.DH.Modified = np.array([[0.0,      0.0,  0.1519,                  0.0],
                                                  [0.0,      0.0,     0.0,   1.5707963267948966],
                                                  [0.0, -0.24365,     0.0,                  0.0],
@@ -226,18 +236,20 @@ Universal_Robots_UR3_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R']
 Universal_Robots_UR3_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 Universal_Robots_UR3_Str.Theta.Direction = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
 # Colliders of the robot structure that are defined as Oriented Bounding Boxes (OBBs).
-#   Note:
-#       The parts of the structure are all the joints plus the base of the robot.
-#
-#   Generated from the program, see below:
-#       ./src/Evaluation/Blender/Collider/gen_colliders.py
-Universal_Robots_UR3_Str.Collider = [OBB_Cls(Box_Cls([0.00000, 0.00001, -0.04302], [0.12807, 0.12802, 0.08605])),
-                                     OBB_Cls(Box_Cls([-0.00014, 0.00405, 0.00439], [0.09099, 0.09990, 0.12292])),
-                                     OBB_Cls(Box_Cls([0.11826, 0.00013, -0.11553], [0.32829, 0.09098, 0.12305])),
-                                     OBB_Cls(Box_Cls([0.10402, 0.00001, -0.02942], [0.28304, 0.07503, 0.09708])),
-                                     OBB_Cls(Box_Cls([-0.00001, -0.00078, 0.00610], [0.06444, 0.09067, 0.07681])),
-                                     OBB_Cls(Box_Cls([0.00000, 0.00176, 0.00610], [0.06443, 0.08872, 0.07680])),
-                                     OBB_Cls(Box_Cls([-0.00007, 0.00326, 0.01962], [0.06298, 0.06961, 0.03936]))]
+Universal_Robots_UR3_Str.Collider.Name = [f'Base_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}',
+                                          f'Joint_1_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
+                                          f'Joint_2_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
+                                          f'Joint_3_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
+                                          f'Joint_4_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
+                                          f'Joint_5_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
+                                          f'Joint_6_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}']
+Universal_Robots_UR3_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, 0.00001, -0.04302], [0.12807, 0.12802, 0.08605]))]
+Universal_Robots_UR3_Str.Collider.Theta = [OBB_Cls(Box_Cls([-0.00014, 0.00405, 0.00439], [0.09099, 0.09990, 0.12292])),
+                                           OBB_Cls(Box_Cls([0.11826, 0.00013, -0.11553], [0.32829, 0.09098, 0.12305])),
+                                           OBB_Cls(Box_Cls([0.10402, 0.00001, -0.02942], [0.28304, 0.07503, 0.09708])),
+                                           OBB_Cls(Box_Cls([-0.00001, -0.00078, 0.00610], [0.06444, 0.09067, 0.07681])),
+                                           OBB_Cls(Box_Cls([0.00000, 0.00176, 0.00610], [0.06443, 0.08872, 0.07680])),
+                                           OBB_Cls(Box_Cls([-0.00007, 0.00326, 0.01962], [0.06298, 0.06961, 0.03936]))]
 
 """
 Robot Type - ABB IRB 120:
@@ -255,7 +267,7 @@ Robot Type - ABB IRB 120:
         d          = [0.290,   0.0,   0.0, 0.302,   0.0, 0.072]
         alpha      = [-1.57,   0.0, -1.57,  1.57, -1.57,   0.0]
 """
-ABB_IRB_120_Str = Robot_Parameters_Str(Name = 'ABB_IRB_120', Id=1)
+ABB_IRB_120_Str = Robot_Parameters_Str(Name='ABB_IRB_120', Id=1)
 # Homogeneous transformation matrix of the base.
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
@@ -305,18 +317,20 @@ ABB_IRB_120_Str.Theta.Type = ['R', 'R', 'R', 'R', 'R', 'R']
 ABB_IRB_120_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 ABB_IRB_120_Str.Theta.Direction = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
 # Colliders of the robot structure that are defined as Oriented Bounding Boxes (OBBs).
-#   Note:
-#       The parts of the structure are all the joints plus the base of the robot.
-#
-#   Generated from the program, see below:
-#       ./src/Evaluation/Blender/Collider/gen_colliders.py
-ABB_IRB_120_Str.Collider = [OBB_Cls(Box_Cls([0.06060, 0.00000, -0.08317], [0.30120, 0.18052, 0.16633])),
-                            OBB_Cls(Box_Cls([0.00000, 0.00000, 0.03631], [0.21500, 0.21700, 0.19738])),
-                            OBB_Cls(Box_Cls([-0.12301, 0.00000, 0.00025], [0.38941, 0.14486, 0.21926])),
-                            OBB_Cls(Box_Cls([-0.04557, -0.03259, -0.00175], [0.18803, 0.24401, 0.11550])),
-                            OBB_Cls(Box_Cls([-0.00700, -0.00047, 0.05666], [0.10591, 0.12694, 0.19348])),
-                            OBB_Cls(Box_Cls([0.00000, -0.00006, 0.00000], [0.08200, 0.13189, 0.06962])),
-                            OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00650], [0.04000, 0.03983, 0.01300]))]
+ABB_IRB_120_Str.Collider.Name = [f'Base_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}',
+                                 f'Joint_1_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
+                                 f'Joint_2_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
+                                 f'Joint_3_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
+                                 f'Joint_4_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
+                                 f'Joint_5_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
+                                 f'Joint_6_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}']
+ABB_IRB_120_Str.Collider.Base = [OBB_Cls(Box_Cls([0.06060, 0.00000, -0.08317], [0.30120, 0.18052, 0.16633]))]
+ABB_IRB_120_Str.Collider.Theta = [OBB_Cls(Box_Cls([0.00000, 0.00000, 0.03631], [0.21500, 0.21700, 0.19738])),
+                                  OBB_Cls(Box_Cls([-0.12301, 0.00000, 0.00025], [0.38941, 0.14486, 0.21926])),
+                                  OBB_Cls(Box_Cls([-0.04557, -0.03259, -0.00175], [0.18803, 0.24401, 0.11550])),
+                                  OBB_Cls(Box_Cls([-0.00700, -0.00047, 0.05666], [0.10591, 0.12694, 0.19348])),
+                                  OBB_Cls(Box_Cls([0.00000, -0.00006, 0.00000], [0.08200, 0.13189, 0.06962])),
+                                  OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00650], [0.04000, 0.03983, 0.01300]))]
 
 """
 Robot Type - ABB IRB 120 with SMC Linear Axis (LEJSH63NZA 800):
@@ -335,7 +349,7 @@ Robot Type - ABB IRB 120 with SMC Linear Axis (LEJSH63NZA 800):
         d          = [0.113, 0.290,   0.0,   0.0, 0.302,   0.0, 0.072]
         alpha      = [  0.0, -1.57,   0.0, -1.57,  1.57, -1.57,   0.0]
 """
-ABB_IRB_120_L_Ax_Str = Robot_Parameters_Str(Name = 'ABB_IRB_120_L_Ax', Id=1)
+ABB_IRB_120_L_Ax_Str = Robot_Parameters_Str(Name='ABB_IRB_120_L_Ax', Id=1)
 # Homogeneous transformation matrix of the base.
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
@@ -421,7 +435,7 @@ Robot Type - ABB IRB 14000 (Right):
         d          = [   0.1,   0.0, 0.2515,    0.0, 0.265,    0.0, 0.036]
         alpha      = [ -1.57,  1.57,  -1.57,  -1.57, -1.57,   1.57,   0.0]
 """
-ABB_IRB_14000_R_Str = Robot_Parameters_Str(Name = 'ABB_IRB_14000_R', Id=1)
+ABB_IRB_14000_R_Str = Robot_Parameters_Str(Name='ABB_IRB_14000_R', Id=1)
 # Homogeneous transformation matrix of the base of the right arm (T_Base @ T_Base_R)
 #   1\ Right Arm:
 #       [[ 0.5713, -0.1071,  0.8138,  0.0536],
@@ -514,7 +528,7 @@ Robot Type - ABB IRB 14000 (Left):
         d          = [   0.1,   0.0, 0.2515,    0.0, 0.265,    0.0, 0.036]
         alpha      = [ -1.57,  1.57,  -1.57,  -1.57, -1.57,   1.57,   0.0]
 """
-ABB_IRB_14000_L_Str = Robot_Parameters_Str(Name = 'ABB_IRB_14000_L', Id=1)
+ABB_IRB_14000_L_Str = Robot_Parameters_Str(Name='ABB_IRB_14000_L', Id=1)
 # Homogeneous transformation matrix of the base of the left arm (T_Base @ T_Base_L)
 #   1\ Left Arm:
 #       [[ 0.5716,  0.1048, 0.8138, 0.0536],
@@ -613,7 +627,7 @@ Robot Type - Epson LS3-B401S:
                 d          = [0.1731, 0.0499, 0.0, 0.0785]
                 alpha      = [   0.0,   3.14, 0.0,    0.0]
 """
-EPSON_LS3_B401S_Str = Robot_Parameters_Str(Name = 'EPSON_LS3_B401S', Id=1)
+EPSON_LS3_B401S_Str = Robot_Parameters_Str(Name='EPSON_LS3_B401S', Id=1)
 # Homogeneous transformation matrix of the base.
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],

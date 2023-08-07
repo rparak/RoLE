@@ -205,7 +205,7 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
                                                 Where n is the number of joints.
     """
     
-    T_i = Robot_Parameters_Str.T.Base; T_zero_cfg = []
+    T_i = Robot_Parameters_Str.T.Base; T_cfg = []
     for i, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type, 
                                                              Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using standard DH parameters.
@@ -223,12 +223,12 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
         # Addition of a homogeneous matrix configuration in the current 
         # episode (joint absolute position i).
         if theta.size - 1 == i:
-            T_zero_cfg.append(T_i @ Robot_Parameters_Str.T.End_Effector)
+            T_cfg.append(T_i @ Robot_Parameters_Str.T.End_Effector)
         else:
-            T_zero_cfg.append(T_i)
+            T_cfg.append(T_i)
 
     # T_i[]
-    return T_zero_cfg
+    return T_cfg
 
 def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                                             tp.List[tp.List[tp.List[float]]]]:
@@ -246,7 +246,7 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
                                                 Where n is the number of joints.
     """
     
-    T_i = Robot_Parameters_Str.T.Base; T_zero_cfg = []
+    T_i = Robot_Parameters_Str.T.Base; T_cfg = []
     for i, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type, 
                                                              Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using modified DH parameters.
@@ -264,12 +264,12 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
         # Addition of a homogeneous matrix configuration in the current 
         # episode (joint absolute position i).
         if theta.size - 1 == i:
-            T_zero_cfg.append(T_i @ Robot_Parameters_Str.T.End_Effector)
+            T_cfg.append(T_i @ Robot_Parameters_Str.T.End_Effector)
         else:
-            T_zero_cfg.append(T_i)
+            T_cfg.append(T_i)
 
     # T_i[]
-    return T_zero_cfg
+    return T_cfg
 
 def Get_Individual_Joint_Configuration(theta: tp.List[float], method: str, Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                                               tp.List[tp.List[tp.List[float]]]]:

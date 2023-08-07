@@ -70,6 +70,27 @@ class T_Parameters_Str:
     Shuttle: tp.List[tp.List[float]] = field(default_factory=list)
 
 @dataclass
+class Collider_Str:
+    """
+    Description:
+        The auxiliary structure of both the base and the joint colliders.
+
+        Note:
+            Generated from the program, see below:
+                ./src/Evaluation/Blender/Collider/gen_colliders.py
+    """
+
+    # The name of the colliders.
+    #   Unit [Vector<string>]
+    Name: tp.List[str] = field(default_factory=list)
+    # Colliders of the base.
+    #   Unit [Vector<OBB_Cls(object)>]
+    Base: tp.List[OBB_Cls] = field(default_factory=list)
+    # Colliders of the joints.
+    #   Unit [Vector<OBB_Cls(object)>]
+    Theta: tp.List[OBB_Cls] = field(default_factory=list)
+
+@dataclass
 class Mechanism_Parameters_Str:
     """
     Description:
@@ -94,24 +115,21 @@ class Mechanism_Parameters_Str:
     #   Unit [int]
     Id: int = 0
     # Absolute joint position (theta) parameters.
-    #   Unit [__Theta_Parameters_Str(object)]
+    #   Unit [Theta_Parameters_Str(object)]
     Theta: Theta_Parameters_Str = field(default_factory=Theta_Parameters_Str)
     # Homogeneous transformation matrix (T) parameters.
-    #   Unit [__T_Parameters_Str(object)]
+    #   Unit [T_Parameters_Str(object)]
     T: T_Parameters_Str = field(default_factory=T_Parameters_Str)
-    # Colliders of the mechanism structure that are defined 
-    # as Oriented Bounding Boxes (OBBs).
-    #   Generated from the program, see below:
-    #       ./src/Evaluation/Blender/Collider/gen_colliders.py
-    #   Unit [Vector<OBB_Cls(object)>]
-    Collider: tp.List[OBB_Cls] = field(default=OBB_Cls)
+    # Colliders of the mechanism structure.
+    #   Unit [Collider_Str(object)]
+    Collider: Collider_Str = field(default_factory=Collider_Str)
 
 """
 Mechanism Type - SMC LEFB25UNZS 14000C (ID = 1):
     Absolute Joint Position:
         Joint L: [0.0, 1.4] [m]
 """
-SMC_LEFB25_14000_0_1_Str = Mechanism_Parameters_Str(Name = 'SMC_LEFB25_14000', Id=1)
+SMC_LEFB25_14000_0_1_Str = Mechanism_Parameters_Str(Name='SMC_LEFB25_14000', Id=1)
 # Homogeneous transformation matrix of the base.
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
@@ -137,22 +155,19 @@ SMC_LEFB25_14000_0_1_Str.Theta.Type = 'P'
 SMC_LEFB25_14000_0_1_Str.Theta.Axis = 'Y'
 SMC_LEFB25_14000_0_1_Str.Theta.Direction = 1
 # Colliders of the mechanism structure that are defined as Oriented Bounding Boxes (OBBs).
-#   Note:
-#       The parts of the structure are the joint plus the base of the mechanism 
-#       as well as the shuttle
-#
-#   Generated from the program, see below:
-#       ./src/Evaluation/Blender/Collider/gen_colliders.py
-SMC_LEFB25_14000_0_1_Str.Collider = [OBB_Cls(Box_Cls([0.00000, -0.70200, -0.08296], [0.13778, 1.66290, 0.16593])),
-                                     OBB_Cls(Box_Cls([0.00000, -0.00002, 0.00453], [0.04993, 0.10204, 0.00905])),
-                                     OBB_Cls(Box_Cls([-0.00022, 0.00000, -0.02508], [0.18964, 0.23935, 0.05016]))]
+SMC_LEFB25_14000_0_1_Str.Collider.Name = [f'Base_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}',
+                                          f'Joint_L_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}', 
+                                          f'Shuttle_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}']
+SMC_LEFB25_14000_0_1_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, -0.70200, -0.08296], [0.13778, 1.66290, 0.16593]))]
+SMC_LEFB25_14000_0_1_Str.Collider.Theta = [OBB_Cls(Box_Cls([0.00000, -0.00002, 0.00453], [0.04993, 0.10204, 0.00905])),
+                                           OBB_Cls(Box_Cls([-0.00022, 0.00000, -0.02508], [0.18964, 0.23935, 0.05016]))]
 
 """
 Mechanism Type - SMC LEFB25UNZS 14000C (ID = 2):
     Absolute Joint Position:
         Joint L: [0.0, 1.4] [m]
 """
-SMC_LEFB25_14000_0_2_Str = Mechanism_Parameters_Str(Name = 'SMC_LEFB25_14000', Id=2)
+SMC_LEFB25_14000_0_2_Str = Mechanism_Parameters_Str(Name='SMC_LEFB25_14000', Id=2)
 # Homogeneous transformation matrix of the base.
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
@@ -178,12 +193,9 @@ SMC_LEFB25_14000_0_2_Str.Theta.Type = 'P'
 SMC_LEFB25_14000_0_2_Str.Theta.Axis = 'Y'
 SMC_LEFB25_14000_0_2_Str.Theta.Direction = 1
 # Colliders of the mechanism structure that are defined as Oriented Bounding Boxes (OBBs).
-#   Note:
-#       The parts of the structure are the joint plus the base of the mechanism 
-#       as well as the shuttle
-#
-#   Generated from the program, see below:
-#       ./src/Evaluation/Blender/Collider/gen_colliders.py
-SMC_LEFB25_14000_0_2_Str.Collider = [OBB_Cls(Box_Cls([0.00000, -0.70200, -0.08296], [0.13778, 1.66290, 0.16593])),
-                                     OBB_Cls(Box_Cls([0.00000, -0.00002, 0.00453], [0.04993, 0.10204, 0.00905])),
-                                     OBB_Cls(Box_Cls([-0.00022, 0.00000, -0.02508], [0.18964, 0.23935, 0.05016]))]
+SMC_LEFB25_14000_0_2_Str.Collider.Name = [f'Base_Collider_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}',
+                                          f'Joint_L_Collider_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}', 
+                                          f'Shuttle_Collider_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}']
+SMC_LEFB25_14000_0_2_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, -0.70200, -0.08296], [0.13778, 1.66290, 0.16593]))]
+SMC_LEFB25_14000_0_2_Str.Collider.Theta = [OBB_Cls(Box_Cls([0.00000, -0.00002, 0.00453], [0.04993, 0.10204, 0.00905])),
+                                           OBB_Cls(Box_Cls([-0.00022, 0.00000, -0.02508], [0.18964, 0.23935, 0.05016]))]
