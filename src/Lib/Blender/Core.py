@@ -365,6 +365,7 @@ class Mechanism_Cls(object):
             # Obtain a linear interpolation between the actual and desired absolute joint position.
             theta_arr = np.linspace(self.Theta, theta, np.int32((t_1 - t_0) * self.__fps))
 
+            t_0_frame = np.int32(t_0 * self.__fps)
             for i_frame, theta_arr_i in enumerate(theta_arr):
                 bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_mode = self.__axes_sequence_cfg
                 if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta_arr_i <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
@@ -384,7 +385,7 @@ class Mechanism_Cls(object):
                                                                                                                                       th)).p.all()
                         
                         # Insert a keyframe of the object (Joint_{i}) into the frame at time t(i). 
-                        Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', i_frame + np.int32(t_0 * self.__fps), 'ALL')
+                        Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', t_0_frame + i_frame, 'ALL')
                 else:
                     # Reset the absolute position of the robot joints to the 'Zero'.
                     self.Reset('Zero')
@@ -650,6 +651,7 @@ class Robot_Cls(object):
             # Obtain a linear interpolation between the actual and desired absolute joint position.
             theta_arr = np.linspace(self.Theta, theta, np.int32((t_1 - t_0) * self.__fps))
 
+            t_0_frame = np.int32(t_0 * self.__fps)
             for i_frame, theta_arr_i in enumerate(theta_arr):
                 # Get the zero configuration of each joint.
                 T_zero_cfg = self.__Get_Zero_Joint_Cfg()
@@ -670,7 +672,7 @@ class Robot_Cls(object):
                             bpy.data.objects[th_i_name].location = (Transformation.Get_Translation_Matrix(ax_i, th_new) @ T_i_zero_cfg).p.all()
 
                         # Insert a keyframe of the object (Joint_{i}) into the frame at time t(i). 
-                        Lib.Blender.Utilities.Insert_Key_Frame(th_i_name, 'matrix_basis', i_frame + np.int32(t_0 * self.__fps), 'ALL')
+                        Lib.Blender.Utilities.Insert_Key_Frame(th_i_name, 'matrix_basis', t_0_frame + i_frame, 'ALL')
                     else:
                         # Update the scene.
                         self.__Update()

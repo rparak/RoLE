@@ -17,15 +17,6 @@ import Lib.Blender.Core
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 
-
-"""
-j_5 = np.linspace(0.0, 1.57, int(fps * CONST_T_1))
-#print(j_5)
-for t in range(int(fps * CONST_T_1)):   
-    # Set the absolute position of the robot joints.
-    Robot_ID_0_Cls.Set_Absolute_Joint_Position(np.array([0.0, 0.0, 0.0, 0.0, j_5[t], 0.0]), t/fps, (t + 1)/fps)
-"""
-
 """
 T_Arr = Kinematics.Get_Individual_Joint_Configuration(Robot_ID_0_Cls.Parameters.Theta.Zero, 'Modified', CONST_ROBOT_TYPE)
 
