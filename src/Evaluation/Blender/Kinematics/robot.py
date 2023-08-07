@@ -18,10 +18,9 @@ import Lib.Blender.Core
 import Lib.Parameters.Robot as Parameters
 
 """
-#   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core as Kinematics
 
-T_Arr = Kinematics.Get_Individual_Joint_Configuration(Robot_ID_0_Cls.Parameters.Theta.Zero, 'Modified', CONST_ROBOT_TYPE)
+T_Arr = Kinematics.Get_Individual_Joint_Configuration(CONST_ROBOT_TYPE.Theta.Zero, 'Modified', CONST_ROBOT_TYPE)
 
 for i, T_Arr_i in enumerate(T_Arr[1]):
     Lib.Blender.Utilities.Set_Object_Transformation(f'Joint_{i+1}_Collision', T_Arr_i)
