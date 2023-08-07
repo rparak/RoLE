@@ -10,7 +10,7 @@ from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM
 #   ../Lib/Primitives/Core
 from Lib.Primitives.Core import Box_Cls
 #   ../Lib/Primitives/Core
-from Lib.Collider.Core import OBB_Cls
+from Lib.Collider.Core import AABB_Cls, OBB_Cls
 
 @dataclass
 class Theta_Parameters_Str(object):
@@ -73,22 +73,21 @@ class T_Parameters_Str:
 class Collider_Str:
     """
     Description:
-        The auxiliary structure of both the base and the joint colliders.
-
-        Note:
-            Generated from the program, see below:
-                ./src/Evaluation/Blender/Collider/gen_colliders.py
+        The auxiliary structure of both the internal and external colliders.
     """
 
-    # The name of the colliders.
+    # The name of the internal colliders.
     #   Unit [Vector<string>]
     Name: tp.List[str] = field(default_factory=list)
-    # Colliders of the base.
+    # Internal colliders of the base.
     #   Unit [Vector<OBB_Cls(object)>]
     Base: tp.List[OBB_Cls] = field(default_factory=list)
-    # Colliders of the joints.
+    # Internal colliders of the joints.
     #   Unit [Vector<OBB_Cls(object)>]
     Theta: tp.List[OBB_Cls] = field(default_factory=list)
+    # External colliders.
+    #   Unit [Vector<AABB_Cls(object)>/Vector<OBB_Cls(object)>]
+    External: tp.List[tp.Union[AABB_Cls, OBB_Cls]] = field(default_factory=list)
 
 @dataclass
 class Mechanism_Parameters_Str:
@@ -120,7 +119,7 @@ class Mechanism_Parameters_Str:
     # Homogeneous transformation matrix (T) parameters.
     #   Unit [T_Parameters_Str(object)]
     T: T_Parameters_Str = field(default_factory=T_Parameters_Str)
-    # Colliders of the mechanism structure.
+    # Internal and external colliders of the mechanism structure.
     #   Unit [Collider_Str(object)]
     Collider: Collider_Str = field(default_factory=Collider_Str)
 
@@ -154,13 +153,15 @@ SMC_LEFB25_14000_0_1_Str.Theta.Name = f'Joint_L_{SMC_LEFB25_14000_0_1_Str.Name}_
 SMC_LEFB25_14000_0_1_Str.Theta.Type = 'P'
 SMC_LEFB25_14000_0_1_Str.Theta.Axis = 'Y'
 SMC_LEFB25_14000_0_1_Str.Theta.Direction = 1
-# Colliders of the mechanism structure that are defined as Oriented Bounding Boxes (OBBs).
+# Internal and external colliders of the mechanism structure.
 SMC_LEFB25_14000_0_1_Str.Collider.Name = [f'Base_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}',
                                           f'Joint_L_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}', 
                                           f'Shuttle_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}']
 SMC_LEFB25_14000_0_1_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, -0.70200, -0.08296], [0.13778, 1.66290, 0.16593]))]
 SMC_LEFB25_14000_0_1_Str.Collider.Theta = [OBB_Cls(Box_Cls([0.00000, -0.00002, 0.00453], [0.04993, 0.10204, 0.00905])),
                                            OBB_Cls(Box_Cls([-0.00022, 0.00000, -0.02508], [0.18964, 0.23935, 0.05016]))]
+#   2\ External.
+SMC_LEFB25_14000_0_1_Str.Collider.External = []
 
 """
 Mechanism Type - SMC LEFB25UNZS 14000C (ID = 2):
@@ -192,10 +193,13 @@ SMC_LEFB25_14000_0_2_Str.Theta.Name = f'Joint_L_{SMC_LEFB25_14000_0_2_Str.Name}_
 SMC_LEFB25_14000_0_2_Str.Theta.Type = 'P'
 SMC_LEFB25_14000_0_2_Str.Theta.Axis = 'Y'
 SMC_LEFB25_14000_0_2_Str.Theta.Direction = 1
-# Colliders of the mechanism structure that are defined as Oriented Bounding Boxes (OBBs).
+# Colliders of the mechanism structure.
+#   1\ Internal.
 SMC_LEFB25_14000_0_2_Str.Collider.Name = [f'Base_Collider_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}',
                                           f'Joint_L_Collider_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}', 
                                           f'Shuttle_Collider_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}']
 SMC_LEFB25_14000_0_2_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, -0.70200, -0.08296], [0.13778, 1.66290, 0.16593]))]
 SMC_LEFB25_14000_0_2_Str.Collider.Theta = [OBB_Cls(Box_Cls([0.00000, -0.00002, 0.00453], [0.04993, 0.10204, 0.00905])),
                                            OBB_Cls(Box_Cls([-0.00022, 0.00000, -0.02508], [0.18964, 0.23935, 0.05016]))]
+#   2\ External.
+SMC_LEFB25_14000_0_2_Str.Collider.External = []
