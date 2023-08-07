@@ -316,11 +316,30 @@ class Mechanism_Cls(object):
         try:
             assert mode in ['Zero', 'Home']
 
-            if mode == 'Zero':
-                self.Set_Absolute_Joint_Position(self.Theta_0, 0.0, 0.0)
-            else:
-                self.Set_Absolute_Joint_Position(self.__Mechanism_Parameters_Str.Theta.Home, 0.0, 0.0)
+            theta = self.Theta_0 if mode == 'Zero' else self.__Mechanism_Parameters_Str.Theta.Home
 
+            bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_mode = self.__axes_sequence_cfg
+            if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
+
+                # Change of axis direction in individual joints.
+                th = theta * self.__Mechanism_Parameters_Str.Theta.Direction
+
+                if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
+                    # Identification of joint type: R - Revolute
+                    bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler = (self.__Mechanism_Parameters_Str.T.Slider @ 
+                                                                                                Transformation.Get_Rotation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
+                                                                                                                                    th)).Get_Rotation(self.__axes_sequence_cfg).all()
+                elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
+                    # Identification of joint type: P - Prismatic
+                    bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location = (self.__Mechanism_Parameters_Str.T.Slider @ 
+                                                                                            Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
+                                                                                                                                th)).p.all()
+            else:
+                # Reset the absolute position of the robot joints to the 'Zero'.
+                self.Reset('Zero')
+                print(f'[INFO] The desired input joint {theta} is out of limit.')
+                return False
+            
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
             print('[INFO] Incorrect reset mode selected. The selected mode must be chosen from the two options (Zero, Home).')
@@ -343,50 +362,34 @@ class Mechanism_Cls(object):
         try:
             assert isinstance(theta, float)
 
-            # Insert a keyframe of the object (Viewpoint) into the frame at time t(0). 
-            if self.__viewpoint_visibility == True:
-                Lib.Blender.Utilities.Insert_Key_Frame(self.__Viewpoint_EE_Name, 'matrix_basis', t_0 * self.__fps, 'ALL')
+            # Obtain a linear interpolation between the actual and desired absolute joint position.
+            theta_arr = np.linspace(self.Theta, theta, np.int32((t_1 - t_0) * self.__fps))
 
-            bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_mode = self.__axes_sequence_cfg
-            if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
+            for i_frame, theta_arr_i in enumerate(theta_arr):
+                bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_mode = self.__axes_sequence_cfg
+                if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta_arr_i <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
 
-                # Change of axis direction in individual joints.
-                th = theta * self.__Mechanism_Parameters_Str.Theta.Direction
+                    # Change of axis direction in individual joints.
+                    th = theta_arr_i * self.__Mechanism_Parameters_Str.Theta.Direction
 
-                # Insert a keyframe of the object (Joint_0) into the frame at time t(0). 
-                Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', t_0 * self.__fps, 'ALL')
-
-                if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
-                    # Identification of joint type: R - Revolute
-                    bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler = (self.__Mechanism_Parameters_Str.T.Slider @ 
-                                                                                                   Transformation.Get_Rotation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
-                                                                                                                                      th)).Get_Rotation(self.__axes_sequence_cfg).all()
-                elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
-                    # Identification of joint type: P - Prismatic
-                    bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location = (self.__Mechanism_Parameters_Str.T.Slider @ 
-                                                                                             Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
-                                                                                                                                   th)).p.all()
-                    
-                # Insert a keyframe of the object (Joint_0) into the frame at time t(1). 
-                Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', t_1 * self.__fps, 'ALL')
-            else:
-                # Update the scene.
-                self.__Update()
-                # Reset the absolute position of the robot joints to the 'Zero'.
-                self.Reset('Zero')
-                print(f'[INFO] The desired input joint {theta} is out of limit.')
-                return False
-
-            # If the viewpoint visibility is enabled, set the transformation of the object 
-            # to the slider (end-effector) of the mechanism.
-            if self.__viewpoint_visibility == True:
-                for i_frame in range(np.int32(t_0 * self.__fps),  np.int32(t_1 * self.__fps) + 1):
-                    # Set scene frame.
-                    bpy.context.scene.frame_set(i_frame)
-                    # Set the object transformation obtained from the current absolute position of the joints.
-                    Lib.Blender.Utilities.Set_Object_Transformation(self.__Viewpoint_EE_Name, self.T_EE)
-                    # Insert a keyframe of the object (Viewpoint) into the frame at time t(1). 
-                    Lib.Blender.Utilities.Insert_Key_Frame(self.__Viewpoint_EE_Name, 'matrix_basis', i_frame, 'ALL')
+                    if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
+                        # Identification of joint type: R - Revolute
+                        bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler = (self.__Mechanism_Parameters_Str.T.Slider @ 
+                                                                                                    Transformation.Get_Rotation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
+                                                                                                                                       th)).Get_Rotation(self.__axes_sequence_cfg).all()
+                    elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
+                        # Identification of joint type: P - Prismatic
+                        bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location = (self.__Mechanism_Parameters_Str.T.Slider @ 
+                                                                                                Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
+                                                                                                                                      th)).p.all()
+                        
+                        # Insert a keyframe of the object (Joint_{i}) into the frame at time t(i). 
+                        Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', i_frame + np.int32(t_0 * self.__fps), 'ALL')
+                else:
+                    # Reset the absolute position of the robot joints to the 'Zero'.
+                    self.Reset('Zero')
+                    print(f'[INFO] The desired input joint {theta} is out of limit.')
+                    return False
 
             # Update the scene.
             self.__Update()
@@ -596,10 +599,31 @@ class Robot_Cls(object):
         try:
             assert mode in ['Zero', 'Home']
 
-            if mode == 'Zero':
-                self.Set_Absolute_Joint_Position(self.Theta_0, 0.0, 0.0)
-            else:
-                self.Set_Absolute_Joint_Position(self.__Robot_Parameters_Str.Theta.Home, 0.0, 0.0)
+            theta = self.Theta_0 if mode == 'Zero' else self.__Robot_Parameters_Str.Theta.Home
+
+            # Get the zero configuration of each joint.
+            T_zero_cfg = self.__Get_Zero_Joint_Cfg()
+
+            for i, (th_i, th_i_name, T_i_zero_cfg, th_i_limit, ax_i, th_i_type, th_i_dir) in enumerate(zip(theta, self.__Robot_Parameters_Str.Theta.Name, T_zero_cfg, 
+                                                                                                           self.__Robot_Parameters_Str.Theta.Limit, self.__Robot_Parameters_Str.Theta.Axis, 
+                                                                                                           self.__Robot_Parameters_Str.Theta.Type, self.__Robot_Parameters_Str.Theta.Direction)): 
+                bpy.data.objects[th_i_name].rotation_mode = self.__axes_sequence_cfg
+                if th_i_limit[0] <= th_i <= th_i_limit[1]:
+                    # Change of axis direction in individual joints.
+                    th_new = th_i * th_i_dir
+
+                    if th_i_type == 'R':
+                        # Identification of joint type: R - Revolute
+                        bpy.data.objects[th_i_name].rotation_euler = (T_i_zero_cfg @ Transformation.Get_Rotation_Matrix(ax_i, th_new)).Get_Rotation(self.__axes_sequence_cfg).all()
+                    elif th_i_type == 'P':
+                        # Identification of joint type: P - Prismatic
+                        bpy.data.objects[th_i_name].location = (Transformation.Get_Translation_Matrix(ax_i, th_new) @ T_i_zero_cfg).p.all()
+
+                else:
+                    # Update the scene.
+                    self.__Update()
+                    print(f'[INFO] The desired input joint {th_i} in index {i} is out of limit.')
+                    return False
 
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
@@ -623,7 +647,9 @@ class Robot_Cls(object):
         try:
             assert self.__Robot_Parameters_Str.Theta.Zero.size == theta.size
 
+            # Obtain a linear interpolation between the actual and desired absolute joint position.
             theta_arr = np.linspace(self.Theta, theta, np.int32((t_1 - t_0) * self.__fps))
+
             for i_frame, theta_arr_i in enumerate(theta_arr):
                 # Get the zero configuration of each joint.
                 T_zero_cfg = self.__Get_Zero_Joint_Cfg()
@@ -644,18 +670,15 @@ class Robot_Cls(object):
                             bpy.data.objects[th_i_name].location = (Transformation.Get_Translation_Matrix(ax_i, th_new) @ T_i_zero_cfg).p.all()
 
                         # Insert a keyframe of the object (Joint_{i}) into the frame at time t(i). 
-                        Lib.Blender.Utilities.Insert_Key_Frame(th_i_name, 'matrix_basis', i_frame, 'ALL')
+                        Lib.Blender.Utilities.Insert_Key_Frame(th_i_name, 'matrix_basis', i_frame + np.int32(t_0 * self.__fps), 'ALL')
                     else:
                         # Update the scene.
                         self.__Update()
-                        # Reset the absolute position of the robot joints to the 'Zero'.
-                        self.Reset('Zero')
                         print(f'[INFO] The desired input joint {th_i} in index {i} is out of limit.')
                         return False
 
             # Update the scene.
             self.__Update()
-
             return True
             
         except AssertionError as error:
