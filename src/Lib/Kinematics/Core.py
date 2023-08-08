@@ -18,10 +18,14 @@ Description:
         Forward kinematics kinematics refers to the use of the robot's kinematic equations to calculate 
         the position of the end-effector from specified values of the joint orientations.
 
-        DH (Denavit-Hartenberg) parameters: 
-            The Denavit - Hartenberg parameters are the four parameters associated with a particular 
-            convention for attaching reference frames to the links of a spatial kinematic chain, or robot 
-            manipulator.
+    INVERSE KINEMATICS (IK)
+        Inverse kinematics deals with the problem of finding the required joint angles to produce a certain desired 
+        position and orientation of the end-effector. 
+
+    DH (Denavit-Hartenberg) PARAMETERS: 
+        The Denavit - Hartenberg parameters are the four parameters associated with a particular 
+        convention for attaching reference frames to the links of a spatial kinematic chain, or robot 
+        manipulator.
 
         | theta | 
         Joint angle (Theta_i). Rotation part in radians.
@@ -44,10 +48,6 @@ Description:
         Link twist (alpha_i). Rotation part in radians.
             Description:
                 The link twist a_{i-1} is the angle from zhat_{i-1} to zhat_i, measured about xhat_{i-1}. 
-
-    INVERSE KINEMATICS (IK)
-        Inverse kinematics deals with the problem of finding the required joint angles to produce a certain desired 
-        position and orientation of the end-effector. 
 """
 
 def DH_Standard(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.List[float]]:
