@@ -25,20 +25,20 @@ def main():
 
         Note:
             Absolute joint positions are generated from the program below:
-                gen_abs_joint_pos.py
+                ../Workspace/gen_abs_joint_pos.py
     """
 
     # Locate the path to the project folder.
-    project_folder = os.getcwd().split('Kinematics')[0] + 'Kinematics'
+    project_folder = os.getcwd().split('Industrial_Robots_Kinematics')[0] + 'Industrial_Robots_Kinematics'
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
     # Input File: Absolute orientation of the joints.
     CONST_FILE_NAME_IN = 'abs_joint_pos_data'
-    print(f'[INFO] Path (Input File): {project_folder}/src/Data/Workspace/{Robot_Str.Name}{CONST_FILE_NAME_IN}.txt')
+    print(f'[INFO] Path (Input File): {project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_IN}.txt')
     # Output File: X, Y, Z positions of the workspace.
-    CONST_FILE_NAME_OUT = 'tool0_workspace_data2'
+    CONST_FILE_NAME_OUT = 'tool0_workspace_data'
     print(f'[INFO] Path (Output File): {project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_OUT}.txt')
 
     # Generate x, y, z positions of the workspace from the absolute positions

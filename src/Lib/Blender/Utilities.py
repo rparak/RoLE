@@ -4,8 +4,6 @@ import bpy
 import typing as tp
 # Numpy (Array computing) [pip3 install numpy]tp
 import numpy as np
-# OS (Operating system interfaces)
-import os
 # BMesh (Access to blenders bmesh data)
 import bmesh
 # Mathutils (Math Types & Utilities)
@@ -527,7 +525,7 @@ def Generate_Convex_Polyhedron_From_Data(name: str, data: tp.List[float], materi
     material.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value = material_properties['RGBA']
 
     # Create a mesh from the input data.
-    mesh = bpy.data.meshes.new(f'{name}_Convex_Polyhedron')
+    mesh = bpy.data.meshes.new(f'{name}')
     mesh.from_pydata(data, [], [])
     mesh.update()
 

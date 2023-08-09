@@ -39,8 +39,9 @@ def main():
         A program for visualization the workspace of an individual robot structure.
 
         Note:
-            The structures of the robot are defined below:
-                ../Parameters/Robot.py
+            Workspace data is generated from the program below:
+                ../Evaluation/Workspace/gen_abs_joint_pos.py
+                ../Evaluation/Workspace/gen_xyz_workspace.py
     """
 
     # Deselect all objects in the current scene.
@@ -57,10 +58,10 @@ def main():
     data = Lib.Utilities.File_IO.Load(f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME}', 'txt', ',')
     
     # Generate a simplified convex polyhedron from the input data (x, y, z).
-    Lib.Blender.Utilities.Generate_Convex_Polyhedron_From_Data(f'{Robot_Str.Name}_Workspace', data, {'RGBA': [0.0, 1.0, 0.0, 1.0], 'alpha': 1.0})
+    Lib.Blender.Utilities.Generate_Convex_Polyhedron_From_Data(f'{Robot_Str.Name}_ID_{Robot_Str.Id:03}_Workspace', data, {'RGBA': [0.0, 1.0, 0.0, 1.0], 'alpha': 1.0})
     
-    # The wireframe modifier transforms a mesh object into a wireframe model with a defined size (thickness).
-    #Lib.Blender.Utilities.Transform_Object_To_Wireframe(f'{Robot_Str.Name}_Workspace', 0.005)
+    # Set the transparency of the object material.
+    Lib.Blender.Utilities.Set_Object_Material_Transparency(f'{Robot_Str.Name}_ID_{Robot_Str.Id:03}_Workspace', 0.05)
 
 if __name__ == '__main__':
     main()
