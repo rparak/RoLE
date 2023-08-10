@@ -84,32 +84,38 @@ def main():
         print('[WARNING] Insufficient number of combinations.')
     print(f'[INFO] Total Time: {(time.time() - start_time):.3f} in seconds')
 
-    # Create figure for 3d projection
+    # Create a figure.
     figure = plt.figure()
-    axis = figure.add_subplot(projection='3d')
-    figure.suptitle(f'The Workspace of a {Robot_Str.Theta.Zero.size}-axis robot arm {Robot_Str.Name}', fontsize = 15)
+    ax = figure.add_subplot(projection='3d')
 
-    # Plot the workspace of a robot dependent on input data from a file.
-    axis.plot(np.round(x, 10), np.round(y, 10), np.round(z, 10), 'o', linewidth=1, markersize=0.15, color = [0,0.9,0.3,0.25])
-
-    # Axis Parameters:
-    #   Limits:
-    axis.set_xlim(np.minimum.reduce(x) - 0.1, np.maximum.reduce(x) + 0.1)
-    axis.xaxis.pane.set_color((1.0, 1.0, 1.0, 1.0))
-    axis.set_ylim(np.minimum.reduce(y) - 0.1, np.maximum.reduce(y) + 0.1)
-    axis.yaxis.pane.set_color((1.0, 1.0, 1.0, 1.0))
-    axis.set_zlim(np.minimum.reduce(z) - 0.1, np.maximum.reduce(z) + 0.1)
-    axis.zaxis.pane.set_color((1.0, 1.0, 1.0, 1.0))
-    #   Labels:
-    axis.set_xlabel(r'x-axis in metres'); axis.set_ylabel(r'y-axis in metres')
-    axis.set_zlabel(r'z-axis in metres')
-    #   Grid:
-    axis.xaxis._axinfo['grid'].update({'linewidth': 0.25, 'linestyle': '--'})
-    axis.yaxis._axinfo['grid'].update({'linewidth': 0.25, 'linestyle': '--'})
-    axis.zaxis._axinfo['grid'].update({'linewidth': 0.25, 'linestyle': '--'})
-    #   Others:
-    axis.set_aspect('auto')
-    axis.set_box_aspect(aspect = (1,1,1))
+    # Plot the robot's workspace dependent on the input data from the file.
+    ax.plot(np.round(x, 4), np.round(y, 4), np.round(z, 4), 'o', linewidth=1, markersize=2.0, color = [0,0.9,0.3,1.0],
+            label=f'3D positions (x, y, z)')
+    
+    # Set parameters of the graph (plot).
+    ax.set_title(f'The Workspace of a {Robot_Str.Theta.Zero.size}-axis robotic arm {Robot_Str.Name}', fontsize=25, pad=25.0)
+    #   Limits.
+    ax.set_xlim(np.minimum.reduce(x) - 0.1, np.maximum.reduce(x) + 0.1)
+    ax.xaxis.pane.set_color((1.0, 1.0, 1.0, 1.0))
+    ax.set_ylim(np.minimum.reduce(y) - 0.1, np.maximum.reduce(y) + 0.1)
+    ax.yaxis.pane.set_color((1.0, 1.0, 1.0, 1.0))
+    ax.set_zlim(np.minimum.reduce(z) - 0.1, np.maximum.reduce(z) + 0.1)
+    ax.zaxis.pane.set_color((1.0, 1.0, 1.0, 1.0))
+    #   Label.
+    ax.set_xlabel(r'x-axis in meters', fontsize=15, labelpad=10); ax.set_ylabel(r'y-axis in meters', fontsize=15, labelpad=10) 
+    ax.set_zlabel(r'z-axis in meters', fontsize=15, labelpad=10) 
+    #   Set parameters of the visualization.
+    ax.xaxis._axinfo['grid'].update({'linewidth': 0.15, 'linestyle': '--'})
+    ax.yaxis._axinfo['grid'].update({'linewidth': 0.15, 'linestyle': '--'})
+    ax.zaxis._axinfo['grid'].update({'linewidth': 0.15, 'linestyle': '--'})
+    #   Set the Axes box aspect.
+    ax.set_box_aspect(None, zoom=0.90)
+    # Get handles and labels for the legend.
+    handles, labels = plt.gca().get_legend_handles_labels()
+    # Remove duplicate labels.
+    legend = dict(zip(labels, handles))
+    # Show the labels (legends) of the graph.
+    ax.legend(legend.values(), legend.keys(), fontsize=10.0)
 
     # Show the result.
     plt.show()
