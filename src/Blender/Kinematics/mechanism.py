@@ -22,7 +22,7 @@ Description:
     Open {mechanism_name}.blend from the Blender folder and copy + paste this script and run it.
 
     Terminal:
-        $ cd Documents/GitHub/Industrial_Robots_Kinematics/Blender/Mechanism
+        $ cd Documents/GitHub/Open_Industrial_Robotics/Blender/Mechanism
         $ blender {mechanism_name}.blend
 
     Note:

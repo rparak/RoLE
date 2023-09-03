@@ -3,93 +3,79 @@ import bpy
 # System (Default)
 import sys
 #   Add access if it is not in the system path.
-if '../../../../' + 'src' not in sys.path:
-    sys.path.append('../../../../' + 'src')
-# Numpy (Array computing) [pip3 install numpy]
-import numpy as np
+if '../../' + 'src' not in sys.path:
+    sys.path.append('../../' + 'src')
 # Custom Script:
 #   ../Lib/Blender/Utilities
 import Lib.Blender.Utilities
-#   ../Lib/Collider/Utilities
-import Lib.Collider.Utilities
-#   ../Lib/Transformation/Core
-from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
+#   ../Lib/Kinematics/Core
+import Lib.Kinematics.Core
+#   ../Lib/Parameters/Robot
+import Lib.Parameters.Robot as Parameters
+#   ../Lib/Blender/Parameters/Camera
+import Lib.Blender.Parameters.Camera
 
 """
 Description:
-    Open {robot_name}.blend from the URDFs folder and copy + paste this script and run it.
+    Open {robot_name}.blend from the Blender folder and copy + paste this script and run it.
 
     Terminal:
-        $ cd Documents/GitHub/Industrial_Robots_Kinematics/URDFs/Robots/{robot_name}/Blender
+        $ cd Documents/GitHub/Open_Industrial_Robotics/Blender/Robot
         $ blender {robot_name}.blend
+
+    Note:
+        Where the variable 'robot_name' is the name of the controlled robot to be used.
 """
+
+"""
+Description:
+    Initialization of constants.
+"""
+# Set the structure of the main parameters of the controlled robot.
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_L_Str
+# Set the structure of the main parameters of the camera.
+CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
 def main():
     """
     Description:
-        A program to generate collision objects for individual robotic arms. The objects can be used for the 
-        URDF files as collision geometry for the robot.
-
-        The program will also generate code that will be used as an extension of the robot/mechanism structure 
-        in the 'Parameters' folder.
-
-        More information can be found in the programs below:
-            ./Parameters/Robot.py or ./Parameters/Mechanism.py
+        ...
     """
-
+    
     # Deselect all objects in the current scene.
     Lib.Blender.Utilities.Deselect_All()
-
+    
     # Remove animation data from objects (Clear keyframes).
     Lib.Blender.Utilities.Remove_Animation_Data()
 
-    i = 0
-    for _, obj in enumerate(bpy.data.objects):
-        # Removes objects, if they exist.
-        if 'Collision' in obj.name:
-            Lib.Blender.Utilities.Remove_Object(obj.name)
-            continue
+    # Set the camera (object) transformation and projection.
+    if Lib.Blender.Utilities.Object_Exist('Camera'):
+        Lib.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
+    
+    # Initialization of the structure of the main parameters of the robot.
+    Robot_Str = CONST_ROBOT_TYPE
 
-        # Get positions of the vertices of the mesh object.
-        obj_i_verts = Lib.Blender.Utilities.Get_Vertices_From_Object(obj.name)
+    # Set the structure of the main parameters of the controlled robot.
+    Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(Robot_Str, {'Viewpoint_EE': False, 'Colliders': False, 
+                                                            'Workspace': False})
+    print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
-        # Get the minimum and maximum X, Y, Z values of the input vertices.
-        (min_vec3, max_vec3) = Lib.Collider.Utilities.Get_Min_Max(np.array(obj_i_verts, dtype=np.float32))
+    # Reset the absolute position of the robot joints to the 'Zero'.
+    Robot_ID_0_Cls.Reset('Zero')
+    
+    # ...
+    Lib.Blender.Utilities.Set_Object_Transformation(f'Base_Collider', Robot_Str.T.Base)
+    
+    # ...
+    T_Arr = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)
+    
+    # ...
+    for _, (th_name_i, T_i) in enumerate(zip(Robot_Str.Theta.Name, Robot_Str.T.Zero_Cfg)):
+        # ...
+        id = th_name_i[len('Joint_'):len('Joint_') + 1]
 
-        # Obtain the size and centroid of the observed object.
-        Size = np.array([max_vec3[0] - min_vec3[0], max_vec3[1] - min_vec3[1],
-                         max_vec3[2] - min_vec3[2]], dtype=np.float32)
-        Centroid = np.array([(max_vec3[0] + min_vec3[0]) / 2.0, (max_vec3[1] + min_vec3[1]) / 2.0,
-                             (max_vec3[2] + min_vec3[2]) / 2.0], dtype=np.float32)
-        
-        # Create a new name for the collision object.
-        obj_i_name_new = obj.name.removesuffix('Visual') + 'Collision'
-
-        # Properties of the created object.
-        box_properties = {'transformation': {'Size': 1.0, 
-                                             'Scale': Size, 
-                                             'Location': Centroid}, 
-                          'material': {'RGBA': [1.0,1.0,1.0,1.0], 'alpha': 1.0}}
-        
-        # Create a primitive three-dimensional object (cuboid) with additional properties.
-        Lib.Blender.Utilities.Create_Primitive('Cube', obj_i_name_new, box_properties)
-        
-        # Set the rotation mode to be the same as the observed object.
-        bpy.data.objects[obj_i_name_new].rotation_mode = bpy.data.objects[obj.name].rotation_mode
-        
-        # Set the origin of the observed object to zero.
-        Lib.Blender.Utilities.Set_Object_Origin(obj_i_name_new, HTM_Cls(None, np.float32).all())
-
-        # Remove all materials from the created object.
-        Lib.Blender.Utilities.Remove_Object_Material(obj_i_name_new)
-
-        # Origin (o), Size (s)
-        o = np.round((-1) * Centroid, 5) + [0.0, 0.0, 0.0]; s = np.round(Size, 5) + [0.0, 0.0, 0.0]
-        
-        # Display results.
-        print(f'[INFO] Object name: {obj.name}')
-        print(f'[INFO] >> OBB_Cls(Box_Cls([{o[0]:.05f}, {o[1]:.05f}, {o[2]:.05f}], [{s[0]:.05f}, {s[1]:.05f}, {s[2]:.05f}]))')
-        i += 1
-
+        # ...
+        Lib.Blender.Utilities.Set_Object_Transformation(f'Joint_{id}_Collider', T_i)
+    
 if __name__ == '__main__':
     main()

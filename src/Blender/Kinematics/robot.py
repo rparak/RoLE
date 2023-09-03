@@ -18,20 +18,11 @@ import Lib.Blender.Core
 import Lib.Parameters.Robot as Parameters
 
 """
-import Lib.Kinematics.Core as Kinematics
-
-T_Arr = Kinematics.Get_Individual_Joint_Configuration(CONST_ROBOT_TYPE.Theta.Zero, 'Modified', CONST_ROBOT_TYPE)
-
-for i, T_Arr_i in enumerate(T_Arr[1]):
-    Lib.Blender.Utilities.Set_Object_Transformation(f'Joint_{i+1}_Collision', T_Arr_i)
-"""
-
-"""
 Description:
     Open {robot_name}.blend from the Blender folder and copy + paste this script and run it.
 
     Terminal:
-        $ cd Documents/GitHub/Industrial_Robots_Kinematics/Blender/Robot
+        $ cd Documents/GitHub/Open_Industrial_Robotics/Blender/Robot
         $ blender {robot_name}.blend
 
     Note:
@@ -43,7 +34,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_L_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 # Animation stop(t_0), start(t_1) time in seconds.

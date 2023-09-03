@@ -20,7 +20,7 @@ Description:
     Open Generate.blend from the Blender folder and copy + paste this script and run it.
 
     Terminal:
-        $ cd Documents/GitHub/Industrial_Robots_Kinematics/Blender/Workspace
+        $ cd Documents/GitHub/Open_Industrial_Robotics/Blender/Workspace
         $ blender Generate.blend
 """
 

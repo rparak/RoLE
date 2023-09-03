@@ -461,7 +461,9 @@ class Robot_Cls(object):
 
             # Enable or disable the visibility of the colliders.
             for _, collider_name in enumerate(self.__Robot_Parameters_Str.Collider.Name):
+                print(collider_name)
                 if Lib.Blender.Utilities.Object_Exist(collider_name):
+                    print(collider_name)
                     Lib.Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
 
             # Enable or disable the visibility of the workspace.
