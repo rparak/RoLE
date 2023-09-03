@@ -58,10 +58,10 @@ def main():
     data = Lib.Utilities.File_IO.Load(f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME}', 'txt', ',')
     
     # Generate a simplified convex polyhedron from the input data (x, y, z).
-    Lib.Blender.Utilities.Generate_Convex_Polyhedron_From_Data(f'{Robot_Str.Name}_ID_{Robot_Str.Id:03}_Workspace', data, {'RGBA': [0.0, 1.0, 0.0, 1.0], 'alpha': 1.0})
+    Lib.Blender.Utilities.Generate_Convex_Polyhedron_From_Data(f'Workspace_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', data, {'RGBA': [0.0, 1.0, 0.0, 1.0], 'alpha': 1.0})
     
     # Set the transparency of the object material.
-    Lib.Blender.Utilities.Set_Object_Material_Transparency(f'{Robot_Str.Name}_ID_{Robot_Str.Id:03}_Workspace', 0.05)
+    Lib.Blender.Utilities.Set_Object_Material_Transparency(f'Workspace_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', 0.05)
 
 if __name__ == '__main__':
     main()

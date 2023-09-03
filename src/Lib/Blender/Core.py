@@ -228,7 +228,6 @@ class Mechanism_Cls(object):
 
             # Enable or disable the visibility of the colliders.
             for _, collider_name in enumerate(self.__Mechanism_Parameters_Str.Collider.Name):
-                print(collider_name)
                 if Lib.Blender.Utilities.Object_Exist(collider_name):
                     Lib.Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
             
@@ -352,7 +351,7 @@ class Mechanism_Cls(object):
             Set the absolute position of the mechanism joint.
 
         Args:
-            (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+            (1) theta [float]: Desired absolute joint position in radians / meters.
             (2) t_0 [float]: Animation start time in seconds.
             (3) t_1 [float]: Animation stop time in seconds.
 
@@ -413,14 +412,15 @@ class Robot_Cls(object):
             (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
             (2) visibility [Dictionary {string, string}]: The state to enable/disable the visibility of additional robot objects.
                                                           Note:
-                                                            visibility = {'Viewpoint_EE': False/True, 'Colliders': False/True}
+                                                            visibility = {'Viewpoint_EE': False/True, 'Colliders': False/True,
+                                                                          'Workspace': False/True}
 
         Example:
             Initialization:
                 # Assignment of the variables.
                 #   Example for the ABB IRB 120 robot.
                 Robot_Parameters_Str = Lib.Parameters.Robot.ABB_IRB_120_Str
-                visibility = {'Viewpoint_EE': False, 'Colliders': False}
+                visibility = {'Viewpoint_EE': False, 'Colliders': False, 'Workspace': False}
 
                 # Initialization of the class.
                 Cls = Robot_Cls(Robot_Parameters_Str, visibility)
@@ -464,6 +464,10 @@ class Robot_Cls(object):
                 if Lib.Blender.Utilities.Object_Exist(collider_name):
                     Lib.Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
 
+            # Enable or disable the visibility of the workspace.
+            if Lib.Blender.Utilities.Object_Exist(f'Workspace_{self.__name}'):
+                Lib.Blender.Utilities.Object_Visibility(f'Workspace_{self.__name}', visibility['Workspace'])
+
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
             print(f'[ERROR] The robot object named <{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}> does not exist in the current scene.')
@@ -499,8 +503,8 @@ class Robot_Cls(object):
 
         Returns:
             (1) parameter [Matrix<float> nx(4x4)]: Zero configuration of each joint.
-                                                Note:
-                                                    Where n is the number of joints.
+                                                    Note:
+                                                        Where n is the number of joints.
         """
 
         T_i = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float32); T_zero_cfg = []
@@ -534,7 +538,9 @@ class Robot_Cls(object):
             Get the absolute positions of the robot's joints.
 
         Returns:
-            (1) parameter [Vector<float>]: Current absolute joint position in radians / meters.
+            (1) parameter [Vector<float> 1xn]: Current absolute joint position in radians / meters.
+                                                Note:
+                                                    Where n is the number of joints.
         """
 
         # Get the zero configuration of each joint.
@@ -636,7 +642,9 @@ class Robot_Cls(object):
             Set the absolute position of the robot joints.
 
         Args:
-            (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+            (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+                                            Note:
+                                                Where n is the number of joints.
             (2) t_0 [float]: Animation start time in seconds.
             (3) t_1 [float]: Animation stop time in seconds.
 
@@ -685,4 +693,4 @@ class Robot_Cls(object):
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
-            print(f'[ERROR] Incorrect number of values in the input variable theta. The input variable must contain {self.__Robot_Parameters_Str.Theta.Zero.size} values.')
+            print(f'[ERROR] Incorrect number of values in the input variable theta. The input variable "theta" must contain {self.__Robot_Parameters_Str.Theta.Zero.size} values.')
