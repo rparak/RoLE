@@ -21,7 +21,7 @@ Description:
     Open Viewpoint.blend from the Blender folder and copy + paste this script and run it.
 
     Terminal:
-        $ cd Documents/GitHub/Industrial_Robots_Kinematics/Blender/Helpers
+        $ cd Documents/GitHub/Open_Industrial_Robotics/Blender/Helpers
         $ blender Viewpoint.blend
 """
 

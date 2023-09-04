@@ -34,7 +34,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled mechanism.
-CONST_MECHANISM_0_1_TYPE = Parameters.SMC_LEFB25_14000_0_1_Str
+CONST_MECHANISM_TYPE = Parameters.SMC_LEFB25_14000_0_1_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 # Animation stop(t_0), start(t_1) time in seconds.
@@ -58,7 +58,7 @@ def main():
         Lib.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
 
     # Set the structure of the main parameters of the controlled mechanism.
-    Mechanism_ID_0_1_Cls = Lib.Blender.Core.Mechanism_Cls(CONST_MECHANISM_0_1_TYPE, {'Viewpoint_EE': False, 'Colliders': False})
+    Mechanism_ID_0_1_Cls = Lib.Blender.Core.Mechanism_Cls(CONST_MECHANISM_TYPE, {'Viewpoint_EE': False, 'Colliders': False})
     print(f'[INFO] Mechanism Name: {Mechanism_ID_0_1_Cls.Parameters.Name}_ID_{Mechanism_ID_0_1_Cls.Parameters.Id:03}')
     
     # Reset the absolute position of the mechanism joints to the 'Zero'.
