@@ -112,3 +112,17 @@ def Get_Quadratic_Angle_Axis_Error(e: tp.List[float], W_e: tp.List[tp.List[float
     """
     
     return 0.5 * e @ W_e @ e
+
+def Is_Self_Collision():
+    # In progress ...
+    # Function to obtain the self collision of the robot structure ..
+
+    a = np.array([1, 2, 3, 4, 5, 6]); offset = 1
+    for i, a_i in enumerate(a):
+        for _, a_j in enumerate(a[(i + 1) + offset::]):
+            print(a_i, a_j)
+
+def Get_Best_IK_Solution():
+    # In progress ...
+    # Function to obtain the best solution from inverse kinematics ...
+    pass

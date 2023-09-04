@@ -33,8 +33,6 @@ Description:
 """
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_R_Str
-# Set the structure of the main parameters of the camera.
-CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
 def main():
     """
@@ -51,10 +49,6 @@ def main():
     # Remove animation data from objects (Clear keyframes).
     Lib.Blender.Utilities.Remove_Animation_Data()
 
-    # Set the camera (object) transformation and projection.
-    if Lib.Blender.Utilities.Object_Exist('Camera'):
-        Lib.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
-    
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 

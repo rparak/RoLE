@@ -31,8 +31,15 @@ Description:
         $ cd Documents/GitHub/Open_Industrial_Robotics/URDFs/Robots/{robot_name}/Blender
         $ blender {robot_name}.blend
 
-    Note:
+    Note 1:
         Where the variable 'robot_name' is the name of the controlled robot to be used.
+
+    Note 2:
+        The program can also be used to generate colliders for primitive objects in the blender, see below:
+
+        Terminal:
+            $ cd Documents/GitHub/Open_Industrial_Robotics/Blender/Primitives/Primitives.blend
+            $ blender Primitives.blend
 """
 
 """
@@ -41,8 +48,6 @@ Description:
 """
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_L_Str
-# Set the structure of the main parameters of the camera.
-CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
 def main():
     """
