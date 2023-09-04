@@ -608,10 +608,18 @@ ABB_IRB_14000_L_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 ABB_IRB_14000_L_Str.Theta.Direction = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
 # Colliders of the robot structure.
 #   1\ Internal.
+"""
 ABB_IRB_14000_L_Str.Collider.Base = {f'Base_Collider_ABB_IRB_14000_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.11307, 0.00000, -0.18543], 
                                                                                                                     [0.49593, 0.40000, 0.57085])),
                                      f'Base_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], 
                                                                                                                                  [0.00200, 0.00200, 0.00200]))}
+"""
+ABB_IRB_14000_L_Str.Collider.Base = {f'Base_Collider_1_ABB_IRB_14000_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.11174, 0.00000, 0.00000], [0.49325, 0.40000, 0.20000])),
+                                     f'Base_Collider_2_ABB_IRB_14000_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.22668, 0.00004, -0.20000], [0.26633, 0.23449, 0.20000])),
+                                     f'Base_Collider_3_ABB_IRB_14000_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.13650, -0.00001, -0.38543], [0.44907, 0.26057, 0.17085])),
+                                     f'Base_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], 
+                                                                                                                                 [0.00200, 0.00200, 0.00200]))}
+
 ABB_IRB_14000_L_Str.Collider.Theta = {f'Joint_1_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}': OBB_Cls(Box_Cls([0.00867, -0.00780, 0.04144], 
                                                                                                                                      [0.14013, 0.14044, 0.18074])),
                                       f'Joint_2_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}': OBB_Cls(Box_Cls([-0.01831, 0.06249, 0.01221], 
