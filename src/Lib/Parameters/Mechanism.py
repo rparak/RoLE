@@ -76,18 +76,15 @@ class Collider_Str:
         The auxiliary structure of both the internal and external colliders.
     """
 
-    # The name of the internal colliders.
-    #   Unit [Vector<string>]
-    Name: tp.List[str] = field(default_factory=list)
     # Internal colliders of the base.
-    #   Unit [Vector<OBB_Cls(object)>]
-    Base: tp.List[OBB_Cls] = field(default_factory=list)
+    #   Unit [Tuple<OBB_Cls(object)>]
+    Base: tp.Tuple[OBB_Cls] = field(default_factory=tuple)
     # Internal colliders of the joints.
-    #   Unit [Vector<OBB_Cls(object)>]
-    Theta: tp.List[OBB_Cls] = field(default_factory=list)
+    #   Unit [Tuple<OBB_Cls(object)>]
+    Theta: tp.Tuple[OBB_Cls] = field(default_factory=tuple)
     # External colliders.
-    #   Unit [Vector<AABB_Cls(object)>/Vector<OBB_Cls(object)>]
-    External: tp.List[tp.Union[AABB_Cls, OBB_Cls]] = field(default_factory=list)
+    #   Unit [Tuple<AABB_Cls(object)>/Tuple<OBB_Cls(object)>]
+    External: tp.Tuple[tp.Union[AABB_Cls, OBB_Cls]] = field(default_factory=tuple)
 
 @dataclass
 class Mechanism_Parameters_Str:
@@ -154,14 +151,15 @@ SMC_LEFB25_14000_0_1_Str.Theta.Type = 'P'
 SMC_LEFB25_14000_0_1_Str.Theta.Axis = 'Y'
 SMC_LEFB25_14000_0_1_Str.Theta.Direction = 1
 # Internal and external colliders of the mechanism structure.
-SMC_LEFB25_14000_0_1_Str.Collider.Name = [f'Base_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}',
-                                          f'Joint_L_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}', 
-                                          f'Shuttle_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}']
-SMC_LEFB25_14000_0_1_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, -0.70200, -0.08296], [0.13778, 1.66290, 0.16593]))]
-SMC_LEFB25_14000_0_1_Str.Collider.Theta = [OBB_Cls(Box_Cls([0.00000, -0.00002, 0.00453], [0.04993, 0.10204, 0.00905])),
-                                           OBB_Cls(Box_Cls([-0.00022, 0.00000, -0.02508], [0.18964, 0.23935, 0.05016]))]
+#   1\ Internal.
+SMC_LEFB25_14000_0_1_Str.Collider.Base = {f'Base_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, -0.70200, -0.08296], 
+                                                                                                                                                [0.13778, 1.66290, 0.16593]))}
+SMC_LEFB25_14000_0_1_Str.Collider.Theta = {f'Joint_L_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, -0.00002, 0.00453], 
+                                                                                                                                                    [0.04993, 0.10204, 0.00905])),
+                                           f'Shuttle_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}': OBB_Cls(Box_Cls([-0.00022, 0.00000, -0.02508], 
+                                                                                                                                                    [0.18964, 0.23935, 0.05016]))}
 #   2\ External.
-SMC_LEFB25_14000_0_1_Str.Collider.External = []
+SMC_LEFB25_14000_0_1_Str.Collider.External = {}
 
 """
 Mechanism Type - SMC LEFB25UNZS 14000C (ID = 2):
@@ -195,11 +193,12 @@ SMC_LEFB25_14000_0_2_Str.Theta.Axis = 'Y'
 SMC_LEFB25_14000_0_2_Str.Theta.Direction = 1
 # Colliders of the mechanism structure.
 #   1\ Internal.
-SMC_LEFB25_14000_0_2_Str.Collider.Name = [f'Base_Collider_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}',
-                                          f'Joint_L_Collider_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}', 
-                                          f'Shuttle_Collider_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}']
-SMC_LEFB25_14000_0_2_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, -0.70200, -0.08296], [0.13778, 1.66290, 0.16593]))]
-SMC_LEFB25_14000_0_2_Str.Collider.Theta = [OBB_Cls(Box_Cls([0.00000, -0.00002, 0.00453], [0.04993, 0.10204, 0.00905])),
-                                           OBB_Cls(Box_Cls([-0.00022, 0.00000, -0.02508], [0.18964, 0.23935, 0.05016]))]
+SMC_LEFB25_14000_0_2_Str.Collider.Base = {f'Base_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, -0.70200, -0.08296], 
+                                                                                                                                                [0.13778, 1.66290, 0.16593]))}
+SMC_LEFB25_14000_0_2_Str.Collider.Theta = {f'Joint_L_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, -0.00002, 0.00453], 
+                                                                                                                                                   [0.04993, 0.10204, 0.00905])),
+                                           f'Shuttle_Collider_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}': OBB_Cls(Box_Cls([-0.00022, 0.00000, -0.02508], 
+                                                                                                                                                    [0.18964, 0.23935, 0.05016]))}
 #   2\ External.
-SMC_LEFB25_14000_0_2_Str.Collider.External = []
+SMC_LEFB25_14000_0_2_Str.Collider.External = {} 
+    

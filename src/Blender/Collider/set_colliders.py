@@ -32,7 +32,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_L_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_R_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
@@ -42,7 +42,7 @@ def main():
         A program for placing collision objects on individual parts of a robotic structure.
 
         Collision objects are generated from the script, see below:
-            ./Collder/gen_colliders.py
+            ./Collider/gen_colliders.py
     """
     
     # Deselect all objects in the current scene.
@@ -59,19 +59,19 @@ def main():
     Robot_Str = CONST_ROBOT_TYPE
 
     # Set the structure of the main parameters of the controlled robot.
-    Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(Robot_Str, {'Viewpoint_EE': False, 'Colliders': False, 
+    Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(Robot_Str, {'Viewpoint_EE': False, 'Colliders': True, 
                                                             'Workspace': False})
 
     # Reset the absolute position of the robot joints to the 'Zero'.
     Robot_ID_0_Cls.Reset('Zero')
     
     # Set the collision object transformation of the base robot.
-    Lib.Blender.Utilities.Set_Object_Transformation(f'Base_Collider', Robot_Str.T.Base)
+    Lib.Blender.Utilities.Set_Object_Transformation(f'Base_Collider_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', Robot_Str.T.Base)
     
     # Get the configuration of the homogeneous matrix of each joint using forward kinematics.
     #   Note:
     #       The absolute position of the joints must be the same as in the Robot_Cls reset function at the top.
-    T_Arr = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)
+    T_Arr = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
     
     # Places collision objects on the remaining parts of the robot.
     for _, (th_name_i, T_i) in enumerate(zip(Robot_Str.Theta.Name, T_Arr)):
@@ -79,7 +79,7 @@ def main():
         id = th_name_i.removesuffix(f'_{Robot_Str.Name}_ID_{Robot_Str.Id:03}').removeprefix('Joint_')
 
         # Set the collision object transformation of the robot joint.
-        Lib.Blender.Utilities.Set_Object_Transformation(f'Joint_{id}_Collider', T_i)
+        Lib.Blender.Utilities.Set_Object_Transformation(f'Joint_{id}_Collider_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', T_i)
     
 if __name__ == '__main__':
     main()

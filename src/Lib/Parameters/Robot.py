@@ -120,18 +120,15 @@ class Collider_Str:
                 ./src/Evaluation/Blender/Collider/gen_colliders.py
     """
 
-    # The name of the internal colliders.
-    #   Unit [Vector<string>]
-    Name: tp.List[str] = field(default_factory=list)
     # Internal colliders of the base.
-    #   Unit [Vector<OBB_Cls(object)>]
-    Base: tp.List[OBB_Cls] = field(default_factory=list)
+    #   Unit [Tuple<OBB_Cls(object)>]
+    Base: tp.Tuple[OBB_Cls] = field(default_factory=tuple)
     # Internal colliders of the joints.
-    #   Unit [Vector<OBB_Cls(object)>]
-    Theta: tp.List[OBB_Cls] = field(default_factory=list)
+    #   Unit [Tuple<OBB_Cls(object)>]
+    Theta: tp.Tuple[OBB_Cls] = field(default_factory=tuple)
     # External colliders.
-    #   Unit [Vector<AABB_Cls(object)>/Vector<OBB_Cls(object)>]
-    External: tp.List[tp.Union[AABB_Cls, OBB_Cls]] = field(default_factory=list)
+    #   Unit [Tuple<AABB_Cls(object)>/Tuple<OBB_Cls(object)>]
+    External: tp.Tuple[tp.Union[AABB_Cls, OBB_Cls]] = field(default_factory=tuple)
 
 @dataclass
 class Robot_Parameters_Str:
@@ -240,22 +237,22 @@ Universal_Robots_UR3_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 Universal_Robots_UR3_Str.Theta.Direction = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
 # Colliders of the robot structure.
 #   1\ Internal.
-Universal_Robots_UR3_Str.Collider.Name = [f'Base_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}',
-                                          f'Joint_1_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
-                                          f'Joint_2_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
-                                          f'Joint_3_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
-                                          f'Joint_4_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
-                                          f'Joint_5_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
-                                          f'Joint_6_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}']
-Universal_Robots_UR3_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, 0.00001, -0.04302], [0.12807, 0.12802, 0.08605]))]
-Universal_Robots_UR3_Str.Collider.Theta = [OBB_Cls(Box_Cls([-0.00014, 0.00405, 0.00439], [0.09099, 0.09990, 0.12292])),
-                                           OBB_Cls(Box_Cls([0.11826, 0.00013, -0.11553], [0.32829, 0.09098, 0.12305])),
-                                           OBB_Cls(Box_Cls([0.10402, 0.00001, -0.02942], [0.28304, 0.07503, 0.09708])),
-                                           OBB_Cls(Box_Cls([-0.00001, -0.00078, 0.00610], [0.06444, 0.09067, 0.07681])),
-                                           OBB_Cls(Box_Cls([0.00000, 0.00176, 0.00610], [0.06443, 0.08872, 0.07680])),
-                                           OBB_Cls(Box_Cls([-0.00007, 0.00326, 0.01962], [0.06298, 0.06961, 0.03936]))]
+Universal_Robots_UR3_Str.Collider.Base = {f'Base_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00001, -0.04302], 
+                                                                                                                                                [0.12807, 0.12802, 0.08605]))}
+Universal_Robots_UR3_Str.Collider.Theta = {f'Joint_1_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}': OBB_Cls(Box_Cls([-0.00014, 0.00405, 0.00439], 
+                                                                                                                                                    [0.09099, 0.09990, 0.12292])),
+                                           f'Joint_2_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}': OBB_Cls(Box_Cls([0.11826, 0.00013, -0.11553], 
+                                                                                                                                                    [0.32829, 0.09098, 0.12305])),
+                                           f'Joint_3_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}': OBB_Cls(Box_Cls([0.10402, 0.00001, -0.02942], 
+                                                                                                                                                    [0.28304, 0.07503, 0.09708])),
+                                           f'Joint_4_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}': OBB_Cls(Box_Cls([-0.00001, -0.00078, 0.00610], 
+                                                                                                                                                    [0.06444, 0.09067, 0.07681])),
+                                           f'Joint_5_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00176, 0.00610], 
+                                                                                                                                                    [0.06443, 0.08872, 0.07680])),
+                                           f'Joint_6_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}': OBB_Cls(Box_Cls([-0.00007, 0.00326, 0.01962], 
+                                                                                                                                                    [0.06298, 0.06961, 0.03936]))}
 #   2\ External.
-Universal_Robots_UR3_Str.Collider.External = []
+Universal_Robots_UR3_Str.Collider.External = {}
 
 """
 Robot Type - ABB IRB 120:
@@ -324,22 +321,22 @@ ABB_IRB_120_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 ABB_IRB_120_Str.Theta.Direction = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
 # Colliders of the robot structure.
 #   1\ Internal.
-ABB_IRB_120_Str.Collider.Name = [f'Base_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}',
-                                 f'Joint_1_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
-                                 f'Joint_2_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
-                                 f'Joint_3_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
-                                 f'Joint_4_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
-                                 f'Joint_5_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
-                                 f'Joint_6_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}']
-ABB_IRB_120_Str.Collider.Base = [OBB_Cls(Box_Cls([0.06060, 0.00000, -0.08317], [0.30120, 0.18052, 0.16633]))]
-ABB_IRB_120_Str.Collider.Theta = [OBB_Cls(Box_Cls([0.00000, 0.00000, 0.03631], [0.21500, 0.21700, 0.19738])),
-                                  OBB_Cls(Box_Cls([-0.12301, 0.00000, 0.00025], [0.38941, 0.14486, 0.21926])),
-                                  OBB_Cls(Box_Cls([-0.04557, -0.03259, -0.00175], [0.18803, 0.24401, 0.11550])),
-                                  OBB_Cls(Box_Cls([-0.00700, -0.00047, 0.05666], [0.10591, 0.12694, 0.19348])),
-                                  OBB_Cls(Box_Cls([0.00000, -0.00006, 0.00000], [0.08200, 0.13189, 0.06962])),
-                                  OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00650], [0.04000, 0.03983, 0.01300]))]
+ABB_IRB_120_Str.Collider.Base = {f'Base_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}': OBB_Cls(Box_Cls([0.06060, 0.00000, -0.08317], 
+                                                                                                                     [0.30120, 0.18052, 0.16633]))}
+ABB_IRB_120_Str.Collider.Theta = {f'Joint_1_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.03631], 
+                                                                                                                         [0.21500, 0.21700, 0.19738])),
+                                  f'Joint_2_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}': OBB_Cls(Box_Cls([-0.12301, 0.00000, 0.00025], 
+                                                                                                                         [0.38941, 0.14486, 0.21926])),
+                                  f'Joint_3_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}': OBB_Cls(Box_Cls([-0.04557, -0.03259, -0.00175], 
+                                                                                                                         [0.18803, 0.24401, 0.11550])),
+                                  f'Joint_4_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}': OBB_Cls(Box_Cls([-0.00700, -0.00047, 0.05666], 
+                                                                                                                         [0.10591, 0.12694, 0.19348])),
+                                  f'Joint_5_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, -0.00006, 0.00000], 
+                                                                                                                         [0.08200, 0.13189, 0.06962])),
+                                  f'Joint_6_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00650], 
+                                                                                                                         [0.04000, 0.03983, 0.01300]))}
 #   2\ External.
-ABB_IRB_120_Str.Collider.External = []
+ABB_IRB_120_Str.Collider.External = {}
 
 """
 Robot Type - ABB IRB 120 with SMC Linear Axis (LEJSH63NZA 800):
@@ -413,26 +410,26 @@ ABB_IRB_120_L_Ax_Str.Theta.Axis = ['X', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 ABB_IRB_120_L_Ax_Str.Theta.Direction = np.array([-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
 # Colliders of the robot structure.
 #   1\ Internal.
-ABB_IRB_120_L_Ax_Str.Collider.Name = [f'Base_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}',
-                                      f'Joint_L_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}',
-                                      f'Base_1_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}',
-                                      f'Joint_1_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
-                                      f'Joint_2_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
-                                      f'Joint_3_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
-                                      f'Joint_4_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
-                                      f'Joint_5_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
-                                      f'Joint_6_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}']
-ABB_IRB_120_L_Ax_Str.Collider.Base = [OBB_Cls(Box_Cls([0.33848, 0.03402, -0.05515], [1.18700, 0.32000, 0.11030])),
-                                      OBB_Cls(Box_Cls([0.06060, 0.00000, -0.08317], [0.30120, 0.18052, 0.16633]))]
-ABB_IRB_120_L_Ax_Str.Collider.Theta = [OBB_Cls(Box_Cls([-0.00052, 0.03000, 0.01960], [0.18000, 0.24000, 0.03920])),
-                                       OBB_Cls(Box_Cls([0.00000, 0.00000, 0.03631], [0.21500, 0.21700, 0.19738])),
-                                       OBB_Cls(Box_Cls([-0.12301, 0.00000, 0.00025], [0.38941, 0.14486, 0.21926])),
-                                       OBB_Cls(Box_Cls([-0.04557, -0.03259, -0.00175], [0.18803, 0.24401, 0.11550])),
-                                       OBB_Cls(Box_Cls([-0.00700, -0.00047, 0.05666], [0.10591, 0.12694, 0.19348])),
-                                       OBB_Cls(Box_Cls([0.00000, -0.00006, 0.00000], [0.08200, 0.13189, 0.06962])),
-                                       OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00650], [0.04000, 0.03983, 0.01300]))]
+ABB_IRB_120_L_Ax_Str.Collider.Base = {f'Base_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}': OBB_Cls(Box_Cls([0.33848, 0.03402, -0.05515], 
+                                                                                                                                    [1.18700, 0.32000, 0.11030])),
+                                      f'Base_1_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}': OBB_Cls(Box_Cls([0.06060, 0.00000, -0.08317], 
+                                                                                                                                      [0.30120, 0.18052, 0.16633]))}
+ABB_IRB_120_L_Ax_Str.Collider.Theta = {f'Joint_L_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}': OBB_Cls(Box_Cls([-0.00052, 0.03000, 0.01960], 
+                                                                                                                                        [0.18000, 0.24000, 0.03920])),
+                                       f'Joint_1_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.03631], 
+                                                                                                                                        [0.21500, 0.21700, 0.19738])),
+                                       f'Joint_2_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}': OBB_Cls(Box_Cls([-0.12301, 0.00000, 0.00025], 
+                                                                                                                                        [0.38941, 0.14486, 0.21926])),
+                                       f'Joint_3_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}': OBB_Cls(Box_Cls([-0.04557, -0.03259, -0.00175], 
+                                                                                                                                        [0.18803, 0.24401, 0.11550])),
+                                       f'Joint_4_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}': OBB_Cls(Box_Cls([-0.00700, -0.00047, 0.05666], 
+                                                                                                                                        [0.10591, 0.12694, 0.19348])),
+                                       f'Joint_5_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, -0.00006, 0.00000], 
+                                                                                                                                        [0.08200, 0.13189, 0.06962])),
+                                       f'Joint_6_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00650], 
+                                                                                                                                        [0.04000, 0.03983, 0.01300]))}
 #   2\ External.
-ABB_IRB_120_L_Ax_Str.Collider.External = []
+ABB_IRB_120_L_Ax_Str.Collider.External = {}
 
 
 """
@@ -514,24 +511,26 @@ ABB_IRB_14000_R_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 ABB_IRB_14000_R_Str.Theta.Direction = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
 # Colliders of the robot structure.
 #   1\ Internal.
-ABB_IRB_14000_R_Str.Collider.Name = [f'Base_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}',
-                                     f'Joint_1_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}',
-                                     f'Joint_2_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
-                                     f'Joint_7_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
-                                     f'Joint_3_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
-                                     f'Joint_4_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
-                                     f'Joint_5_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
-                                     f'Joint_6_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}']
-ABB_IRB_14000_R_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], [0.00200, 0.00200, 0.00200]))]
-ABB_IRB_14000_R_Str.Collider.Theta = [OBB_Cls(Box_Cls([0.00867, -0.00780, 0.04144], [0.14013, 0.14044, 0.18074])),
-                                      OBB_Cls(Box_Cls([-0.01831, 0.06249, 0.01221], [0.13314, 0.22109, 0.13158])),
-                                      OBB_Cls(Box_Cls([-0.02064, -0.01583, 0.03952], [0.13622, 0.12657, 0.17557])),
-                                      OBB_Cls(Box_Cls([-0.01870, -0.05825, 0.01533], [0.13341, 0.21283, 0.12563])),
-                                      OBB_Cls(Box_Cls([-0.00856, -0.01428, 0.05104], [0.10046, 0.11180, 0.16608])),
-                                      OBB_Cls(Box_Cls([0.01735, -0.01680, 0.01499], [0.10141, 0.09905, 0.12565])),
-                                      OBB_Cls(Box_Cls([0.00017, 0.00020, 0.01621], [0.06302, 0.06302, 0.04352]))]
+ABB_IRB_14000_R_Str.Collider.Base = {f'Base_Collider_ABB_IRB_14000_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.11307, 0.00000, -0.18543], 
+                                                                                                                    [0.49593, 0.40000, 0.57085])),
+                                     f'Base_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], 
+                                                                                                                                 [0.00200, 0.00200, 0.00200]))}
+ABB_IRB_14000_R_Str.Collider.Theta = {f'Joint_1_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.00867, -0.00780, 0.04144], 
+                                                                                                                                     [0.14013, 0.14044, 0.18074])),
+                                      f'Joint_2_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([-0.01831, 0.06249, 0.01221], 
+                                                                                                                                     [0.13314, 0.22109, 0.13158])), 
+                                      f'Joint_7_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([-0.02064, -0.01583, 0.03952], 
+                                                                                                                                     [0.13622, 0.12657, 0.17557])), 
+                                      f'Joint_3_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([-0.01870, -0.05825, 0.01533], 
+                                                                                                                                     [0.13341, 0.21283, 0.12563])), 
+                                      f'Joint_4_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([-0.00856, -0.01428, 0.05104], 
+                                                                                                                                     [0.10046, 0.11180, 0.16608])), 
+                                      f'Joint_5_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.01735, -0.01680, 0.01499], 
+                                                                                                                                     [0.10141, 0.09905, 0.12565])), 
+                                      f'Joint_6_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.00017, 0.00020, 0.01621], 
+                                                                                                                                     [0.06302, 0.06302, 0.04352]))}
 #   2\ External.
-ABB_IRB_14000_R_Str.Collider.External = [OBB_Cls(Box_Cls([0.11307, 0.00000, -0.18543], [0.49593, 0.40000, 0.57085]))]
+ABB_IRB_14000_R_Str.Collider.External = {}
 
 """
 Robot Type - ABB IRB 14000 (Left):
@@ -609,24 +608,26 @@ ABB_IRB_14000_L_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z']
 ABB_IRB_14000_L_Str.Theta.Direction = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float16)
 # Colliders of the robot structure.
 #   1\ Internal.
-ABB_IRB_14000_L_Str.Collider.Name = [f'Base_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}',
-                                     f'Joint_1_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}',
-                                     f'Joint_2_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
-                                     f'Joint_7_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
-                                     f'Joint_3_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
-                                     f'Joint_4_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
-                                     f'Joint_5_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
-                                     f'Joint_6_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}']
-ABB_IRB_14000_L_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], [0.00200, 0.00200, 0.00200]))]
-ABB_IRB_14000_L_Str.Collider.Theta = [OBB_Cls(Box_Cls([0.00867, -0.00780, 0.04144], [0.14013, 0.14044, 0.18074])),
-                                      OBB_Cls(Box_Cls([-0.01831, 0.06249, 0.01221], [0.13314, 0.22109, 0.13158])),
-                                      OBB_Cls(Box_Cls([-0.02064, -0.01583, 0.03952], [0.13622, 0.12657, 0.17557])),
-                                      OBB_Cls(Box_Cls([-0.01870, -0.05825, 0.01533], [0.13341, 0.21283, 0.12563])),
-                                      OBB_Cls(Box_Cls([-0.00856, -0.01428, 0.05104], [0.10046, 0.11180, 0.16608])),
-                                      OBB_Cls(Box_Cls([0.01735, -0.01680, 0.01499], [0.10141, 0.09905, 0.12565])),
-                                      OBB_Cls(Box_Cls([0.00017, 0.00020, 0.01621], [0.06302, 0.06302, 0.04352]))]
+ABB_IRB_14000_L_Str.Collider.Base = {f'Base_Collider_ABB_IRB_14000_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.11307, 0.00000, -0.18543], 
+                                                                                                                    [0.49593, 0.40000, 0.57085])),
+                                     f'Base_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], 
+                                                                                                                                 [0.00200, 0.00200, 0.00200]))}
+ABB_IRB_14000_L_Str.Collider.Theta = {f'Joint_1_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}': OBB_Cls(Box_Cls([0.00867, -0.00780, 0.04144], 
+                                                                                                                                     [0.14013, 0.14044, 0.18074])),
+                                      f'Joint_2_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}': OBB_Cls(Box_Cls([-0.01831, 0.06249, 0.01221], 
+                                                                                                                                     [0.13314, 0.22109, 0.13158])), 
+                                      f'Joint_7_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}': OBB_Cls(Box_Cls([-0.02064, -0.01583, 0.03952], 
+                                                                                                                                     [0.13622, 0.12657, 0.17557])), 
+                                      f'Joint_3_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}': OBB_Cls(Box_Cls([-0.01870, -0.05825, 0.01533], 
+                                                                                                                                     [0.13341, 0.21283, 0.12563])), 
+                                      f'Joint_4_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}': OBB_Cls(Box_Cls([-0.00856, -0.01428, 0.05104], 
+                                                                                                                                     [0.10046, 0.11180, 0.16608])), 
+                                      f'Joint_5_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}': OBB_Cls(Box_Cls([0.01735, -0.01680, 0.01499], 
+                                                                                                                                     [0.10141, 0.09905, 0.12565])), 
+                                      f'Joint_6_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}': OBB_Cls(Box_Cls([0.00017, 0.00020, 0.01621], 
+                                                                                                                                     [0.06302, 0.06302, 0.04352]))}
 #   2\ External.
-ABB_IRB_14000_L_Str.Collider.External = [OBB_Cls(Box_Cls([0.11307, 0.00000, -0.18543], [0.49593, 0.40000, 0.57085]))]
+ABB_IRB_14000_L_Str.Collider.External = {}
 
 """
 Robot Type - Epson LS3-B401S:
@@ -698,15 +699,15 @@ EPSON_LS3_B401S_Str.Theta.Axis = ['Z', 'Z', 'Z', 'Z']
 EPSON_LS3_B401S_Str.Theta.Direction = np.array([1.0, 1.0, -1.0, 1.0], dtype=np.float16)
 # Colliders of the robot structure.
 #   1\ Internal.
-EPSON_LS3_B401S_Str.Collider.Name = [f'Base_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}',
-                                     f'Joint_1_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}', 
-                                     f'Joint_2_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}', 
-                                     f'Joint_3_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}', 
-                                     f'Joint_4_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}']
-EPSON_LS3_B401S_Str.Collider.Base = [OBB_Cls(Box_Cls([0.00000, 0.05875, -0.09830], [0.14000, 0.22650, 0.19660]))]
-EPSON_LS3_B401S_Str.Collider.Theta = [OBB_Cls(Box_Cls([-0.11001, 0.00000, -0.01900], [0.31957, 0.09958, 0.05400])),
-                                      OBB_Cls(Box_Cls([-0.08931, 0.00000, -0.10894], [0.26735, 0.13073, 0.28968])),
-                                      OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], [0.00200, 0.00200, 0.00200])),
-                                      OBB_Cls(Box_Cls([0.00001, 0.00000, 0.16500], [0.02998, 0.02999, 0.33000]))]
+EPSON_LS3_B401S_Str.Collider.Base = {f'Base_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.05875, -0.09830], 
+                                                                                                                                 [0.14000, 0.22650, 0.19660]))}
+EPSON_LS3_B401S_Str.Collider.Theta = {f'Joint_1_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}': OBB_Cls(Box_Cls([-0.11001, 0.00000, -0.01900], 
+                                                                                                                                     [0.31957, 0.09958, 0.05400])),
+                                      f'Joint_2_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}': OBB_Cls(Box_Cls([-0.08931, 0.00000, -0.10894], 
+                                                                                                                                     [0.26735, 0.13073, 0.28968])),
+                                      f'Joint_3_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00000], 
+                                                                                                                                     [0.00200, 0.00200, 0.00200])),
+                                      f'Joint_4_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}': OBB_Cls(Box_Cls([0.00001, 0.00000, 0.16500], 
+                                                                                                                                     [0.02998, 0.02999, 0.33000]))}
 #   2\ External.
-EPSON_LS3_B401S_Str.Collider.External = []
+EPSON_LS3_B401S_Str.Collider.External = {}

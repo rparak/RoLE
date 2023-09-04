@@ -17,6 +17,8 @@ import Lib.Kinematics.Core as Kinematics
 import Lib.Transformation.Core as Transformation
 #   ../Lib/Transformation/Utilities/Mathematics
 import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Lib/Trajectory/Utilities
+import Lib.Trajectory.Utilities
 
 class Poly_3D_Cls(object):
     """
@@ -227,9 +229,14 @@ class Mechanism_Cls(object):
                 Lib.Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', visibility['Viewpoint_EE'])
 
             # Enable or disable the visibility of the colliders.
-            for _, collider_name in enumerate(self.__Mechanism_Parameters_Str.Collider.Name):
+            for _, collider_name in enumerate(np.concatenate((list(self.__Mechanism_Parameters_Str.Collider.Base), 
+                                                              list(self.__Mechanism_Parameters_Str.Collider.Theta),
+                                                              list(self.__Mechanism_Parameters_Str.Collider.External)), dtype=str)):
                 if Lib.Blender.Utilities.Object_Exist(collider_name):
                     Lib.Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
+
+            # Initialization of the class to generate trajectory.
+            self.__Trapezoidal_Cls = Lib.Trajectory.Utilities.Trapezoidal_Profile_Cls(delta_time=1.0/self.__fps)
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
@@ -363,11 +370,11 @@ class Mechanism_Cls(object):
         try:
             assert isinstance(theta, float)
 
-            # Obtain a linear interpolation between the actual and desired absolute joint position.
-            theta_arr = np.linspace(self.Theta, theta, np.int32((t_1 - t_0) * self.__fps))
+            # Generation of position trajectories from input parameters.
+            (theta_arr, _, _) = self.__Trapezoidal_Cls.Generate(self.Theta, theta, 0.0, 0.0, 
+                                                                t_0, t_1)
 
-            t_0_frame = np.int32(t_0 * self.__fps)
-            for i_frame, theta_arr_i in enumerate(theta_arr):
+            for _, (t_i, theta_arr_i) in enumerate(zip(self.__Trapezoidal_Cls.t, theta_arr)):
                 bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_mode = self.__axes_sequence_cfg
                 if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta_arr_i <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
 
@@ -386,7 +393,7 @@ class Mechanism_Cls(object):
                                                                                                                                       th)).p.all()
                         
                         # Insert a keyframe of the object (Joint_{i}) into the frame at time t(i). 
-                        Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', t_0_frame + i_frame, 'ALL')
+                        Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', np.int32(t_i * self.__fps), 'ALL')
                 else:
                     # Reset the absolute position of the robot joints to the 'Zero'.
                     self.Reset('Zero')
@@ -460,15 +467,18 @@ class Robot_Cls(object):
                 Lib.Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', visibility['Viewpoint_EE'])
 
             # Enable or disable the visibility of the colliders.
-            for _, collider_name in enumerate(self.__Robot_Parameters_Str.Collider.Name):
-                print(collider_name)
+            for _, collider_name in enumerate(np.concatenate((list(self.__Robot_Parameters_Str.Collider.Base), 
+                                                              list(self.__Robot_Parameters_Str.Collider.Theta),
+                                                              list(self.__Robot_Parameters_Str.Collider.External)), dtype=str)):
                 if Lib.Blender.Utilities.Object_Exist(collider_name):
-                    print(collider_name)
                     Lib.Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
 
             # Enable or disable the visibility of the workspace.
             if Lib.Blender.Utilities.Object_Exist(f'Workspace_{self.__name}'):
                 Lib.Blender.Utilities.Object_Visibility(f'Workspace_{self.__name}', visibility['Workspace'])
+
+            # Initialization of the class to generate trajectory.
+            self.__Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=1.0/self.__fps)
 
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
@@ -658,11 +668,14 @@ class Robot_Cls(object):
         try:
             assert self.__Robot_Parameters_Str.Theta.Zero.size == theta.size
 
-            # Obtain a linear interpolation between the actual and desired absolute joint position.
-            theta_arr = np.linspace(self.Theta, theta, np.int32((t_1 - t_0) * self.__fps))
+            # Generation of multi-axis position trajectories from input parameters.
+            theta_arr = []
+            for _, (th_actual, th_desired) in enumerate(zip(self.Theta, theta)):
+                (theta_arr_i, _, _) = self.__Polynomial_Cls.Generate(th_actual, th_desired, 0.0, 0.0, 0.0, 0.0,
+                                                                     t_0, t_1)
+                theta_arr.append(theta_arr_i)
 
-            t_0_frame = np.int32(t_0 * self.__fps)
-            for i_frame, theta_arr_i in enumerate(theta_arr):
+            for _, (t_i, theta_arr_i) in enumerate(zip(self.__Polynomial_Cls.t, np.array(theta_arr, dtype=np.float32).T)):
                 # Get the zero configuration of each joint.
                 T_zero_cfg = self.__Get_Zero_Joint_Cfg()
 
@@ -682,7 +695,8 @@ class Robot_Cls(object):
                             bpy.data.objects[th_i_name].location = (Transformation.Get_Translation_Matrix(ax_i, th_new) @ T_i_zero_cfg).p.all()
 
                         # Insert a keyframe of the object (Joint_{i}) into the frame at time t(i). 
-                        Lib.Blender.Utilities.Insert_Key_Frame(th_i_name, 'matrix_basis', t_0_frame + i_frame, 'ALL')
+                        Lib.Blender.Utilities.Insert_Key_Frame(th_i_name, 'matrix_basis', np.int32(t_i * self.__fps), 'ALL')
+
                     else:
                         # Update the scene.
                         self.__Update()

@@ -89,5 +89,6 @@ def main():
     print(f'[INFO] >> p: x({Mechanism_ID_0_1_Cls.T_EE.p.x:.3f}), y({Mechanism_ID_0_1_Cls.T_EE.p.y:.3f}), z({Mechanism_ID_0_1_Cls.T_EE.p.z:.3f})')
     Euler_Angles = Mechanism_ID_0_1_Cls.T_EE.Get_Rotation('ZYX')
     print(f'[INFO] >> Euler Angles: x({Euler_Angles.x:.3f}), y({Euler_Angles.y:.3f}), z({Euler_Angles.z:.3f})')
+    
 if __name__ == '__main__':
     main()
