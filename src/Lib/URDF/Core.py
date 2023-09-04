@@ -102,11 +102,15 @@ class URDF_Generator_Cls(object):
       # Get the visual/collision geometry of an individual part of the robotic structure.
       obj_geometry = self.__Object_Geometry('Base')
 
+      # ...
+      # [0:-1]
+      Base_Collider = list(self.__Robot_Parameters_Str.Collider.Base.values())
+
       # Obtain the moment of inertia (MOI) for the bounding box.
-      moi = MOI.Cube_MOI(self.__Robot_Properties['mass'][0], self.__Robot_Parameters_Str.Collider[0].Size)
+      moi = MOI.Cube_MOI(self.__Robot_Properties['mass'][0], Base_Collider[0].Size)
 
       # Change the direction of the origin of the bounding box.
-      bbox_origin = ((-1) *  self.__Robot_Parameters_Str.Collider[0].Origin) + [0.0, 0.0, 0.0]
+      bbox_origin = ((-1) *  Base_Collider[0].Origin) + [0.0, 0.0, 0.0]
 
       return f'''  <!-- Configuration of the part called 'Base 0'. -->
   <link name="base_link">
@@ -281,7 +285,7 @@ class URDF_Generator_Cls(object):
         # Find the zero configuration of the homogeneous matrix of each joint using the modified 
         # forward kinematics calculation method.
         self.__Robot_Parameters_Str.T.Zero_Cfg = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(self.__Robot_Parameters_Str.Theta.Zero, 'Modified', 
-                                                                                             self.__Robot_Parameters_Str)[1]
+                                                                                                        self.__Robot_Parameters_Str)[1]
         
         # Generate a configuration for the URDF file with individual principles that depend on whether 
         # the robot contains an external axis or not.

@@ -42,7 +42,7 @@ def main():
                                                             [0.90, 0.90, 0.90, 1.0])
     #   Generate and save the URDF.
     URDF_Generator_Cls_0.Generate()
-    URDF_Generator_Cls_0.Save(f'{project_folder}/URDFs/Robots/{Robot_Str.Name}/{Robot_Str.Name}')
+    #URDF_Generator_Cls_0.Save(f'{project_folder}/URDFs/Robots/{Robot_Str.Name}/{Robot_Str.Name}')
 
 if __name__ == "__main__":
     sys.exit(main())
