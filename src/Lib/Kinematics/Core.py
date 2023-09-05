@@ -193,14 +193,14 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
                                                                                                                                             tp.List[tp.List[tp.List[float]]]]:
     """
     Description:
-        Get the configuration of the homogeneous matrix of each joint using the standard forward kinematics calculation method.
+        Get the configuration of the homogeneous transformation matrix of each joint using the standard forward kinematics calculation method.
 
     Args:
         (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:
-        (1) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
+        (1) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous transformation matrix of each joint.
                                                Note:
                                                 Where n is the number of joints.
     """
@@ -220,7 +220,7 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
                 # Translation along the X axis.
                 T_i = T_i @ DH_Standard(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
-        # Addition of a homogeneous matrix configuration in the current 
+        # Addition of a homogeneous transformation matrix configuration in the current 
         # episode (joint absolute position i).
         if theta.size - 1 == i:
             T_cfg.append(T_i @ Robot_Parameters_Str.T.End_Effector)
@@ -234,14 +234,14 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
                                                                                                                                             tp.List[tp.List[tp.List[float]]]]:
     """
     Description:
-        Get the configuration of the homogeneous matrix of each joint using the modified forward kinematics calculation method.
+        Get the configuration of the homogeneous transformation matrix of each joint using the modified forward kinematics calculation method.
 
     Args:
         (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:
-        (1) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
+        (1) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous transformation matrix of each joint.
                                                Note:
                                                 Where n is the number of joints.
     """
@@ -261,7 +261,7 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
                 # Translation along the X axis.
                 T_i = T_i @ DH_Modified(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
-        # Addition of a homogeneous matrix configuration in the current 
+        # Addition of a homogeneous transformation matrix configuration in the current 
         # episode (joint absolute position i).
         if theta.size - 1 == i:
             T_cfg.append(T_i @ Robot_Parameters_Str.T.End_Effector)
@@ -275,7 +275,7 @@ def Get_Individual_Joint_Configuration(theta: tp.List[float], method: str, Robot
                                                                                                                                               tp.List[tp.List[tp.List[float]]]]:
     """
     Description:
-        Get the configuration of the homogeneous matrix of each joint using forward kinematics. The method of calculating 
+        Get the configuration of the homogeneous transformation matrix of each joint using forward kinematics. The method of calculating 
         the forward kinematics depends on the input parameter (2).
 
     Args:
@@ -290,9 +290,9 @@ def Get_Individual_Joint_Configuration(theta: tp.List[float], method: str, Robot
                                         The value in the vector is "True" if the desired absolute 
                                         joint positions are within the limits, and "False" if they 
                                         are not.
-        (2) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
-                                        Note:
-                                            Where n is the number of joints.
+        (2) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous transformation matrix of each joint.
+                                                Note:
+                                                    Where n is the number of joints.
     """
     
     # Check that the desired absolute joint positions are not out of limit.
@@ -344,7 +344,7 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
     # Change of axis direction in individual joints.
     th = theta * Robot_Parameters_Str.Theta.Direction
 
-    # Get the configuration of the homogeneous matrix of each joint using the 
+    # Get the configuration of the homogeneous transformation matrix of each joint using the 
     # modified forward kinematics calculation method.
     T_Cfg_Arr = __Get_Individual_Joint_Configuration_Modified(th, Robot_Parameters_Str)[1]
 
@@ -370,29 +370,6 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
 
     return J
 
-def __Inverse_Kinematics_Numerical_NR(TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties):
-    """
-    Description:
-        ....
-
-    Args:
-        (1) TCP_Position [Vector<float>]: The desired TCP (tool center point) in Cartesian coordinates defined as a:
-                                          Position: X, Y, Z in metres
-                                          Rotation (Euler angles): X, Y, Z in radians
-        (2) theta_0 [Vector<float>]: Current absolute joint position in radians / meters.
-        (4) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (5) ik_solver_properties []: 
-
-    Returns:
-        (1) parameter [Dictionary {bool, float}]: Information on whether the result was found within the required 
-                                                  tolerance (Part 1: bool) and information on the minimum quadratic (angle-axis) 
-                                                  error (Part 2: float).
-        (2) paramater [Vector<float>]: The best solution found for the absolute position of the joint in radians / meters.
-        (3) parameter [Matrix<float>]: The entire trajectory found from the theta_0 to the best solution.
-    """
-
-    pass
-
 # ////////////////////
 """
 ik_solver_properties -> *args or **kwargs
@@ -404,50 +381,13 @@ DKT:
 https://github.com/jhavl/dkt
 """
 # ///////////////////
+def __Inverse_Kinematics_Numerical_NR(TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties):
+    pass
+
 def __Inverse_Kinematics_Numerical_GN(TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties):
-    """
-    Description:
-        ....
-
-    Args:
-        (1) TCP_Position [Vector<float>]: The desired TCP (tool center point) in Cartesian coordinates defined as a:
-                                          Position: X, Y, Z in metres
-                                          Rotation (Euler angles): X, Y, Z in radians
-        (2) theta_0 [Vector<float>]: Current absolute joint position in radians / meters.
-        (4) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (5) ik_solver_properties []: 
-
-    Returns:
-        (1) parameter [Dictionary {bool, float}]: Information on whether the result was found within the required 
-                                                  tolerance (Part 1: bool) and information on the minimum quadratic (angle-axis) 
-                                                  error (Part 2: float).
-        (2) paramater [Vector<float>]: The best solution found for the absolute position of the joint in radians / meters.
-        (3) parameter [Matrix<float>]: The entire trajectory found from the theta_0 to the best solution.
-    """
-
     pass
 
 def __Inverse_Kinematics_Numerical_LM(TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties):
-    """
-    Description:
-        ....
-
-    Args:
-        (1) TCP_Position [Vector<float>]: The desired TCP (tool center point) in Cartesian coordinates defined as a:
-                                          Position: X, Y, Z in metres
-                                          Rotation (Euler angles): X, Y, Z in radians
-        (2) theta_0 [Vector<float>]: Current absolute joint position in radians / meters.
-        (4) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (5) ik_solver_properties []: 
-
-    Returns:
-        (1) parameter [Dictionary {bool, float}]: Information on whether the result was found within the required 
-                                                  tolerance (Part 1: bool) and information on the minimum quadratic (angle-axis) 
-                                                  error (Part 2: float).
-        (2) paramater [Vector<float>]: The best solution found for the absolute position of the joint in radians / meters.
-        (3) parameter [Matrix<float>]: The entire trajectory found from the theta_0 to the best solution.
-    """
-
     pass
 
 def Inverse_Kinematics_Numerical(TCP_Position, theta_0, method, Robot_Parameters_Str, ik_solver_properties):
@@ -456,24 +396,26 @@ def Inverse_Kinematics_Numerical(TCP_Position, theta_0, method, Robot_Parameters
         ....
 
         ik_solver_properties = {'num_of_iteration': ..., 'tolerance': .., 'etc.'...}
+
     Args:
-        (1) TCP_Position [Vector<float>]: The desired TCP (tool center point) in Cartesian coordinates defined as a:
-                                          Position: X, Y, Z in metres
-                                          Rotation (Euler angles): X, Y, Z in radians
-        (2) theta_0 [Vector<float>]: Current absolute joint position in radians / meters.
-        (3) method [string]: Name of the solver for the numerical method of inverse kinematics.
+        (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 
+                                              as a homogeneous transformation matrix.
+        (2) theta_0 [Vector<float> 1xn]: Actual absolute joint position in radians / meters.
+                                            Note:
+                                                Where n is the number of joints.
+        (3) method [string]: The name of the solver used to calculate the numerical method of inverse kinematics
         (4) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (5) ik_solver_properties [Dictionary]: Properties of the inverse kinematics solver (depends on the specific method).
-                                               Note:
-                                                    Detailed information about the structure can be found in the specific 
-                                                    method.
+        (5) ik_solver_properties [Dictionary]: The properties of the inverse kinematics solver.
+                                                Note:
+                                                    The properties depend on the specific method."
 
     Returns:
-        (1) parameter [Dictionary {bool, float}]: Information on whether the result was found within the required 
-                                                  tolerance (Part 1: bool) and information on the minimum quadratic (angle-axis) 
-                                                  error (Part 2: float).
-        (2) paramater [Vector<float>]: The best solution found for the absolute position of the joint in radians / meters.
-        (3) parameter [Matrix<float>]: The entire trajectory found from the theta_0 to the best solution.
+        (1) parameter [Dictionary {'successful': bool, 
+                                   'angle_axis_error': float}]: Information on whether the result was found within the required tolerance 
+                                                                and information on the minimum quadratic (angle-axis) error.
+        (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
+                                            Note:
+                                                Where n is the number of joints.
     """
 
     return {
@@ -481,6 +423,35 @@ def Inverse_Kinematics_Numerical(TCP_Position, theta_0, method, Robot_Parameters
         'Gauss-Newton': lambda tcp_p, th_0, r_param_str, properties: __Inverse_Kinematics_Numerical_GN(tcp_p, th_0, r_param_str, properties),
         'Levenberg-Marquardt': lambda tcp_p, th_0, r_param_str, properties: __Inverse_Kinematics_Numerical_LM(tcp_p, th_0, r_param_str, properties)
     }[method](TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties)
+
+def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[float]:
+    """
+    Description:
+        ....
+
+    Args:
+        (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 
+                                              as a homogeneous transformation matrix.
+        (2) theta_0 [Vector<float> 1xn]: Actual absolute joint position in radians / meters.
+                                            Note:
+                                                Where n is the number of joints.
+        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+
+
+    Returns:
+        (1) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
+                                            Note:
+                                                Where n is the number of joints.
+    """
+        
+    try:
+        assert Robot_Parameters_Str.Name in ['EPSON_LS3_B401S']
+
+        pass
+
+    except AssertionError as error:
+        print(f'[ERROR] Information: {error}')
+        print('[ERROR] An incorrect robot structure was selected for the analytical inverse kinematics calculation.')
 
 
 

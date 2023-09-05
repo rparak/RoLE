@@ -40,7 +40,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_L_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 # Animation stop(t_0), start(t_1) time in seconds.
@@ -72,12 +72,12 @@ def main():
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
     
-    theta = Mathematics.Degree_To_Radian(np.array([0.0, 70.0, 52.0, 0.0, 90.0, 0.0], dtype=np.float32))
+    #theta = Mathematics.Degree_To_Radian(np.array([0.0, 0.0, 0.0, 0.0], dtype=np.float32))
     # Reset the absolute position of the robot joints to the 'Zero'.
-    Robot_ID_0_Cls.Reset('Home', None)
+    #Robot_ID_0_Cls.Reset('Home', None)
     
     # ...
-    print(Lib.Kinematics.Utilities.General.Is_Self_Collision(theta, Robot_Str, 1))
+    print(Lib.Kinematics.Utilities.General.Is_Self_Collision(Robot_Str.Theta.Home, Robot_Str))
 
 if __name__ == '__main__':
     main()

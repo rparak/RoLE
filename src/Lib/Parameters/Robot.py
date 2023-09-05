@@ -126,6 +126,12 @@ class Collider_Str:
     # Internal colliders of the joints.
     #   Unit [Tuple<OBB_Cls(object)>]
     Theta: tp.Tuple[OBB_Cls] = field(default_factory=tuple)
+    # Offset of the self-collision detection function.
+    #   Note:
+    #       If the offset is equal to 0, the function checks all 
+    #       combinations of collisions.
+    #   Unit [int]
+    Offset: int = 0
     # External colliders.
     #   Unit [Tuple<AABB_Cls(object)>/Tuple<OBB_Cls(object)>]
     External: tp.Tuple[tp.Union[AABB_Cls, OBB_Cls]] = field(default_factory=tuple)
@@ -256,6 +262,7 @@ Universal_Robots_UR3_Str.Collider.Theta = {f'Joint_1_Collider_{Universal_Robots_
                                                                                                                                                     [0.06443, 0.08872, 0.07680])),
                                            f'Joint_6_Collider_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}': OBB_Cls(Box_Cls([-0.00007, 0.00326, 0.01962], 
                                                                                                                                                     [0.06298, 0.06961, 0.03936]))}
+Universal_Robots_UR3_Str.Collider.Offset = 1
 #   2\ External.
 Universal_Robots_UR3_Str.Collider.External = {}
 
@@ -341,6 +348,7 @@ ABB_IRB_120_Str.Collider.Theta = {f'Joint_1_Collider_{ABB_IRB_120_Str.Name}_ID_{
                                                                                                                          [0.08200, 0.13189, 0.06962])),
                                   f'Joint_6_Collider_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00650], 
                                                                                                                          [0.04000, 0.03983, 0.01300]))}
+ABB_IRB_120_Str.Collider.Offset = 1
 #   2\ External.
 ABB_IRB_120_Str.Collider.External = {}
 
@@ -435,6 +443,7 @@ ABB_IRB_120_L_Ax_Str.Collider.Theta = {f'Joint_L_Collider_{ABB_IRB_120_L_Ax_Str.
                                                                                                                                         [0.08200, 0.13189, 0.06962])),
                                        f'Joint_6_Collider_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}': OBB_Cls(Box_Cls([0.00000, 0.00000, 0.00650], 
                                                                                                                                         [0.04000, 0.03983, 0.01300]))}
+ABB_IRB_120_L_Ax_Str.Collider.Offset = 1
 #   2\ External.
 ABB_IRB_120_L_Ax_Str.Collider.External = {}
 
@@ -535,6 +544,7 @@ ABB_IRB_14000_R_Str.Collider.Theta = {f'Joint_1_Collider_{ABB_IRB_14000_R_Str.Na
                                                                                                                                      [0.10141, 0.09905, 0.12565])), 
                                       f'Joint_6_Collider_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.00017, 0.00020, 0.01621], 
                                                                                                                                      [0.06302, 0.06302, 0.04352]))}
+ABB_IRB_14000_R_Str.Collider.Offset = 2
 #   2\ External.
 ABB_IRB_14000_R_Str.Collider.External = {f'Base_Collider_ID_1_ABB_IRB_14000_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.11174, 0.00000, 0.00000], 
                                                                                                                              [0.49325, 0.40000, 0.20000])),
@@ -643,6 +653,7 @@ ABB_IRB_14000_L_Str.Collider.Theta = {f'Joint_1_Collider_{ABB_IRB_14000_L_Str.Na
                                                                                                                                      [0.10141, 0.09905, 0.12565])), 
                                       f'Joint_6_Collider_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}': OBB_Cls(Box_Cls([0.00017, 0.00020, 0.01621], 
                                                                                                                                      [0.06302, 0.06302, 0.04352]))}
+ABB_IRB_14000_L_Str.Collider.Offset = 2
 #   2\ External.
 ABB_IRB_14000_L_Str.Collider.External = {f'Base_Collider_ID_1_ABB_IRB_14000_ID_{ABB_IRB_14000_R_Str.Id:03}': OBB_Cls(Box_Cls([0.11174, 0.00000, 0.00000], 
                                                                                                                              [0.49325, 0.40000, 0.20000])),
@@ -732,5 +743,6 @@ EPSON_LS3_B401S_Str.Collider.Theta = {f'Joint_1_Collider_{EPSON_LS3_B401S_Str.Na
                                                                                                                                      [0.00200, 0.00200, 0.00200])),
                                       f'Joint_4_Collider_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}': OBB_Cls(Box_Cls([0.00001, 0.00000, 0.16500], 
                                                                                                                                      [0.02998, 0.02999, 0.33000]))}
+EPSON_LS3_B401S_Str.Collider.Offset = 2
 #   2\ External.
 EPSON_LS3_B401S_Str.Collider.External = {}

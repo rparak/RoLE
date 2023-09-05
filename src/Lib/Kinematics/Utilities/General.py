@@ -117,20 +117,19 @@ def Get_Quadratic_Angle_Axis_Error(e: tp.List[float], W_e: tp.List[tp.List[float
     
     return 0.5 * e @ W_e @ e
 
-def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, offset: int) -> tp.List[bool]:
+def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[bool]:
     """
     Description:
-        ...
+        A function to obtain information whether there is a collision between the joints of the robotic structure.
 
     Args:
         (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
                                         Note:
                                             Where n is the number of joints.
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (3) offset [float]: ...
 
     Returns:
-        (1) parameter [Vector<bool> 1xk]: ....
+        (1) parameter [Vector<bool> 1xk]: A vector of errors where a collision occurred between the joints of the robotic structure.
                                             Note:
                                                 Where k is the number of all colliders of the robotic structure.
     """
@@ -159,14 +158,33 @@ def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
     # Check whether the 3D primitives (bounding boxes AABB, OBB) overlap or not.
     is_collision = np.zeros(All_Colliders.size, dtype=bool)
     for i, Collider_i in enumerate(All_Colliders):
-        for j, Collider_j in enumerate(All_Colliders[(i + 1) + offset::], start=(i + 1) + offset):
+        for j, Collider_j in enumerate(All_Colliders[(i + 1) + Robot_Parameters_Str.Collider.Offset::], 
+                                       start=(i + 1) + Robot_Parameters_Str.Collider.Offset):
             if Collider_i.Overlap(Collider_j) == True:
                 # Set the individual parts where the collision occurs.
                 is_collision[i] = True; is_collision[j] = True
 
     return is_collision
 
-def Get_Best_IK_Solution():
-    # In progress ...
-    # Function to obtain the best solution from inverse kinematics ...
-    pass
+def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.List[float]], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[float]:
+    """
+    Description:
+        A function to automatically obtain the best solution for the absolute positions of the robot's joints.
+
+    Args:
+        (1) theta_0 [Vector<float> 1xn]: Actual absolute joint position in radians / meters.
+                                            Note:
+                                                Where n is the number of joints.
+        (2) theta_solutions [Matrix<float> kxn]: Multiple solutions obtained from IK (Inverse Kinematics).
+                                                    Note:
+                                                        Where k is the number of solutions and n is the number of joints.
+        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+
+    Returns:
+        (1) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
+                                            Note:
+                                                Where n is the number of joints.
+    """
+
+    for _, th_sol_i in enumerate(theta_solutions):
+        pass
