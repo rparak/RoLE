@@ -85,7 +85,7 @@ def main():
     
     """
     Description:
-        Find the zero configuration of the homogeneous matrix of each joint using the modified 
+        Find the zero configuration of the homogeneous transformation matrix of each joint using the modified 
         forward kinematics calculation method.
     """
     Robot_Str.T.Zero_Cfg = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
