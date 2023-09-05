@@ -30,8 +30,7 @@ class URDF_Generator_Cls(object):
           (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
           (2) use_mesh [bool]: Use a mesh to represent a visual/collision object. Otherwise, use a sphere to 
                               represent the object.
-          (3) is_external_axis [bool]: Is the external axis part of the robot or not. For example, a linear track.
-          (4) rgba [Vector<float> 1x4]: The colour of the material determined by a set of four numbers representing 
+          (3) rgba [Vector<float> 1x4]: The colour of the material determined by a set of four numbers representing 
                                         rgba(red, green, blue and alpha), each in the range (0 - 1).
 
         Example:
@@ -39,22 +38,20 @@ class URDF_Generator_Cls(object):
                 # Assignment of the variables.
                 #   Example for the ABB IRB 120 robot.
                 Robot_Parameters_Str = Lib.Parameters.Robot.ABB_IRB_120_Str
-                use_mesh = True; is_external_axis = False
+                use_mesh = True
 
                 # Initialization of the class.
-                Cls = URDF_Generator_Cls(Robot_parameters_Str, use_mesh, 
-                                         is_external_axis)
+                Cls = URDF_Generator_Cls(Robot_parameters_Str, use_mesh)
 
             Features:
                 # Functions of the class.
                 Cls.Generate(); Cls.Save()
     """
 
-    def __init__(self, Robot_Parameters_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, is_external_axis: bool, rgba: str) -> None:
+    def __init__(self, Robot_Parameters_Str: Parameters.Robot_Parameters_Str, use_mesh: bool, rgba: str) -> None:
         # Express the class input parameters as private variables.
         self.__Robot_Parameters_Str = Robot_Parameters_Str
         self.__use_mesh = use_mesh
-        self.__is_external_axis = is_external_axis
         # Convert the material parameter to a string without a comma.
         self.__rgba = ' '.join(str(x) for x in rgba)
 
@@ -62,7 +59,7 @@ class URDF_Generator_Cls(object):
         self.__Robot_Properties = Utilities.Get_Physical_Properties(self.__Robot_Parameters_Str.Name)
 
         # Create a configuration dictionary depending on the type of robotic structure.
-        if self.__is_external_axis == True:
+        if self.__Robot_Parameters_Str.External_Axis == True:
           self.__configuration = {'Base_0': '', 'External': '', 'Base_n': '', 'Core': [], 'EE': ''}
         else:
           self.__configuration = {'Base_0': '', 'Core': [], 'EE': ''}
@@ -102,8 +99,7 @@ class URDF_Generator_Cls(object):
       # Get the visual/collision geometry of an individual part of the robotic structure.
       obj_geometry = self.__Object_Geometry('Base')
 
-      # ...
-      # [0:-1]
+      # Get a list of base colliders.
       Base_Collider = list(self.__Robot_Parameters_Str.Collider.Base.values())
 
       # Obtain the moment of inertia (MOI) for the bounding box.
@@ -149,14 +145,17 @@ class URDF_Generator_Cls(object):
         (1) parameter [string]: The URDF configuration of the base (id - n) of the robotic structure.
       """
             
+      # Get a list of base colliders.
+      Base_Collider = list(self.__Robot_Parameters_Str.Collider.Base.values())
+
       # Get the visual/collision geometry of an individual part of the robotic structure.
       obj_geometry = self.__Object_Geometry(f'Base_{n}')
 
       # Obtain the moment of inertia (MOI) for the bounding box.
-      moi = MOI.Cube_MOI(self.__Robot_Properties['mass'][i], self.__Robot_Parameters_Str.Collider[i].Size)
+      moi = MOI.Cube_MOI(self.__Robot_Properties['mass'][i], Base_Collider[-1].Size)
 
       # Change the direction of the origin of the bounding box.
-      bbox_origin = ((-1) *  self.__Robot_Parameters_Str.Collider[i].Origin) + [0.0, 0.0, 0.0]
+      bbox_origin = ((-1) *  Base_Collider[-1].Origin) + [0.0, 0.0, 0.0]
 
       return f'''  <!-- Configuration of the part called 'Base {n}'. -->
   <joint name="base_{n}" type="fixed">
@@ -202,15 +201,18 @@ class URDF_Generator_Cls(object):
         (1) parameter [string]: The URDF configuration of the joint parts of the robotic structure.
       """
 
+      # Get a list of joint colliders.
+      Theta_Collider = list(self.__Robot_Parameters_Str.Collider.Theta.values())
+
       # Get the main parameters of the joint to create the configuration.
       #   The type of joint (prismatic, revolute).
       j_type = 'revolute' if self.__Robot_Parameters_Str.Theta.Type[i] == 'R' else 'prismatic'
       #   The joint axis specified in the joint frame. 
       j_ax = f'0 0 {int(self.__Robot_Parameters_Str.Theta.Direction[i])}' if self.__Robot_Parameters_Str.Theta.Axis[i] == 'Z' else f'{int(self.__Robot_Parameters_Str.Theta.Direction[i])} 0 0'
       #   Moment of inertia (MOI) of the bounding box.
-      j_moi = MOI.Cube_MOI(self.__Robot_Properties['mass'][i + i_offset], self.__Robot_Parameters_Str.Collider[i + i_offset].Size)
+      j_moi = MOI.Cube_MOI(self.__Robot_Properties['mass'][i + i_offset], Theta_Collider[i + i_offset].Size)
       #   Origin of the bounding box..
-      j_bbox_origin = ((-1) *  self.__Robot_Parameters_Str.Collider[i + i_offset].Origin) + [0.0, 0.0, 0.0]
+      j_bbox_origin = ((-1) *  Theta_Collider[i + i_offset].Origin) + [0.0, 0.0, 0.0]
       
       # Get the visual/collision geometry of an individual part of the robotic structure.
       obj_geometry = self.__Object_Geometry(f'Joint_{child_id}')
@@ -289,7 +291,7 @@ class URDF_Generator_Cls(object):
         
         # Generate a configuration for the URDF file with individual principles that depend on whether 
         # the robot contains an external axis or not.
-        if self.__is_external_axis == True:
+        if self.__Robot_Parameters_Str.External_Axis == True:
           # Get the child's ID from the string.
           child_id = self.__Robot_Parameters_Str.Theta.Name[0].removesuffix(f'_{self.__Robot_Parameters_Str.Name}_ID_{self.__Robot_Parameters_Str.Id:03}').removeprefix('Joint_')
 
@@ -313,7 +315,8 @@ class URDF_Generator_Cls(object):
             parent_link = 'base_link_1' if i == 1 else f'link_{child_id_last}'
 
             # Get the URDF configuration of the joint in episode (i).
-            self.__configuration['Core'].append(self.__Configure_Core(i, 2, T_i, child_id, f'link_{child_id}', parent_link))
+
+            self.__configuration['Core'].append(self.__Configure_Core(i, 0, T_i, child_id, f'link_{child_id}', parent_link))
             print(f'[INFO] >> Index {i}: Parent({parent_link}) -> Child(link_{child_id})')
 
             # Save the child's last identifier.
@@ -337,7 +340,7 @@ class URDF_Generator_Cls(object):
             parent_link = 'base_link' if i == 0 else f'link_{child_id_last}'
 
             # Get the URDF configuration of the joint in episode (i).
-            self.__configuration['Core'].append(self.__Configure_Core(i, 1, T_i, child_id, f'link_{child_id}', parent_link))
+            self.__configuration['Core'].append(self.__Configure_Core(i, 0, T_i, child_id, f'link_{child_id}', parent_link))
             print(f'[INFO] >> Index {i}: Parent({parent_link}) -> Child(link_{child_id})')
 
             # Save the child's last identifier.
@@ -368,7 +371,7 @@ class URDF_Generator_Cls(object):
       # Save the generated text to the '*.urdf' file.
       File_IO.Save(file_path, f'''<?xml version="1.0"?>\n<robot name="{self.__Robot_Parameters_Str.Name}">''', 'urdf', '')
       File_IO.Save(file_path, self.__configuration['Base_0'], 'urdf', '')
-      if self.__is_external_axis == True:
+      if self.__Robot_Parameters_Str.External_Axis == True:
          File_IO.Save(file_path, self.__configuration['External'], 'urdf', '')
          File_IO.Save(file_path, self.__configuration['Base_n'], 'urdf', '')
       for _,  configuration_core_i in enumerate(self.__configuration['Core']):

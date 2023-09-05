@@ -312,25 +312,33 @@ class Mechanism_Cls(object):
 
         bpy.context.view_layer.update()
 
-    def Reset(self, mode: str) -> None:
+    def Reset(self, mode: str, theta: float = None) -> None:
         """
         Description:
             Function to reset the absolute position of the mechanism joint from the selected mode.
 
+            Note:
+                The Zero/Home modes are predefined in the mechanism structure and the Individual mode is used 
+                to set the individual position defined in the function input parameter.
+
         Args:
             (1) mode [string]: Possible modes to reset the absolute position of the joint.
+            (2) theta [float]: Desired absolute joint position in radians / meters.
         """
 
         try:
-            assert mode in ['Zero', 'Home']
+            assert mode in ['Zero', 'Home', 'Individual']
 
-            theta = self.Theta_0 if mode == 'Zero' else self.__Mechanism_Parameters_Str.Theta.Home
+            if mode == 'Individual':
+                theta_internal = theta
+            else:
+                theta_internal = self.Theta_0 if mode == 'Zero' else self.__Mechanism_Parameters_Str.Theta.Home
 
             bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_mode = self.__axes_sequence_cfg
-            if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
+            if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta_internal <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
 
                 # Change of axis direction in individual joints.
-                th = theta * self.__Mechanism_Parameters_Str.Theta.Direction
+                th = theta_internal * self.__Mechanism_Parameters_Str.Theta.Direction
 
                 if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
                     # Identification of joint type: R - Revolute
@@ -345,12 +353,12 @@ class Mechanism_Cls(object):
             else:
                 # Reset the absolute position of the robot joints to the 'Zero'.
                 self.Reset('Zero')
-                print(f'[INFO] The desired input joint {theta} is out of limit.')
+                print(f'[WARNING] The desired input joint {th} is out of limit.')
                 return False
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
-            print('[INFO] Incorrect reset mode selected. The selected mode must be chosen from the two options (Zero, Home).')
+            print('[ERROR] Incorrect reset mode selected. The selected mode must be chosen from the three options (Zero, Home, Individual).')
 
     def Set_Absolute_Joint_Position(self, theta: float, t_0: float, t_1: float) -> bool:
         """
@@ -397,7 +405,7 @@ class Mechanism_Cls(object):
                 else:
                     # Reset the absolute position of the robot joints to the 'Zero'.
                     self.Reset('Zero')
-                    print(f'[INFO] The desired input joint {theta} is out of limit.')
+                    print(f'[WARNING] The desired input joint {theta} is out of limit.')
                     return False
 
             # Update the scene.
@@ -606,24 +614,35 @@ class Robot_Cls(object):
 
         bpy.context.view_layer.update()
 
-    def Reset(self, mode: str) -> None:
+    def Reset(self, mode: str, theta: tp.List[float] = None) -> None:
         """
         Description:
             Function to reset the absolute position of the robot joints from the selected mode.
 
+            Note:
+                The Zero/Home modes are predefined in the robot structure and the Individual mode is used 
+                to set the individual position defined in the function input parameter.
+
         Args:
             (1) mode [string]: Possible modes to reset the absolute position of the joints.
+            (2) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters. Used only in individual 
+                                           mode.
+                                            Note:
+                                                Where n is the number of joints.
         """
 
         try:
-            assert mode in ['Zero', 'Home']
+            assert mode in ['Zero', 'Home', 'Individual']
 
-            theta = self.Theta_0 if mode == 'Zero' else self.__Robot_Parameters_Str.Theta.Home
+            if mode == 'Individual':
+                theta_internal = theta
+            else:
+                theta_internal = self.Theta_0 if mode == 'Zero' else self.__Robot_Parameters_Str.Theta.Home
 
             # Get the zero configuration of each joint.
             T_zero_cfg = self.__Get_Zero_Joint_Cfg()
 
-            for i, (th_i, th_i_name, T_i_zero_cfg, th_i_limit, ax_i, th_i_type, th_i_dir) in enumerate(zip(theta, self.__Robot_Parameters_Str.Theta.Name, T_zero_cfg, 
+            for i, (th_i, th_i_name, T_i_zero_cfg, th_i_limit, ax_i, th_i_type, th_i_dir) in enumerate(zip(theta_internal, self.__Robot_Parameters_Str.Theta.Name, T_zero_cfg, 
                                                                                                            self.__Robot_Parameters_Str.Theta.Limit, self.__Robot_Parameters_Str.Theta.Axis, 
                                                                                                            self.__Robot_Parameters_Str.Theta.Type, self.__Robot_Parameters_Str.Theta.Direction)): 
                 bpy.data.objects[th_i_name].rotation_mode = self.__axes_sequence_cfg
@@ -641,12 +660,12 @@ class Robot_Cls(object):
                 else:
                     # Update the scene.
                     self.__Update()
-                    print(f'[INFO] The desired input joint {th_i} in index {i} is out of limit.')
+                    print(f'[WARNING] The desired input joint {th_i} in index {i} is out of limit.')
                     return False
 
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
-            print('[INFO] Incorrect reset mode selected. The selected mode must be chosen from the two options (Zero, Home).')
+            print('[ERROR] Incorrect reset mode selected. The selected mode must be chosen from the three options (Zero, Home, Individual).')
 
     def Set_Absolute_Joint_Position(self, theta: tp.List[float], t_0: float, t_1: float) -> bool:
         """
@@ -700,7 +719,7 @@ class Robot_Cls(object):
                     else:
                         # Update the scene.
                         self.__Update()
-                        print(f'[INFO] The desired input joint {th_i} in index {i} is out of limit.')
+                        print(f'[WARNING] The desired input joint {th_i} in index {i} is out of limit.')
                         return False
 
             # Update the scene.

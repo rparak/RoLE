@@ -63,19 +63,25 @@ def main():
     Robot_Str = CONST_ROBOT_TYPE
 
     # Set the structure of the main parameters of the controlled robot.
-    Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(Robot_Str, {'Viewpoint_EE': False, 'Colliders': True, 
+    Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(Robot_Str, {'Viewpoint_EE': False, 'Colliders': False, 
                                                             'Workspace': False})
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
     # Reset the absolute position of the robot joints to the 'Zero'.
     Robot_ID_0_Cls.Reset('Home')
     
+    """
     # ...
     T_Arr = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Home, 'Modified', Robot_Str)[1]
     for _, (T_i, th_collider_i) in enumerate(zip(T_Arr, list(Robot_Str.Collider.Theta.values()))):
         th_collider_i.Transformation(T_i)
 
     for i, verts_i in enumerate(list(Robot_Str.Collider.Theta.values())[4].Vertices):
+        bpy.data.objects[f'Sphere_{i + 1}'].location = verts_i
+    """
+    
+    print(Robot_Str.Collider.Base)
+    for i, verts_i in enumerate(list(Robot_Str.Collider.Base.values())[2].Vertices):
         bpy.data.objects[f'Sphere_{i + 1}'].location = verts_i
 
 if __name__ == '__main__':

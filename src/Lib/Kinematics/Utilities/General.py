@@ -9,6 +9,8 @@ import Lib.Parameters.Robot as Parameters
 import Lib.Transformation.Core as Transformation
 #   ../Lib/Transformation/Utilities/Mathematics
 import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Lib/Kinematics/Core
+import Lib.Kinematics.Core
 
 def Check_Theta_Limit(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[float]:
     """
@@ -16,7 +18,9 @@ def Check_Theta_Limit(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
         Function to check that the desired absolute joint positions are not out of limit.
 
     Args:
-        (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+                                        Note:
+                                            Where n is the number of joints.
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
@@ -113,14 +117,54 @@ def Get_Quadratic_Angle_Axis_Error(e: tp.List[float], W_e: tp.List[tp.List[float
     
     return 0.5 * e @ W_e @ e
 
-def Is_Self_Collision():
-    # In progress ...
-    # Function to obtain the self collision of the robot structure ..
+def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, offset: int) -> tp.List[bool]:
+    """
+    Description:
+        ...
 
-    a = np.array([1, 2, 3, 4, 5, 6]); offset = 1
-    for i, a_i in enumerate(a):
-        for _, a_j in enumerate(a[(i + 1) + offset::]):
-            print(a_i, a_j)
+    Args:
+        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+                                        Note:
+                                            Where n is the number of joints.
+        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (3) offset [float]: ...
+
+    Returns:
+        (1) parameter [Vector<bool> 1xk]: ....
+                                            Note:
+                                                Where k is the number of all colliders of the robotic structure.
+    """
+
+    # Get a list of base and joint colliders.
+    Base_Collider = list(Robot_Parameters_Str.Collider.Base.values()); Theta_Collider = list(Robot_Parameters_Str.Collider.Theta.values())
+    
+    # Transformation of the base collider according to the input homogeneous transformation matrix.
+    Base_Collider[0].Transformation(Robot_Parameters_Str.T.Base)
+ 
+    # Obtain the individual (theta) configuration of the homogeneous matrix of each joint using forward kinematics
+    T_Arr = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(theta, 'Modified', Robot_Parameters_Str)[1]
+
+    # Transformation of the joint colliders according to the input homogeneous transformation matrix.
+    for _, (T_i, th_collider_i) in enumerate(zip(T_Arr, Theta_Collider)):
+        th_collider_i.Transformation(T_i)
+
+    # Concatenate all colliders (base, joint) into single array according to a predefined constraint.
+    if Robot_Parameters_Str.External_Axis == True:
+        Base_Collider[1].Transformation(T_Arr[0])
+        All_Colliders = np.concatenate(([Base_Collider[0], Theta_Collider[0], Base_Collider[1]], 
+                                         Theta_Collider[1::]))
+    else:
+        All_Colliders = np.concatenate((Base_Collider, Theta_Collider))
+
+    # Check whether the 3D primitives (bounding boxes AABB, OBB) overlap or not.
+    is_collision = np.zeros(All_Colliders.size, dtype=bool)
+    for i, Collider_i in enumerate(All_Colliders):
+        for j, Collider_j in enumerate(All_Colliders[(i + 1) + offset::], start=(i + 1) + offset):
+            if Collider_i.Overlap(Collider_j) == True:
+                # Set the individual parts where the collision occurs.
+                is_collision[i] = True; is_collision[j] = True
+
+    return is_collision
 
 def Get_Best_IK_Solution():
     # In progress ...

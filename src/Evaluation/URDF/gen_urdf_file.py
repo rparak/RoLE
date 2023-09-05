@@ -16,11 +16,9 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 # Use a mesh to represent a visual/collision object.
 CONST_ENABLE_MESH = True
-# Is the external axis part of the robot or not. For example, a linear track.
-CONST_IS_EXTERNAL_AXIS = True
 
 def main():
     """
@@ -38,8 +36,7 @@ def main():
     Robot_Str = CONST_ROBOT_TYPE
 
     # Initialization of a class for working with URDF.
-    URDF_Generator_Cls_0 = Lib.URDF.Core.URDF_Generator_Cls(Robot_Str, CONST_ENABLE_MESH, CONST_IS_EXTERNAL_AXIS, 
-                                                            [0.90, 0.90, 0.90, 1.0])
+    URDF_Generator_Cls_0 = Lib.URDF.Core.URDF_Generator_Cls(Robot_Str, CONST_ENABLE_MESH, [0.90, 0.90, 0.90, 1.0])
     #   Generate and save the URDF.
     URDF_Generator_Cls_0.Generate()
     #URDF_Generator_Cls_0.Save(f'{project_folder}/URDFs/Robots/{Robot_Str.Name}/{Robot_Str.Name}')
