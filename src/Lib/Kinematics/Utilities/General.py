@@ -186,5 +186,18 @@ def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.Li
                                                 Where n is the number of joints.
     """
 
+    theta = np.zeros(Robot_Parameters_Str.Theta.Zero.size, dtype=np.float32); error = np.finfo(np.float32).max
     for _, th_sol_i in enumerate(theta_solutions):
-        pass
+        # Get the homogeneous transformation matrix of the robot end-effector from the input 
+        # absolute joint positions.
+        (th_limit_err, _) = Lib.Kinematics.Core.Forward_Kinematics(th_sol_i, 'Modified', Robot_Parameters_Str)
+
+        if th_limit_err.any() == False and Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any() == False:
+            # Obtain the absolute error of the joint angles.
+            error_theta = Mathematics.Euclidean_Norm((theta_0 - th_sol_i))
+
+            # If a better solution is found, save it.
+            if error_theta < error:
+                theta = th_sol_i; error = error_theta
+    
+    return theta

@@ -73,7 +73,7 @@ def main():
 
     print('[INFO] Absolute Joint Positions (desired):')
     for i, th_i in enumerate(Robot_ID_0_Cls.Parameters.Theta.Home):
-        print(f'[INFO] >> Joint_{i}({th_i:.3f})')
+        print(f'[INFO] >> Joint_{i}({th_i + 0.0:.3f})')
 
     # Set the absolute position of the robot joints.
     Robot_ID_0_Cls.Set_Absolute_Joint_Position(Robot_ID_0_Cls.Parameters.Theta.Home, CONST_T_0, CONST_T_1)
@@ -84,13 +84,13 @@ def main():
     # Get the the absolute positions of the robot's joints.
     print('[INFO] Absolute Joint Positions (actual):')
     for i, th_i in enumerate(Robot_ID_0_Cls.Theta):
-        print(f'[INFO] >> Joint_{i}({th_i:.3f})')
+        print(f'[INFO] >> Joint_{i}({th_i + 0.0:.3f})')
 
     # Get the homogeneous transformation matrix of the robot end-effector. Parameters position 
     # and orientation (euler angles).
     print('[INFO] Tool Center Point (TCP):')
-    print(f'[INFO] >> p: x({Robot_ID_0_Cls.T_EE.p.x:.3f}), y({Robot_ID_0_Cls.T_EE.p.y:.3f}), z({Robot_ID_0_Cls.T_EE.p.z:.3f})')
-    Euler_Angles = Robot_ID_0_Cls.T_EE.Get_Rotation('ZYX')
+    print(f'[INFO] >> p: x({Robot_ID_0_Cls.T_EE.p.x + 0.0:.3f}), y({Robot_ID_0_Cls.T_EE.p.y + 0.0:.3f}), z({Robot_ID_0_Cls.T_EE.p.z + 0.0:.3f})')
+    Euler_Angles = Robot_ID_0_Cls.T_EE.Get_Rotation('ZYX') + [0.0, 0.0, 0.0]
     print(f'[INFO] >> Euler Angles: x({Euler_Angles.x:.3f}), y({Euler_Angles.y:.3f}), z({Euler_Angles.z:.3f})')
     
 if __name__ == '__main__':

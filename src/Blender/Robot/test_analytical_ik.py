@@ -16,6 +16,10 @@ import Lib.Blender.Utilities
 import Lib.Blender.Core
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
+#   ../Lib/Transformation/Core
+import Lib.Transformation.Core as Transformation
+#   ../Lib/Kinematics/Core
+import Lib.Kinematics.Core
 
 
 """
@@ -26,9 +30,6 @@ Description:
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
-# Animation stop(t_0), start(t_1) time in seconds.
-CONST_T_0 = 0.0
-CONST_T_1 = 2.0
 
 def main():
     """
@@ -51,22 +52,27 @@ def main():
                                                                    'Workspace': False})
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
-    # Reset the absolute position of the robot joints to the 'Zero'.
-    Robot_ID_0_Cls.Reset('Zero')
+    # Reset the absolute position of the robot joints to the 'Home'.
+    Robot_ID_0_Cls.Reset('Home')
     
-    # Get the FPS (Frames Per Seconds) value from the Blender settings.
-    fps = bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
+    # Get the the absolute positions of the robot's joints.
+    print('[INFO] Absolute Joint Positions (actual):')
+    for i, th_i in enumerate(Robot_ID_0_Cls.Theta):
+        print(f'[INFO] >> Joint_{i}({th_i + 0.0:.3f})')
 
-    # The first frame on which the animation starts.
-    bpy.context.scene.frame_start = np.int32(CONST_T_0 * fps)
 
-    # IK ...
+    # ...
+    #Lib.Blender.Utilities.Set_Object_Transformation('TCP_Position_Viewpoint', Robot_ID_0_Cls.T_EE)
 
-    # Set the absolute position of the robot joints.
-    Robot_ID_0_Cls.Set_Absolute_Joint_Position(Robot_ID_0_Cls.Parameters.Theta.Home, CONST_T_0, CONST_T_1)
-
-    # The last frame on which the animation stops.
-    bpy.context.scene.frame_end = np.int32(CONST_T_1 * fps)
+    # ...
+    TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects['TCP_Position_Viewpoint'].matrix_basis, 
+                                                                        np.float32)
+    # ..
+    theta = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_ID_0_Cls.Theta, Robot_ID_0_Cls.Parameters, 'All')
     
+    # Reset the absolute position of the robot joints to the 'Individual'.
+    #Robot_ID_0_Cls.Reset('Individual', theta[1])
+    
+    print(theta[0])
 if __name__ == '__main__':
     main()

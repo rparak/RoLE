@@ -42,13 +42,6 @@ Description:
             $ blender Primitives.blend
 """
 
-"""
-Description:
-    Initialization of constants.
-"""
-# Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_L_Str
-
 def main():
     """
     Description:

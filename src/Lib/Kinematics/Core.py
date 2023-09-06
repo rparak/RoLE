@@ -13,6 +13,8 @@ import Lib.Kinematics.Utilities.General as General
 from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls, Vector3_Cls
 #   ../Lib/Transformation/Utilities/Mathematics
 import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Lib/Transformation/Core
+import Lib.Transformation.Core as Transformation
 
 """
 Description:
@@ -413,8 +415,8 @@ def Inverse_Kinematics_Numerical(TCP_Position, theta_0, method, Robot_Parameters
 
     Returns:
         (1) parameter [Dictionary {'successful': bool, 
-                                   'angle_axis_error': float}]: Information on whether the result was found within the required tolerance 
-                                                                and information on the minimum quadratic (angle-axis) error.
+                                   'error': {'position': float, 'orientation': float}}]: Information on whether the result was found within the required tolerance 
+                                                                                         and information about the absolute error (position, orientation).
         (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
                                             Note:
                                                 Where n is the number of joints.
@@ -427,7 +429,9 @@ def Inverse_Kinematics_Numerical(TCP_Position, theta_0, method, Robot_Parameters
     }[method](TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties)
 
 def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], 
-                                  Robot_Parameters_Str: Parameters.Robot_Parameters_Str, method: str) -> tp.List[float]:
+                                  Robot_Parameters_Str: Parameters.Robot_Parameters_Str, method: str) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
+                                                                                                                          tp.Union[float, tp.List[float]]], 
+                                                                                                                  tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
     """
     Description:
         ....
@@ -446,13 +450,17 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
  
 
     Returns:
-        (1) parameter [Vector<float> 1xn]: Obtained solution of the absolute position of the joint in radians / meters.
+        (1) parameter [Dictionary {'position': float, 'orientation': float}]: Information about the absolute error (position, orientation).
+        (2) parameter [Matrix<float> kxn]: Obtained solution of the absolute position of the joint in radians / meters.
                                             Note:
-                                                Where n is the number of joints.
+                                                Where k is the number of solutions and n is the number of connections.
     """
         
     try:
         assert Robot_Parameters_Str.Name in ['EPSON_LS3_B401S']
+
+        if isinstance(TCP_Position, (list, np.ndarray)):
+            TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float32)
 
         # ...
         theta_solutions = np.zeros((2, Robot_Parameters_Str.Theta.Zero.size), dtype=np.float32)
@@ -483,8 +491,8 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
         #   cos(beta) = (L_{1}^2 + L^2 - L_{2}^2) / (2*L_{1}*L)
         #       ...
         #   beta = arccos((L_{1}^2 + L^2 - L_{2}^2) / (2*L_{1}*L))
-        beta = ((Robot_Parameters_Str.DH.Modified[1]**2) + (p.x**2 + p.y**2) - (Robot_Parameters_Str.DH.Modified[2]**2)) \
-              / (2*Robot_Parameters_Str.DH.Modified[1]*np.sqrt(p.x**2 + p.y**2))
+        beta = ((Robot_Parameters_Str.DH.Modified[1, 1]**2) + (p.x**2 + p.y**2) - (Robot_Parameters_Str.DH.Modified[2, 1]**2)) \
+              / (2*Robot_Parameters_Str.DH.Modified[1, 1]*np.sqrt(p.x**2 + p.y**2))
  
         # Calculation of the absolute position of the Theta_{1} joint.
         if beta > 1:
@@ -505,8 +513,8 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
         #   cos(alpha) = (L_{1}^2 + L_{2}^2 - L^2) / 2*L_{1}*L{2}
         #       ...
         #   alpha = arccos((L_{1}^2 + L_{2}^2 - L^2) / 2*L_{1}*L{2})
-        alpha = ((Robot_Parameters_Str.DH.Modified[1]**2) + (Robot_Parameters_Str.DH.Modified[2]**2) - (p.x**2 + p.y**2)) \
-               / (2*(Robot_Parameters_Str.DH.Modified[1]*Robot_Parameters_Str.DH.Modified[2]))
+        alpha = ((Robot_Parameters_Str.DH.Modified[1, 1]**2) + (Robot_Parameters_Str.DH.Modified[2, 1]**2) - (p.x**2 + p.y**2)) \
+               / (2*(Robot_Parameters_Str.DH.Modified[1, 1]*Robot_Parameters_Str.DH.Modified[2, 1]))
 
         # Calculation of the absolute position of the Theta_{2} joint.
         if alpha > 1:
@@ -522,7 +530,19 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             theta_solutions[1, 1] = np.arccos(alpha) - Mathematics.CONST_MATH_PI
 
         if method == 'All':
-            return theta_solutions
+            error = {'position': np.zeros(theta_solutions.shape[0], dtype=np.float32), 
+                     'orientation': np.zeros(theta_solutions.shape[0], dtype=np.float64)}
+            
+            for i, th_sol_i in enumerate(theta_solutions):
+                # Get the homogeneous transformation matrix of the robot end-effector from the input 
+                # absolute joint positions.
+                T_th_i = Forward_Kinematics(th_sol_i, 'Modified', Robot_Parameters_Str)[1]
+
+                # Obtain the absolute error of position and orientation.
+                error['position'][i] = np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T_th_i.p).all()), 5)
+                error['orientation'][i] = np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T_th_i.Get_Rotation('QUATERNION')), 5)
+
+            return (error, theta_solutions)
         elif method == 'Best':
             return General.Get_Best_IK_Solution(theta_0, theta_solutions, Robot_Parameters_Str)
 
