@@ -536,15 +536,23 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             for i, th_sol_i in enumerate(theta_solutions):
                 # Get the homogeneous transformation matrix of the robot end-effector from the input 
                 # absolute joint positions.
-                T_th_i = Forward_Kinematics(th_sol_i, 'Modified', Robot_Parameters_Str)[1]
+                T = Forward_Kinematics(th_sol_i, 'Modified', Robot_Parameters_Str)[1]
 
                 # Obtain the absolute error of position and orientation.
-                error['position'][i] = np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T_th_i.p).all()), 5)
-                error['orientation'][i] = np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T_th_i.Get_Rotation('QUATERNION')), 5)
+                error['position'][i] = np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5)
+                error['orientation'][i] = np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)
 
             return (error, theta_solutions)
         elif method == 'Best':
-            return General.Get_Best_IK_Solution(theta_0, theta_solutions, Robot_Parameters_Str)
+            # Automatically obtain the best solution for the absolute positions of the robot's joints.
+            theta = General.Get_Best_IK_Solution(theta_0, theta_solutions, Robot_Parameters_Str)
+
+            # Get the homogeneous transformation matrix of the robot end-effector from the input 
+            # absolute joint positions.
+            T = Forward_Kinematics(theta, 'Modified', Robot_Parameters_Str)[1]
+            
+            return ({'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5), 
+                     'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)}, theta)
 
     except AssertionError as error:
         print(f'[ERROR] Information: {error}')

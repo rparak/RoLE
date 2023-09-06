@@ -12,7 +12,7 @@ import Lib.Transformation.Utilities.Mathematics as Mathematics
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core
 
-def Check_Theta_Limit(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[float]:
+def Check_Theta_Limit(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[bool]:
     """
     Description:
         Function to check that the desired absolute joint positions are not out of limit.
@@ -24,15 +24,15 @@ def Check_Theta_Limit(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
-        (1) parameter [Vector<bool>]: The result is a vector of values with a warning if the limit 
+        (1) parameter [Vector<bool> 1xn]: The result is a vector of values with a warning if the limit 
                                       is exceeded. 
-                                      Note:
-                                        The value in the vector is "True" if the desired absolute 
-                                        joint positions are within the limits, and "False" if they 
-                                        are not.
+                                        Note:
+                                            The value in the vector is "True" if the desired absolute 
+                                            joint positions are within the limits, and "False" if they 
+                                            are not.
     """
 
-    th_limit_err = [False] * theta.size
+    th_limit_err = np.zeros(theta.size, dtype=bool)
     for i, (th_i, th_i_limit) in enumerate(zip(theta, Robot_Parameters_Str.Theta.Limit)):
         th_limit_err[i] = False if th_i_limit[0] <= th_i <= th_i_limit[1] else True
 
