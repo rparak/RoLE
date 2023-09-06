@@ -482,7 +482,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
         #   Pythagorean theorem:
         #       L = sqrt(x^2 + y^2)
         #   Others:
-        #       tan(gamma) = y/x -> gamma = arctan(y, x)
+        #       tan(gamma) = y/x -> gamma = arctan2(y, x)
 
 
         # The Law of Cosines.
@@ -529,6 +529,23 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             #   cfg_{2} = alpha - PI
             theta_solutions[1, 1] = np.arccos(alpha) - Mathematics.CONST_MATH_PI
 
+
+        # Calculation of the absolute position of the Theta_{3} joint.
+        # ....
+
+        # Calculation of the absolute position of the Theta_{4} joint.
+        #   Auxiliary Calculations.  
+        #       tan(theta_{1-2-4}) = sin(theta_{1-2-4}) / (-1) * cos(theta_{1-2-4})
+        #       
+        #       We can obtain the sine and cosine functions from the homogeneous transformation 
+        #       matrix.
+        #           sin(theta_{1-2-4}) = TCP_Position.R[1, 0]
+        #           cos(theta_{1-2-4}) = TCP_Position.R[1, 1]
+        
+        # ... add if -PI < res < PI
+        theta_solutions[0, 3] = theta_solutions[0, 0] - (Mathematics.CONST_MATH_PI - theta_solutions[0, 1]) + np.arctan2(TCP_Position.R[1, 0], TCP_Position.R[1, 1])
+        theta_solutions[1, 3] = theta_solutions[1, 0] - (Mathematics.CONST_MATH_PI - theta_solutions[1, 1]) + np.arctan2(TCP_Position.R[1, 0], TCP_Position.R[1, 1])
+
         if method == 'All':
             error = {'position': np.zeros(theta_solutions.shape[0], dtype=np.float32), 
                      'orientation': np.zeros(theta_solutions.shape[0], dtype=np.float64)}
@@ -536,7 +553,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             for i, th_sol_i in enumerate(theta_solutions):
                 # Get the homogeneous transformation matrix of the robot end-effector from the input 
                 # absolute joint positions.
-                T = Forward_Kinematics(th_sol_i, 'Modified', Robot_Parameters_Str)[1]
+                T = Forward_Kinematics(th_sol_i, 'Fast', Robot_Parameters_Str)[1]
 
                 # Obtain the absolute error of position and orientation.
                 error['position'][i] = np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5)
@@ -549,7 +566,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
 
             # Get the homogeneous transformation matrix of the robot end-effector from the input 
             # absolute joint positions.
-            T = Forward_Kinematics(theta, 'Modified', Robot_Parameters_Str)[1]
+            T = Forward_Kinematics(theta, 'Fast', Robot_Parameters_Str)[1]
             
             return ({'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5), 
                      'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)}, theta)

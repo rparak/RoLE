@@ -60,7 +60,6 @@ def main():
     for i, th_i in enumerate(Robot_ID_0_Cls.Theta):
         print(f'[INFO] >> Joint_{i}({th_i + 0.0:.3f})')
 
-
     # ...
     #Lib.Blender.Utilities.Set_Object_Transformation('TCP_Position_Viewpoint', Robot_ID_0_Cls.T_EE)
 
@@ -68,11 +67,12 @@ def main():
     TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects['TCP_Position_Viewpoint'].matrix_basis, 
                                                                         np.float32)
     # ..
-    theta = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_ID_0_Cls.Theta, Robot_ID_0_Cls.Parameters, 'All')
+    theta = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_ID_0_Cls.Theta, Robot_ID_0_Cls.Parameters, 'Best')
     
     # Reset the absolute position of the robot joints to the 'Individual'.
     #Robot_ID_0_Cls.Reset('Individual', theta[1])
     
     print(theta[0])
+    print(theta[1])
 if __name__ == '__main__':
     main()

@@ -665,8 +665,8 @@ ABB_IRB_14000_L_Str.Collider.External = {f'Base_Collider_ID_1_ABB_IRB_14000_ID_{
 """
 Robot Type - Epson LS3-B401S:
     Absolute Joint Position:
-        Joint 1: [-40, +220.0] [°]
-        Joint 2: [+/- 140.0] [°]
+        Joint 1: [+/- 131.0] [°]
+        Joint 2: [+/- 142.0] [°]
         Joint 3: [-0.150, +0.0] [m]
         Joint 4: [+/- 180.0] [°]
 
@@ -718,8 +718,8 @@ EPSON_LS3_B401S_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0],
 EPSON_LS3_B401S_Str.Theta.Home = np.array([Mathematics.Degree_To_Radian(90.0), Mathematics.Degree_To_Radian(0.0), 0.0, Mathematics.Degree_To_Radian(0.0)],
                                           dtype = np.float32)
 # Limits of absolute joint position.
-EPSON_LS3_B401S_Str.Theta.Limit = np.array([[-0.6981317007977318, 3.839724354387525], 
-                                            [ -2.443460952792061, 2.443460952792061], 
+EPSON_LS3_B401S_Str.Theta.Limit = np.array([[-2.303834612632515, 2.303834612632515], 
+                                            [ -2.4609142453120048, 2.4609142453120048], 
                                             [                0.0,             0.150], 
                                             [ -3.141592653589793, 3.141592653589793]], dtype = np.float32)
 # Parameters of the object (Blender robot arm).

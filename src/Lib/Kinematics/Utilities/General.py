@@ -190,7 +190,7 @@ def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.Li
     for _, th_sol_i in enumerate(theta_solutions):
         # Get the homogeneous transformation matrix of the robot end-effector from the input 
         # absolute joint positions.
-        (th_limit_err, _) = Lib.Kinematics.Core.Forward_Kinematics(th_sol_i, 'Modified', Robot_Parameters_Str)
+        (th_limit_err, _) = Lib.Kinematics.Core.Forward_Kinematics(th_sol_i, 'Fast', Robot_Parameters_Str)
 
         if th_limit_err.any() == False and Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any() == False:
             # Obtain the absolute error of the joint angles.
