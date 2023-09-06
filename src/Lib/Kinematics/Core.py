@@ -11,6 +11,8 @@ import Lib.Kinematics.Utilities.Forward_Kinematics as Utilities
 import Lib.Kinematics.Utilities.General as General
 #   ../Lib/Transformation/Core
 from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls, Vector3_Cls
+#   ../Lib/Transformation/Utilities/Mathematics
+import Lib.Transformation.Utilities.Mathematics as Mathematics
 
 """
 Description:
@@ -424,7 +426,8 @@ def Inverse_Kinematics_Numerical(TCP_Position, theta_0, method, Robot_Parameters
         'Levenberg-Marquardt': lambda tcp_p, th_0, r_param_str, properties: __Inverse_Kinematics_Numerical_LM(tcp_p, th_0, r_param_str, properties)
     }[method](TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties)
 
-def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[float]:
+def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], 
+                                  Robot_Parameters_Str: Parameters.Robot_Parameters_Str, method: str) -> tp.List[float]:
     """
     Description:
         ....
@@ -436,10 +439,14 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
                                             Note:
                                                 Where n is the number of joints.
         (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-
+        (4) method [string]: The method chosen to obtain the solution of the absolute position of the joint.
+                                Note:
+                                    method = 'All' -> Obtain the all possible solutions.
+                                    method = 'Best' -> Automatically obtain the best solution.
+ 
 
     Returns:
-        (1) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
+        (1) parameter [Vector<float> 1xn]: Obtained solution of the absolute position of the joint in radians / meters.
                                             Note:
                                                 Where n is the number of joints.
     """
@@ -447,7 +454,77 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
     try:
         assert Robot_Parameters_Str.Name in ['EPSON_LS3_B401S']
 
-        pass
+        # ...
+        theta_solutions = np.zeros((2, Robot_Parameters_Str.Theta.Zero.size), dtype=np.float32)
+
+        # Get the translational and rotational part from the transformation matrix.
+        p = TCP_Position.p; Euler_Angles = TCP_Position.Get_Rotation('ZYX')
+
+        """
+        Calculation angle of Theta 1, 2 (Inverse trigonometric functions):
+            Rule 1: 
+                The range of the argument 'x' for arccos function is limited from -1 to 1.
+                    -1 <= x <= 1
+            Rule 2: 
+                Output of arccos is limited from 0 to PI (radian).
+                    0 <= y <= PI
+        """
+
+        # Auxiliary Calculations.
+        #   Pythagorean theorem:
+        #       L = sqrt(x^2 + y^2)
+        #   Others:
+        #       tan(gamma) = y/x -> gamma = arctan(y, x)
+
+
+        # The Law of Cosines.
+        #   L_{2}^2 = L_{1}^2 + L^2 - 2*L_{1}*L*cos(beta)
+        #       ...
+        #   cos(beta) = (L_{1}^2 + L^2 - L_{2}^2) / (2*L_{1}*L)
+        #       ...
+        #   beta = arccos((L_{1}^2 + L^2 - L_{2}^2) / (2*L_{1}*L))
+        beta = ((Robot_Parameters_Str.DH.Modified[1]**2) + (p.x**2 + p.y**2) - (Robot_Parameters_Str.DH.Modified[2]**2)) \
+              / (2*Robot_Parameters_Str.DH.Modified[1]*np.sqrt(p.x**2 + p.y**2))
+ 
+        # Calculation of the absolute position of the Theta_{1} joint.
+        if beta > 1:
+            theta_solutions[0, 0] = np.arctan2(p.y, p.x) 
+        elif beta < -1:
+            theta_solutions[0, 0] = np.arctan2(p.y, p.x) - Mathematics.CONST_MATH_PI
+        else:
+            # Configuration 1:
+            #   cfg_{1} = gamma - beta 
+            theta_solutions[0, 0] = np.arctan2(p.y, p.x) - np.arccos(beta)
+            # Configuration 2:
+            #   cfg_{2} = gamma + beta 
+            theta_solutions[1, 0] = np.arctan2(p.y, p.x) + np.arccos(beta)
+                
+        # The Law of Cosines.
+        #   L^2 = L_{1}^2 + L_{2}^2 - 2*L_{1}*L{2}*cos(alpha)
+        #       ...
+        #   cos(alpha) = (L_{1}^2 + L_{2}^2 - L^2) / 2*L_{1}*L{2}
+        #       ...
+        #   alpha = arccos((L_{1}^2 + L_{2}^2 - L^2) / 2*L_{1}*L{2})
+        alpha = ((Robot_Parameters_Str.DH.Modified[1]**2) + (Robot_Parameters_Str.DH.Modified[2]**2) - (p.x**2 + p.y**2)) \
+               / (2*(Robot_Parameters_Str.DH.Modified[1]*Robot_Parameters_Str.DH.Modified[2]))
+
+        # Calculation of the absolute position of the Theta_{2} joint.
+        if alpha > 1:
+            theta_solutions[0, 1] = Mathematics.CONST_MATH_PI
+        elif alpha < -1:
+            theta_solutions[0, 1] = 0.0
+        else:
+            # Configuration 1:
+            #   cfg_{1} = PI - alpha
+            theta_solutions[0, 1] = Mathematics.CONST_MATH_PI - np.arccos(alpha)
+            # Configuration 2:
+            #   cfg_{2} = alpha - PI
+            theta_solutions[1, 1] = np.arccos(alpha) - Mathematics.CONST_MATH_PI
+
+        if method == 'All':
+            return theta_solutions
+        elif method == 'Best':
+            return General.Get_Best_IK_Solution(theta_0, theta_solutions, Robot_Parameters_Str)
 
     except AssertionError as error:
         print(f'[ERROR] Information: {error}')
