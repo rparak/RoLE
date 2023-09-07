@@ -37,7 +37,6 @@ def main():
     TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(np.array([Mathematics.Degree_To_Radian(25.0), Mathematics.Degree_To_Radian(-20.0), 0.1, Mathematics.Degree_To_Radian(15.0)],
                                                                    dtype = np.float32), 'Fast', Robot_Str)[1]
     
-    print(TCP_Position.Get_Rotation('ZYX'))
     # ..
     theta = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_Str.Theta.Home, Robot_Str, 'All')
     

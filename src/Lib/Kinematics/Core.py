@@ -476,14 +476,13 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             Rule 2: 
                 Output of arccos is limited from 0 to PI (radian).
                     0 <= y <= PI
+
+        Auxiliary Calculations.
+            Pythagorean theorem:
+                L = sqrt(x^2 + y^2)
+            Others:
+                tan(gamma) = y/x -> gamma = arctan2(y, x)
         """
-
-        # Auxiliary Calculations.
-        #   Pythagorean theorem:
-        #       L = sqrt(x^2 + y^2)
-        #   Others:
-        #       tan(gamma) = y/x -> gamma = arctan2(y, x)
-
 
         # The Law of Cosines.
         #   L_{2}^2 = L_{1}^2 + L^2 - 2*L_{1}*L*cos(beta)
@@ -537,15 +536,19 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
         theta_solutions[1, 2] = theta_solutions[0, 2].copy()
 
         # Calculation of the absolute position of the Theta_{4} joint.
-        #   Auxiliary Calculations.  
+        #   Method 1:  
         #       tan(theta_{1+2-4}) = sin(theta_{1-2-4}) / cos(theta_{1-2-4})
         #       
         #       We can obtain the sine and cosine functions from the homogeneous transformation 
         #       matrix.
         #           sin(theta_{1-2-4}) = TCP_Position.R[1, 0]
         #           cos(theta_{1-2-4}) = -TCP_Position.R[1, 1]
-        theta_solutions[0, 3] = Robot_Parameters_Str.Theta.Direction[3] * (theta_solutions[0, 0] + theta_solutions[0, 1] - np.arctan2(TCP_Position.R[1, 0], -TCP_Position.R[1, 1]))
-        theta_solutions[1, 3] = Robot_Parameters_Str.Theta.Direction[3] * (theta_solutions[1, 0] + theta_solutions[1, 1] - np.arctan2(TCP_Position.R[1, 0], -TCP_Position.R[1, 1]))
+        #       
+        #       theta_solutions[cfg_{i}, 3] = ... - np.arctan2(TCP_Position.R[1, 0], -TCP_Position.R[1, 1])
+        #   Method 2:
+        #       We can use the obtained Euler angles from the homogeneous transformation matrix.
+        theta_solutions[0, 3] = Robot_Parameters_Str.Theta.Direction[3] * (theta_solutions[0, 0] + theta_solutions[0, 1] + Euler_Angles.z)
+        theta_solutions[1, 3] = Robot_Parameters_Str.Theta.Direction[3] * (theta_solutions[1, 0] + theta_solutions[1, 1] + Euler_Angles.z)
 
         if method == 'All':
             error = {'position': np.zeros(theta_solutions.shape[0], dtype=np.float32), 
