@@ -185,7 +185,7 @@ def Forward_Kinematics(theta: tp.List[float], method: str, Robot_Parameters_Str:
     th_limit_err = General.Check_Theta_Limit(theta, Robot_Parameters_Str)
 
     # Change of axis direction in individual joints.
-    th = theta * Robot_Parameters_Str.Theta.Direction
+    th = (theta * Robot_Parameters_Str.Theta.Direction)
 
     return {
         'Standard': lambda th, th_err, r_param_str: (th_err, __Forward_Kinematics_Standard(th, r_param_str)),
@@ -531,20 +531,19 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
 
 
         # Calculation of the absolute position of the Theta_{3} joint.
-        # ....
+        theta_solutions[0, 2] = p.z - (Robot_Parameters_Str.DH.Modified[0, 2] + Robot_Parameters_Str.DH.Modified[1, 2] - Robot_Parameters_Str.DH.Modified[3, 2])
+        theta_solutions[1, 2] = theta_solutions[0, 2].copy()
 
         # Calculation of the absolute position of the Theta_{4} joint.
         #   Auxiliary Calculations.  
-        #       tan(theta_{1-2-4}) = sin(theta_{1-2-4}) / (-1) * cos(theta_{1-2-4})
+        #       tan(theta_{1+2-4}) = sin(theta_{1-2-4}) / cos(theta_{1-2-4})
         #       
         #       We can obtain the sine and cosine functions from the homogeneous transformation 
         #       matrix.
         #           sin(theta_{1-2-4}) = TCP_Position.R[1, 0]
-        #           cos(theta_{1-2-4}) = TCP_Position.R[1, 1]
-        
-        # ... add if -PI < res < PI
-        theta_solutions[0, 3] = theta_solutions[0, 0] - (Mathematics.CONST_MATH_PI - theta_solutions[0, 1]) + np.arctan2(TCP_Position.R[1, 0], TCP_Position.R[1, 1])
-        theta_solutions[1, 3] = theta_solutions[1, 0] - (Mathematics.CONST_MATH_PI - theta_solutions[1, 1]) + np.arctan2(TCP_Position.R[1, 0], TCP_Position.R[1, 1])
+        #           cos(theta_{1-2-4}) = -TCP_Position.R[1, 1]
+        theta_solutions[0, 3] = theta_solutions[0, 0] + theta_solutions[0, 1] - np.arctan2(TCP_Position.R[1, 0], -TCP_Position.R[1, 1])
+        theta_solutions[1, 3] = theta_solutions[1, 0] + theta_solutions[1, 1] - np.arctan2(TCP_Position.R[1, 0], -TCP_Position.R[1, 1])
 
         if method == 'All':
             error = {'position': np.zeros(theta_solutions.shape[0], dtype=np.float32), 
