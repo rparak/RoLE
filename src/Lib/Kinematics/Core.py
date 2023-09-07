@@ -496,16 +496,16 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
  
         # Calculation of the absolute position of the Theta_{1} joint.
         if beta > 1:
-            theta_solutions[0, 0] = np.arctan2(p.y, p.x) 
+            theta_solutions[0, 0] = Robot_Parameters_Str.Theta.Direction[0] * np.arctan2(p.y, p.x) 
         elif beta < -1:
-            theta_solutions[0, 0] = np.arctan2(p.y, p.x) - Mathematics.CONST_MATH_PI
+            theta_solutions[0, 0] = Robot_Parameters_Str.Theta.Direction[0] * (np.arctan2(p.y, p.x) - Mathematics.CONST_MATH_PI)
         else:
             # Configuration 1:
             #   cfg_{1} = gamma - beta 
-            theta_solutions[0, 0] = np.arctan2(p.y, p.x) - np.arccos(beta)
+            theta_solutions[0, 0] = Robot_Parameters_Str.Theta.Direction[0] * (np.arctan2(p.y, p.x) - np.arccos(beta))
             # Configuration 2:
             #   cfg_{2} = gamma + beta 
-            theta_solutions[1, 0] = np.arctan2(p.y, p.x) + np.arccos(beta)
+            theta_solutions[1, 0] = Robot_Parameters_Str.Theta.Direction[0] * (np.arctan2(p.y, p.x) + np.arccos(beta))
                 
         # The Law of Cosines.
         #   L^2 = L_{1}^2 + L_{2}^2 - 2*L_{1}*L{2}*cos(alpha)
@@ -518,20 +518,22 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
 
         # Calculation of the absolute position of the Theta_{2} joint.
         if alpha > 1:
-            theta_solutions[0, 1] = Mathematics.CONST_MATH_PI
+            theta_solutions[0, 1] = Robot_Parameters_Str.Theta.Direction[1] * Mathematics.CONST_MATH_PI
         elif alpha < -1:
             theta_solutions[0, 1] = 0.0
         else:
             # Configuration 1:
             #   cfg_{1} = PI - alpha
-            theta_solutions[0, 1] = Mathematics.CONST_MATH_PI - np.arccos(alpha)
+            theta_solutions[0, 1] = Robot_Parameters_Str.Theta.Direction[1] * (Mathematics.CONST_MATH_PI - np.arccos(alpha))
             # Configuration 2:
             #   cfg_{2} = alpha - PI
-            theta_solutions[1, 1] = np.arccos(alpha) - Mathematics.CONST_MATH_PI
+            theta_solutions[1, 1] = Robot_Parameters_Str.Theta.Direction[1] * (np.arccos(alpha) - Mathematics.CONST_MATH_PI)
 
 
         # Calculation of the absolute position of the Theta_{3} joint.
-        theta_solutions[0, 2] = p.z - (Robot_Parameters_Str.DH.Modified[0, 2] + Robot_Parameters_Str.DH.Modified[1, 2] - Robot_Parameters_Str.DH.Modified[3, 2])
+        theta_solutions[0, 2] =  Robot_Parameters_Str.Theta.Direction[2] * (p.z - (Robot_Parameters_Str.DH.Modified[0, 2] + 
+                                                                                   Robot_Parameters_Str.DH.Modified[1, 2] - 
+                                                                                   Robot_Parameters_Str.DH.Modified[3, 2]))
         theta_solutions[1, 2] = theta_solutions[0, 2].copy()
 
         # Calculation of the absolute position of the Theta_{4} joint.
@@ -542,8 +544,8 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
         #       matrix.
         #           sin(theta_{1-2-4}) = TCP_Position.R[1, 0]
         #           cos(theta_{1-2-4}) = -TCP_Position.R[1, 1]
-        theta_solutions[0, 3] = theta_solutions[0, 0] + theta_solutions[0, 1] - np.arctan2(TCP_Position.R[1, 0], -TCP_Position.R[1, 1])
-        theta_solutions[1, 3] = theta_solutions[1, 0] + theta_solutions[1, 1] - np.arctan2(TCP_Position.R[1, 0], -TCP_Position.R[1, 1])
+        theta_solutions[0, 3] = Robot_Parameters_Str.Theta.Direction[3] * (theta_solutions[0, 0] + theta_solutions[0, 1] - np.arctan2(TCP_Position.R[1, 0], -TCP_Position.R[1, 1]))
+        theta_solutions[1, 3] = Robot_Parameters_Str.Theta.Direction[3] * (theta_solutions[1, 0] + theta_solutions[1, 1] - np.arctan2(TCP_Position.R[1, 0], -TCP_Position.R[1, 1]))
 
         if method == 'All':
             error = {'position': np.zeros(theta_solutions.shape[0], dtype=np.float32), 
