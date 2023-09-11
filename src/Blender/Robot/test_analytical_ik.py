@@ -21,6 +21,14 @@ import Lib.Transformation.Core as Transformation
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core
 
+"""
+Description:
+    Open EPSON_LS3_B401S.blend from the Blender folder and copy + paste this script and run it.
+
+    Terminal:
+        $ cd Documents/GitHub/Open_Industrial_Robotics/Blender/Robot
+        $ blender EPSON_LS3_B401S.blend
+"""
 
 """
 Description:
@@ -34,7 +42,15 @@ CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_S
 def main():
     """
     Description:
-        ...
+        A program to calculate the inverse kinematics (IK) of the RRPR robotic structure (called SCARA) using an analytical method.
+
+        Two methods can be used to obtain IK solutions: 'All' or 'Best'.
+            1\ 'All': Obtain the all possible solutions.
+            2\ 'Best': Automatically obtain the best solution.
+
+        Note:
+            The position and orientation of the 'Viewpoint' object, which is the input to the inverse kinematics 
+            function, is set by the user.
     """
     
     # Deselect all objects in the current scene.
@@ -54,25 +70,23 @@ def main():
 
     # Reset the absolute position of the robot joints to the 'Home'.
     Robot_ID_0_Cls.Reset('Home')
-    
-    # Get the the absolute positions of the robot's joints.
-    print('[INFO] Absolute Joint Positions (actual):')
-    for i, th_i in enumerate(Robot_ID_0_Cls.Theta):
-        print(f'[INFO] >> Joint_{i}({th_i + 0.0:.3f})')
 
-    # ...
-    #Lib.Blender.Utilities.Set_Object_Transformation('TCP_Position_Viewpoint', Robot_ID_0_Cls.T_EE)
-
-    # ...
+    # Obtain the homogeneous transformation matrix of the 'Viewpoint' object.
     TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects['TCP_Position_Viewpoint'].matrix_basis, 
                                                                         np.float32)
-    # ..
-    theta = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_ID_0_Cls.Theta, Robot_ID_0_Cls.Parameters, 'Best')
     
+    # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
+    #   IK:
+    #       Theta <-- T
+    (error, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_ID_0_Cls.Theta, Robot_ID_0_Cls.Parameters, 'Best')
+    
+    # Display results.
+    print(f'[INFO] Absolute Joint Positions:')
+    print(f'[INFO] >> position_err = {error["position"]}, orientation_err = {error["orientation"]}')
+    print(f'[INFO] >> theta = {theta}')
+
     # Reset the absolute position of the robot joints to the 'Individual'.
-    #Robot_ID_0_Cls.Reset('Individual', theta[1])
-    
-    print(theta[0])
-    print(theta[1])
+    Robot_ID_0_Cls.Reset('Individual', theta)
+        
 if __name__ == '__main__':
     main()

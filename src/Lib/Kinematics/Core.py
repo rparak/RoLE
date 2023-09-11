@@ -434,7 +434,10 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
                                                                                                                   tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
     """
     Description:
-        ....
+        A function to compute the solution of the inverse kinematics (IK) of the RRPR robotic structure (called SCARA) using an analytical method.
+
+        Note:
+            R - Revolute, P - Prismatic.
 
     Args:
         (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 
@@ -462,7 +465,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
         if isinstance(TCP_Position, (list, np.ndarray)):
             TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float32)
 
-        # ...
+        # Initialization of output solutions.
         theta_solutions = np.zeros((2, Robot_Parameters_Str.Theta.Zero.size), dtype=np.float32)
 
         # Get the translational and rotational part from the transformation matrix.
