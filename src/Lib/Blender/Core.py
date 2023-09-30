@@ -579,10 +579,11 @@ class Robot_Cls(object):
                 #   The initial orientation of the joint in iteration i.
                 th_init   = T_i_zero_cfg.Get_Rotation(self.__axes_sequence_cfg).all()[ax_i_id_num]
 
-                if (th_actual - th_init) > Mathematics.CONST_MATH_PI:
-                    th[i] = (th_actual - th_init) - Mathematics.CONST_MATH_PI * 2
+                if (th_init - th_actual) > Mathematics.CONST_MATH_PI:
+                    th[i] = Mathematics.CONST_MATH_PI * 2 - (th_init - th_actual)
                 else:    
                     th[i] = th_actual - th_init
+
             elif th_i_type == 'P':
                 # Identification of joint type: P - Prismatic
                 #   The actual translation of the joint in iteration i.
@@ -694,7 +695,7 @@ class Robot_Cls(object):
                                                                      t_0, t_1)
                 theta_arr.append(theta_arr_i)
 
-            for _, (t_i, theta_arr_i) in enumerate(zip(self.__Polynomial_Cls.t, np.array(theta_arr, dtype=np.float32).T)):
+            for k, (t_i, theta_arr_i) in enumerate(zip(self.__Polynomial_Cls.t, np.array(theta_arr, dtype=np.float32).T)):
                 # Get the zero configuration of each joint.
                 T_zero_cfg = self.__Get_Zero_Joint_Cfg()
 
