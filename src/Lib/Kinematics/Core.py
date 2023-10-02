@@ -382,17 +382,107 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
 DKT:
 https://github.com/jhavl/dkt
 """
-# ///////////////////
+
 def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
-                                      ik_solver_properties: tp.Dict) -> None:
+                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
+                                                                                         tp.Union[float, tp.List[float]]], 
+                                                                        tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
+    """
+    Description:
+        A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
+        called Newton-Raphson (NR).
+
+        Equation:
+            ...
+
+    Args:
+        (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 
+                                              as a homogeneous transformation matrix.
+        (2) theta_0 [Vector<float> 1xn]: Actual absolute joint position in radians / meters.
+                                            Note:
+                                                Where n is the number of joints.
+        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (4) ik_solver_properties [Dictionary]: The properties of the inverse kinematics solver.
+                                                Note:
+                                                    The properties depend on the specific method.
+
+    Returns:
+        (1) parameter [Dictionary {'successful': bool, 
+                                   'error': {'position': float, 'orientation': float}}]: Information on whether the result was found within the required tolerance 
+                                                                                         and information about the absolute error (position, orientation).
+        (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
+                                            Note:
+                                                Where n is the number of joints. 
+    """
+
     pass
 
 def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
-                                      ik_solver_properties: tp.Dict) -> None:
+                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
+                                                                                         tp.Union[float, tp.List[float]]], 
+                                                                        tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
+    """
+    Description:
+        A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
+        called Gauss-Newton (GN).
+
+        Equation:
+            ...
+
+    Args:
+        (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 
+                                              as a homogeneous transformation matrix.
+        (2) theta_0 [Vector<float> 1xn]: Actual absolute joint position in radians / meters.
+                                            Note:
+                                                Where n is the number of joints.
+        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (4) ik_solver_properties [Dictionary]: The properties of the inverse kinematics solver.
+                                                Note:
+                                                    The properties depend on the specific method.
+
+    Returns:
+        (1) parameter [Dictionary {'successful': bool, 
+                                   'error': {'position': float, 'orientation': float}}]: Information on whether the result was found within the required tolerance 
+                                                                                         and information about the absolute error (position, orientation).
+        (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
+                                            Note:
+                                                Where n is the number of joints. 
+    """
+
     pass
 
 def __Inverse_Kinematics_Numerical_LM(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
-                                      ik_solver_properties: tp.Dict) -> None:
+                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
+                                                                                         tp.Union[float, tp.List[float]]], 
+                                                                        tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
+    """
+    Description:
+        A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
+        called Levenberg-Marquardt (LM).
+
+        Equation:
+            ...
+
+    Args:
+        (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 
+                                              as a homogeneous transformation matrix.
+        (2) theta_0 [Vector<float> 1xn]: Actual absolute joint position in radians / meters.
+                                            Note:
+                                                Where n is the number of joints.
+        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (4) ik_solver_properties [Dictionary]: The properties of the inverse kinematics solver.
+                                                Note:
+                                                    The properties depend on the specific method.
+
+    Returns:
+        (1) parameter [Dictionary {'successful': bool, 
+                                   'error': {'position': float, 'orientation': float}}]: Information on whether the result was found within the required tolerance 
+                                                                                         and information about the absolute error (position, orientation).
+        (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
+                                            Note:
+                                                Where n is the number of joints. 
+    """
+
     pass
 
 def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], method: str, 
@@ -401,7 +491,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                                                                                                                           tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
     """
     Description:
-        A function to compute the solution for the inverse kinematics (IK) of the individual robotic structure using a numerical method.
+        A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method.
 
         Possible numerical methods that can be used include:
             1\ Newton-Raphson (NR) Method
@@ -431,11 +521,21 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                                                 Where n is the number of joints.
     """
 
-    return {
-        'Newton-Raphson': lambda tcp_p, th_0, r_param_str, properties: __Inverse_Kinematics_Numerical_NR(tcp_p, th_0, r_param_str, properties),
-        'Gauss-Newton': lambda tcp_p, th_0, r_param_str, properties: __Inverse_Kinematics_Numerical_GN(tcp_p, th_0, r_param_str, properties),
-        'Levenberg-Marquardt': lambda tcp_p, th_0, r_param_str, properties: __Inverse_Kinematics_Numerical_LM(tcp_p, th_0, r_param_str, properties)
-    }[method](TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties)
+    try:
+        assert method in ['Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt']
+
+        if isinstance(TCP_Position, (list, np.ndarray)):
+            TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float32)
+
+        return {
+            'Newton-Raphson': lambda tcp_p, th_0, r_param_str, ik_properties: __Inverse_Kinematics_Numerical_NR(tcp_p, th_0, r_param_str, ik_properties),
+            'Gauss-Newton': lambda tcp_p, th_0, r_param_str, ik_properties: __Inverse_Kinematics_Numerical_GN(tcp_p, th_0, r_param_str, ik_properties),
+            'Levenberg-Marquardt': lambda tcp_p, th_0, r_param_str, ik_properties: __Inverse_Kinematics_Numerical_LM(tcp_p, th_0, r_param_str, ik_properties)
+        }[method](TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties)
+
+    except AssertionError as error:
+        print(f'[ERROR] Information: {error}')
+        print('[ERROR] An incorrect name of the method was selected for the numerical inverse kinematics calculation.')
 
 def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], 
                                   Robot_Parameters_Str: Parameters.Robot_Parameters_Str, method: str) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
