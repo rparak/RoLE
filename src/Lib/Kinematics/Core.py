@@ -104,7 +104,6 @@ def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: P
                 # Translation along the X axis.
                 T_i = T_i @ DH_Standard(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
-    # T_Base @ T_n @ T_EE
     return T_i @ Robot_Parameters_Str.T.End_Effector
 
 def DH_Modified(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.List[float]]:
@@ -159,7 +158,6 @@ def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: P
                 # Translation along the X axis.
                 T_i = T_i @ DH_Modified(dh_i[0], dh_i[1] + th_i, dh_i[2], dh_i[3])
 
-    # T_Base @ T_n @ T_EE
     return T_i @ Robot_Parameters_Str.T.End_Effector
 
 def Forward_Kinematics(theta: tp.List[float], method: str, Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
@@ -237,7 +235,6 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
         else:
             T_cfg.append(T_i)
 
-    # T_i[]
     return T_cfg
 
 def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
@@ -280,7 +277,6 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
         else:
             T_cfg.append(T_i)
 
-    # T_i[]
     return T_cfg
 
 def Get_Individual_Joint_Configuration(theta: tp.List[float], method: str, Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
@@ -396,9 +392,7 @@ https://github.com/jhavl/dkt
 """
 
 def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
-                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
-                                                                                         tp.Union[float, tp.List[float]]], 
-                                                                        tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
+                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
     """
     Description:
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
@@ -407,6 +401,7 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
         Equation:
             ...
 
+        # https://github.com/jhavl/dkt/blob/main/Part%201/4%20Numerical%20Inverse%20Kinematics.ipynb
     Args:
         (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 
                                               as a homogeneous transformation matrix.
@@ -427,14 +422,10 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
                                                 Where n is the number of joints. 
     """
 
-    # Initialization of the output solution.
-    theta_solution = np.zeros(Robot_Parameters_Str.Theta.Zero.size, dtype=np.float32)
-    
     # Diagonal weight matrix.
     W_e = np.diag(np.ones(6))
 
-    # ...
-    th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
+    is_successful = False; th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
     for _ in range(ik_solver_properties['num_of_iteration']):
         # Get the matrix of the geometric Jacobian.
         J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
@@ -449,6 +440,7 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
         th_i += np.linalg.pinv(J) @ e_i
 
         if General.Get_Quadratic_Angle_Axis_Error(e_i, W_e) < ik_solver_properties['tolerance']:
+            is_successful = True
             break
 
         # Check whether the desired absolute joint positions are within the limits and ensure 
@@ -460,10 +452,18 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
             else:
                 th_i_tmp[i] = th_i[i]
 
+    # Get the homogeneous transformation matrix of the robot end-effector from the input 
+    # absolute joint positions.
+    T = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)[1]
+    
+    # Obtain the absolute error of position and orientation.
+    error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5), 
+             'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)}
+    
+    return ({'successful': is_successful, 'error': error}, th_i)
+
 def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
-                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
-                                                                                         tp.Union[float, tp.List[float]]], 
-                                                                        tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
+                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
     """
     Description:
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
@@ -495,9 +495,7 @@ def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], the
     pass
 
 def __Inverse_Kinematics_Numerical_LM(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
-                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
-                                                                                         tp.Union[float, tp.List[float]]], 
-                                                                        tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
+                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
     """
     Description:
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
@@ -529,9 +527,7 @@ def __Inverse_Kinematics_Numerical_LM(TCP_Position: tp.List[tp.List[float]], the
     pass
 
 def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], method: str, 
-                                 Robot_Parameters_Str: Parameters.Robot_Parameters_Str, ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
-                                                                                                                                   tp.Union[float, tp.List[float]]], 
-                                                                                                                          tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
+                                 Robot_Parameters_Str: Parameters.Robot_Parameters_Str, ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
     """
     Description:
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method.
@@ -719,6 +715,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
                 error['orientation'][i] = np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)
 
             return (error, theta_solutions)
+        
         elif method == 'Best':
             # Automatically obtain the best solution for the absolute positions of the robot's joints.
             theta = General.Get_Best_IK_Solution(theta_0, theta_solutions, Robot_Parameters_Str)
