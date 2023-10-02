@@ -23,11 +23,7 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 def main():
     """
     Description:
-        A program to calculate the inverse kinematics (IK) of the RRPR robotic structure (called SCARA) using an analytical method.
-
-        Two methods can be used to obtain IK solutions: 'All' or 'Best'.
-            1\ 'All': Obtain the all possible solutions.
-            2\ 'Best': Automatically obtain the best solution.
+        ...
     """
     
     # Set printing options.
@@ -45,13 +41,11 @@ def main():
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
-    (error, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_Str.Theta.Home, Robot_Str, 'All')
+    (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, Robot_Str.Theta.Home, 'Newton-Raphson', Robot_Str, 
+                                                                     {'num_of_iteration': 1000, 'tolerance': 0.01})
 
     # Display results.
-    for i, (err_i, th_i) in enumerate(zip(error.values(), theta)):
-        print(f'[INFO] Solution {i}:')
-        print(f'[INFO] >> position_err = {err_i[0]}, orientation_err = {err_i[1]}')
-        print(f'[INFO] >> theta = {th_i}')
+    print(info)
 
 if __name__ == '__main__':
     main()

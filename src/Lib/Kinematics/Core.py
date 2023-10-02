@@ -358,7 +358,7 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
 
     # Get the configuration of the homogeneous transformation matrix of each joint using the 
     # modified forward kinematics calculation method.
-    T_Cfg_Arr = __Get_Individual_Joint_Configuration_Modified(th, Robot_Parameters_Str)[1]
+    T_Cfg_Arr = __Get_Individual_Joint_Configuration_Modified(th, Robot_Parameters_Str)
 
     # Get the translation part from the homogeneous transformation matrix 
     # of the end-effector.
@@ -427,11 +427,11 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
 
     is_successful = False; th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
     for _ in range(ik_solver_properties['num_of_iteration']):
-        # Get the matrix of the geometric Jacobian.
-        J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
-
         # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
         (th_limit_err, TCP_Position_0) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
+
+        # Get the matrix of the geometric Jacobian.
+        J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
 
         # Get an error (angle-axis) vector which represents the translation and rotation.
         e_i = General.Get_Angle_Axis_Error(TCP_Position, TCP_Position_0) 
