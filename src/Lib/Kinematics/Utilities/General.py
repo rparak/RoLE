@@ -98,7 +98,7 @@ def Get_Angle_Axis_Error(T_desired: tp.List[tp.List[float]], T_current: tp.List[
         if Tr_R <= 0:
             e_i[3:] = Mathematics.CONST_MATH_HALF_PI * (Transformation.Get_Matrix_Diagonal(R) + 1)
 
-    return e_i
+    return np.array(e_i, dtype=np.float32)
 
 def Get_Quadratic_Angle_Axis_Error(e: tp.List[float], W_e: tp.List[tp.List[float]]) -> float:
     """

@@ -31,7 +31,7 @@ def main():
     """
     
     # Set printing options.
-    np.set_printoptions(suppress=True, precision=5)
+    #np.set_printoptions(suppress=True, precision=5)
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
