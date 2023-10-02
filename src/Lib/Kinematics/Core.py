@@ -135,7 +135,9 @@ def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: P
                 theta (id: 0), a (id: 1), d (id: 2), alpha (id: 3)
 
     Args:
-        (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+                                        Note:
+                                            Where n is the number of joints.
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:
@@ -167,7 +169,9 @@ def Forward_Kinematics(theta: tp.List[float], method: str, Robot_Parameters_Str:
         Calculation of forward kinematics. The method of calculating depends on the input parameter (2).
         
     Args:
-        (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+                                        Note:
+                                            Where n is the number of joints.
         (2) method [string]: Forward kinematics method (1: Standard, 2: Modified, 3: Fast).
         (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
@@ -200,7 +204,9 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
         Get the configuration of the homogeneous transformation matrix of each joint using the standard forward kinematics calculation method.
 
     Args:
-        (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+                                        Note:
+                                            Where n is the number of joints.
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:
@@ -241,7 +247,9 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
         Get the configuration of the homogeneous transformation matrix of each joint using the modified forward kinematics calculation method.
 
     Args:
-        (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+                                        Note:
+                                            Where n is the number of joints.
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:
@@ -283,7 +291,9 @@ def Get_Individual_Joint_Configuration(theta: tp.List[float], method: str, Robot
         the forward kinematics depends on the input parameter (2).
 
     Args:
-        (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+                                        Note:
+                                            Where n is the number of joints.
         (2) method [string]: Forward kinematics method (1: Standard, 2: Modified).
         (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
@@ -336,7 +346,9 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
                                [0.0]]
 
     Args:
-        (1) theta [Vector<float>]: Desired absolute joint position in radians / meters.
+        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+                                        Note:
+                                            Where n is the number of joints.
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
@@ -449,7 +461,19 @@ def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], the
                                                 Where n is the number of joints. 
     """
 
-    pass
+    # Initialization of the output solution.
+    theta_solution = np.zeros(Robot_Parameters_Str.Theta.Zero.size, dtype=np.float32)
+    
+    # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
+    (th_limit_err, TCP_Position_0) = Forward_Kinematics(theta_0, 'Fast', Robot_Parameters_Str)
+
+    error = 0.0; th_i = theta_0.copy()
+    for _ in range(ik_solver_properties['num_of_iteration']):
+        # Get the matrix of the geometric Jacobian.
+        J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
+
+        if error < ik_solver_properties['tolerance']:
+            break
 
 def __Inverse_Kinematics_Numerical_LM(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
                                       ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
