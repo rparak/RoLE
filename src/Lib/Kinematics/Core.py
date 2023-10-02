@@ -385,16 +385,20 @@ DKT:
 https://github.com/jhavl/dkt
 """
 # ///////////////////
-def __Inverse_Kinematics_Numerical_NR(TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties):
+def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
+                                      ik_solver_properties: tp.Dict) -> None:
     pass
 
-def __Inverse_Kinematics_Numerical_GN(TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties):
+def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
+                                      ik_solver_properties: tp.Dict) -> None:
     pass
 
-def __Inverse_Kinematics_Numerical_LM(TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties):
+def __Inverse_Kinematics_Numerical_LM(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
+                                      ik_solver_properties: tp.Dict) -> None:
     pass
 
-def Inverse_Kinematics_Numerical(TCP_Position, theta_0, method, Robot_Parameters_Str, ik_solver_properties):
+def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], method: str, 
+                                 Robot_Parameters_Str: Parameters.Robot_Parameters_Str, ik_solver_properties: tp.Dict) -> None:
     """
     Description:
         ....
