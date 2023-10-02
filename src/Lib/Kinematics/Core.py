@@ -375,10 +375,6 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
     return J
 
 # ////////////////////
-"""
-ik_solver_properties -> *args or **kwargs
-Link: https://www.programiz.com/python-programming/args-and-kwargs#:~:text=Python%20**kwargs&text=In%20the%20function%2C%20we%20use,parameter%20excluding%20double%20asterisk%20**%20.
-"""
 
 """
 DKT:
