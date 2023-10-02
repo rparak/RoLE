@@ -425,11 +425,11 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
     # Diagonal weight matrix.
     W_e = np.diag(np.ones(6))
 
+    # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
+    (th_limit_err, TCP_Position_0) = Forward_Kinematics(theta_0, 'Fast', Robot_Parameters_Str)
+    
     is_successful = False; th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
     for _ in range(ik_solver_properties['num_of_iteration']):
-        # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
-        (th_limit_err, TCP_Position_0) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
-
         # Get the matrix of the geometric Jacobian.
         J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
 
@@ -443,6 +443,9 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
             is_successful = True
             break
 
+        # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
+        (th_limit_err, TCP_Position_0) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
+
         # Check whether the desired absolute joint positions are within the limits and ensure 
         # there are no collisions between the joints.
         for i, (th_limit_err_i, th_is_collision_i) in enumerate(zip(th_limit_err, General.Is_Self_Collision(th_i, 
@@ -455,7 +458,7 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
     # Get the homogeneous transformation matrix of the robot end-effector from the input 
     # absolute joint positions.
     T = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)[1]
-    
+
     # Obtain the absolute error of position and orientation.
     error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5), 
              'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)}

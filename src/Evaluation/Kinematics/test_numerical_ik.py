@@ -35,16 +35,17 @@ def main():
     # Obtain the homogeneous transformation matrix of the robot end-effector from the input absolute joint positions.
     #   FK: 
     #       Theta --> T
-    TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(np.array([Mathematics.Degree_To_Radian(25.0), Mathematics.Degree_To_Radian(-20.0), 0.1, Mathematics.Degree_To_Radian(15.0)],
+    TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(np.array([Mathematics.Degree_To_Radian(70.0), Mathematics.Degree_To_Radian(0.0), 0.0, Mathematics.Degree_To_Radian(0.0)],
                                                                    dtype = np.float32), 'Fast', Robot_Str)[1]
     
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
     (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, Robot_Str.Theta.Home, 'Newton-Raphson', Robot_Str, 
-                                                                     {'num_of_iteration': 1000, 'tolerance': 0.01})
+                                                                     {'num_of_iteration': 10, 'tolerance': 0.01})
 
     # Display results.
+    print(theta)
     print(info)
 
 if __name__ == '__main__':
