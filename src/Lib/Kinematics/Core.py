@@ -427,7 +427,38 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
                                                 Where n is the number of joints. 
     """
 
-    pass
+    # Initialization of the output solution.
+    theta_solution = np.zeros(Robot_Parameters_Str.Theta.Zero.size, dtype=np.float32)
+    
+    # Diagonal weight matrix.
+    W_e = np.diag(np.ones(6))
+
+    # ...
+    th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
+    for _ in range(ik_solver_properties['num_of_iteration']):
+        # Get the matrix of the geometric Jacobian.
+        J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
+
+        # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
+        (th_limit_err, TCP_Position_0) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
+
+        # Get an error (angle-axis) vector which represents the translation and rotation.
+        e_i = General.Get_Angle_Axis_Error(TCP_Position, TCP_Position_0) 
+
+        # Newton-Raphson (NR) method.
+        th_i += np.linalg.pinv(J) @ e_i
+
+        if General.Get_Quadratic_Angle_Axis_Error(e_i, W_e) < ik_solver_properties['tolerance']:
+            break
+
+        # Check whether the desired absolute joint positions are within the limits and ensure 
+        # there are no collisions between the joints.
+        for i, (th_limit_err_i, th_is_collision_i) in enumerate(zip(th_limit_err, General.Is_Self_Collision(th_i, 
+                                                                                                            Robot_Parameters_Str))):
+            if th_limit_err_i == True or th_is_collision_i == True:
+                th_i[i] = th_i_tmp[i]
+            else:
+                th_i_tmp[i] = th_i[i]
 
 def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
                                       ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
@@ -461,19 +492,7 @@ def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], the
                                                 Where n is the number of joints. 
     """
 
-    # Initialization of the output solution.
-    theta_solution = np.zeros(Robot_Parameters_Str.Theta.Zero.size, dtype=np.float32)
-    
-    # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
-    (th_limit_err, TCP_Position_0) = Forward_Kinematics(theta_0, 'Fast', Robot_Parameters_Str)
-
-    error = 0.0; th_i = theta_0.copy()
-    for _ in range(ik_solver_properties['num_of_iteration']):
-        # Get the matrix of the geometric Jacobian.
-        J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
-
-        if error < ik_solver_properties['tolerance']:
-            break
+    pass
 
 def __Inverse_Kinematics_Numerical_LM(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
                                       ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
