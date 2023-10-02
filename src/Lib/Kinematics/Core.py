@@ -376,6 +376,8 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
 
 # ////////////////////
 
+# ik_solver_properties = {'num_of_iteration': ..., 'tolerance': .., 'etc.'...}
+
 """
 DKT:
 https://github.com/jhavl/dkt
@@ -394,12 +396,17 @@ def __Inverse_Kinematics_Numerical_LM(TCP_Position: tp.List[tp.List[float]], the
     pass
 
 def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], method: str, 
-                                 Robot_Parameters_Str: Parameters.Robot_Parameters_Str, ik_solver_properties: tp.Dict) -> None:
+                                 Robot_Parameters_Str: Parameters.Robot_Parameters_Str, ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict[tp.Union[float, tp.List[float]], 
+                                                                                                                                   tp.Union[float, tp.List[float]]], 
+                                                                                                                          tp.Union[tp.List[float], tp.List[tp.List[float]]]]:
     """
     Description:
-        ....
+        A function to compute the solution for the inverse kinematics (IK) of the individual robotic structure using a numerical method.
 
-        ik_solver_properties = {'num_of_iteration': ..., 'tolerance': .., 'etc.'...}
+        Possible numerical methods that can be used include:
+            1\ Newton-Raphson (NR) Method
+            2\ Gauss-Newton (GN) Method
+            3\ Levenberg-Marquardt (LM) Method
 
     Args:
         (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 
@@ -407,11 +414,13 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         (2) theta_0 [Vector<float> 1xn]: Actual absolute joint position in radians / meters.
                                             Note:
                                                 Where n is the number of joints.
-        (3) method [string]: The name of the solver used to calculate the numerical method of inverse kinematics
+        (3) method [string]: The name of the solver used to calculate the numerical method of inverse kinematics.
+                                Note:
+                                    method = 'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'.
         (4) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         (5) ik_solver_properties [Dictionary]: The properties of the inverse kinematics solver.
                                                 Note:
-                                                    The properties depend on the specific method."
+                                                    The properties depend on the specific method.
 
     Returns:
         (1) parameter [Dictionary {'successful': bool, 
