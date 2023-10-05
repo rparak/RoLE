@@ -136,7 +136,7 @@ def Generate_Absolute_Joint_Orientation(file_path: str, N: int, theta: tp.List[f
 def Generate_Workspace_XYZ(Robot_Str: Parameters.Robot_Parameters_Str, file_path_in: str, file_path_out: str) -> None:
     """
     Description:
-        Generate x, y, z positions of the workspace from the absolute orientation of the joints.
+        Generate x, y, and z positions of the workspace from the absolute orientation of the joints using the Monte Carlo method.
 
     Args:
         (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
