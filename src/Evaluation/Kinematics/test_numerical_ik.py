@@ -44,7 +44,7 @@ def main():
     #   IK:
     #       Theta <-- T
     (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, Robot_Str.Theta.Zero, 'Newton-Raphson', Robot_Str, 
-                                                                     {'num_of_iteration': 100, 'tolerance': 1e-9})
+                                                                     {'num_of_iteration': 100, 'tolerance': 1e-10})
 
     # Display results.
     print(f'[INFO] The solution was successfully found: {info["successful"]}')

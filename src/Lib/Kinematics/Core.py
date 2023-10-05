@@ -436,12 +436,12 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
         # Get an error (angle-axis) vector which represents the translation and rotation.
         e_i = General.Get_Angle_Axis_Error(TCP_Position, TCP_Position_0) 
 
-        # Newton-Raphson (NR) method.
-        th_i += np.linalg.pinv(J) @ e_i
-
         if General.Get_Quadratic_Angle_Axis_Error(e_i, W_e) < ik_solver_properties['tolerance']:
             is_successful = True
             break
+        else:
+            # Newton-Raphson (NR) method.
+            th_i += np.linalg.pinv(J) @ e_i
 
         # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
         (th_limit_err, TCP_Position_0) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
