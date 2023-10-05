@@ -364,7 +364,7 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
     # of the end-effector.
     T_n_p_ee = T_Cfg_Arr[-1].p
 
-    J = np.zeros((6, th.size)); z_i = Vector3_Cls(None, T_n_p_ee.Type)
+    J = np.zeros((6, th.size), dtype=T_n_p_ee.Type); z_i = Vector3_Cls(None, T_n_p_ee.Type)
     for i, (T_Cfg_i, th_i_type) in enumerate(zip(T_Cfg_Arr, Robot_Parameters_Str.Theta.Type)):
         z_i[:] = T_Cfg_i[0:3, 2]
         if th_i_type == 'R':
@@ -422,57 +422,11 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
                                                 Where n is the number of joints. 
     """
 
-    q = np.deg2rad([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64) 
-    print(theta_0, q)
-    print(q.dtype)
-
-    T_current = Forward_Kinematics(q, 'Modified', Parameters.Universal_Robots_UR3_Str)[1]
-
-    T_Identity = Transformation.Get_Matrix_Identity(4)
-    T_desired  = Transformation.Homogeneous_Transformation_Matrix_Cls(T_Identity, np.float64).Rotation([1.57079633, 0.0, -3.14159265], 'ZYX').Translation([0.2, -0.104, 0.4])
-
-    W_e = np.diag(np.ones(6))
-    iteration = 0; q_bef = np.deg2rad([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-    while iteration < 50:
-        #print(T_current.p)
-        #print(f'Joint angles in iteration {i}: {np.rad2deg(q)}')
-        #print(f'Actual error: {e}')
-        #print(f'Joint angles (result): {np.round(np.rad2deg(q), 2)}')
-        J = Get_Geometric_Jacobian(q, Parameters.Universal_Robots_UR3_Str)
-        
-        e_i = General.Get_Angle_Axis_Error(T_desired, T_current)
-
-        """
-        if np.linalg.det(J) != 0:
-            q += np.linalg.inv(J) @ General.Get_Angle_Axis_Error(T_desired, T_current)
-        else:
-            q += np.linalg.pinv(J) @ General.Get_Angle_Axis_Error(T_desired, T_current)
-        """
-
-        q += np.linalg.pinv(J) @ e_i 
-
-        if General.Get_Quadratic_Angle_Axis_Error(e_i, np.diag(np.ones(6))) < 0.0000001:
-            break
-
-        (q_limit_err, T_current) = Forward_Kinematics(q, 'Fast', Parameters.Universal_Robots_UR3_Str)
-
-        for i, q_limit_err_i in enumerate(q_limit_err):
-            if q_limit_err_i == True:
-                q[i] = q_bef[i]
-            else:
-                q_bef[i] = q[i]
-
-        iteration += 1
-
-    print(General.Get_Quadratic_Angle_Axis_Error(e_i, np.diag(np.ones(6))))
-    return None
-
-    """
     # Diagonal weight matrix.
     W_e = np.diag(np.ones(6))
 
     # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
-    (th_limit_err, TCP_Position_0) = Forward_Kinematics(theta_0, 'Modified', Robot_Parameters_Str)
+    (th_limit_err, TCP_Position_0) = Forward_Kinematics(theta_0, 'Fast', Robot_Parameters_Str)
     
     is_successful = False; th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
     for _ in range(ik_solver_properties['num_of_iteration']):
@@ -484,19 +438,19 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
 
         # Newton-Raphson (NR) method.
         th_i += np.linalg.pinv(J) @ e_i
-        print(General.Get_Quadratic_Angle_Axis_Error(e_i, W_e))
+
         if General.Get_Quadratic_Angle_Axis_Error(e_i, W_e) < ik_solver_properties['tolerance']:
             is_successful = True
             break
 
         # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
-        (th_limit_err, TCP_Position_0) = Forward_Kinematics(th_i, 'Modified', Robot_Parameters_Str)
+        (th_limit_err, TCP_Position_0) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
 
         # Check whether the desired absolute joint positions are within the limits and ensure 
         # there are no collisions between the joints.
         for i, (th_limit_err_i, th_is_collision_i) in enumerate(zip(th_limit_err, General.Is_Self_Collision(th_i, 
                                                                                                             Robot_Parameters_Str))):
-            if th_limit_err_i == True:
+            if th_limit_err_i == True or th_is_collision_i == True:
                 th_i[i] = th_i_tmp[i]
             else:
                 th_i_tmp[i] = th_i[i]
@@ -510,7 +464,6 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
              'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)}
     
     return ({'successful': is_successful, 'error': error}, th_i)
-    """
 
 def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
                                       ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:

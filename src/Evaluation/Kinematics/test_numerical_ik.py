@@ -20,7 +20,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
+CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 
 def main():
     """
@@ -37,21 +37,19 @@ def main():
     # Obtain the homogeneous transformation matrix of the robot end-effector from the input absolute joint positions.
     #   FK: 
     #       Theta --> T
-    """
-    TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(np.array([Mathematics.Degree_To_Radian(70.0), Mathematics.Degree_To_Radian(0.0), 0.0, Mathematics.Degree_To_Radian(0.0)],
+    TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(np.array([Mathematics.Degree_To_Radian(25.0), Mathematics.Degree_To_Radian(-20.0), 0.15, Mathematics.Degree_To_Radian(15.0)],
                                                                    dtype = np.float64), 'Fast', Robot_Str)[1]
-    """
 
-    TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float64).Rotation([1.57079633, 0.0, -3.14159265], 'ZYX').Translation([0.2, -0.104, 0.4])
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
-    info = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, Robot_Str.Theta.Zero, 'Newton-Raphson', Robot_Str, 
-                                                                     {'num_of_iteration': 10, 'tolerance': 0.01})
+    (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, Robot_Str.Theta.Zero, 'Newton-Raphson', Robot_Str, 
+                                                                     {'num_of_iteration': 100, 'tolerance': 1e-9})
 
     # Display results.
-    #print(theta)
-    #print(info)
+    print(f'[INFO] The solution was successfully found: {info["successful"]}')
+    print(f'[INFO] >> position_err = {info["error"]["position"]}, orientation_err = {info["error"]["orientation"]}')
+    print(f'[INFO] >> theta = {theta}')
 
 if __name__ == '__main__':
     main()
