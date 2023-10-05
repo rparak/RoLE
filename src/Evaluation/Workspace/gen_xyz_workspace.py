@@ -21,7 +21,7 @@ CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 def main():
     """
     Description:
-        A program to generate the workspace of a robot arm from the absolute positions of the joints.
+        A program to generate the workspace of a robot arm from the absolute positions of the joints using the Monte Carlo method.
 
         Note:
             Absolute joint positions are generated from the program below:
