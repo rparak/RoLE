@@ -39,7 +39,7 @@ def main():
     #       Theta --> T
     """
     TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(np.array([Mathematics.Degree_To_Radian(70.0), Mathematics.Degree_To_Radian(0.0), 0.0, Mathematics.Degree_To_Radian(0.0)],
-                                                                   dtype = np.float32), 'Fast', Robot_Str)[1]
+                                                                   dtype = np.float64), 'Fast', Robot_Str)[1]
     """
 
     TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float64).Rotation([1.57079633, 0.0, -3.14159265], 'ZYX').Translation([0.2, -0.104, 0.4])

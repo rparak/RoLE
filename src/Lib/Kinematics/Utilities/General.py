@@ -68,7 +68,7 @@ def Get_Angle_Axis_Error(T_desired: tp.List[tp.List[float]], T_current: tp.List[
     
     # Initialization of the output vector, which consists of a translational 
     # and a rotational part.
-    e_i = np.zeros(6, dtype=np.float32)
+    e_i = np.zeros(6, dtype=np.float64)
 
     # 1\ Calculation of position error (e_i_p).
     e_i[:3] = (T_desired.p - T_current.p).all()
@@ -93,12 +93,12 @@ def Get_Angle_Axis_Error(T_desired: tp.List[tp.List[float]], T_current: tp.List[
             (r_{11} ,r_{22} ,r_{33}) = (+, +, +), then alpha = Null vector.
 
             The row e_i[3:] = [0.0, 0.0, 0.0]> is not necessary because 
-            <e_i = np.zeros(6, dtype=np.float32)>.
+            <e_i = np.zeros(6, dtype=np.float64)>.
         """
         if Tr_R <= 0:
             e_i[3:] = Mathematics.CONST_MATH_HALF_PI * (Transformation.Get_Matrix_Diagonal(R) + 1)
 
-    return np.array(e_i, dtype=np.float32)
+    return np.array(e_i, dtype=np.float64)
 
 def Get_Quadratic_Angle_Axis_Error(e: tp.List[float], W_e: tp.List[tp.List[float]]) -> float:
     """
@@ -186,7 +186,7 @@ def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.Li
                                                 Where n is the number of joints.
     """
 
-    theta = np.zeros(Robot_Parameters_Str.Theta.Zero.size, dtype=np.float32); error = np.finfo(np.float32).max
+    theta = np.zeros(Robot_Parameters_Str.Theta.Zero.size, dtype=np.float64); error = np.finfo(np.float64).max
     for _, th_sol_i in enumerate(theta_solutions):
         # Get the homogeneous transformation matrix of the robot end-effector from the input 
         # absolute joint positions.

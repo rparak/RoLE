@@ -216,7 +216,7 @@ class Mechanism_Cls(object):
             self.__name = f'{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}'
             # Get the homogeneous transformation matrix of the mechanism based on the position of the mechanism structure in Blender.
             self.__Mechanism_Parameters_Str.T.Base = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[self.__name].matrix_basis, 
-                                                                                                          np.float32)
+                                                                                                          np.float64)
 
             # Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
             self.__axes_sequence_cfg = 'ZYX'
@@ -300,7 +300,7 @@ class Mechanism_Cls(object):
 
         # Get the actual homogenous transformation matrix of the mechanism slider.
         T_Slider = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].matrix_basis, 
-                                                                         np.float32)
+                                                                         np.float64)
 
         return self.__Mechanism_Parameters_Str.T.Base @ T_Slider @ self.__Mechanism_Parameters_Str.T.Shuttle
     
@@ -459,7 +459,7 @@ class Robot_Cls(object):
             self.__name = f'{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}'
             # Get the homogeneous transformation matrix of the robot based on the position of the robot structure in Blender.
             self.__Robot_Parameters_Str.T.Base = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[self.__name].matrix_basis, 
-                                                                                                      np.float32)
+                                                                                                      np.float64)
             # Get the zero configuration of the homogeneous matrix of each joint using forward kinematics. 
             self.__Robot_Parameters_Str.T.Zero_Cfg = Kinematics.Get_Individual_Joint_Configuration(self.__Robot_Parameters_Str.Theta.Zero, 'Modified', 
                                                                                                    self.__Robot_Parameters_Str)[1]
@@ -527,7 +527,7 @@ class Robot_Cls(object):
                                                         Where n is the number of joints.
         """
 
-        T_i = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float32); T_zero_cfg = []
+        T_i = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float64); T_zero_cfg = []
         for i, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(self.__Robot_Parameters_Str.Theta.Zero, self.__Robot_Parameters_Str.DH.Modified, 
                                                                  self.__Robot_Parameters_Str.Theta.Type, self.__Robot_Parameters_Str.Theta.Axis)):
             # Forward kinematics using modified DH parameters.
@@ -695,7 +695,7 @@ class Robot_Cls(object):
                                                                      t_0, t_1)
                 theta_arr.append(theta_arr_i)
 
-            for k, (t_i, theta_arr_i) in enumerate(zip(self.__Polynomial_Cls.t, np.array(theta_arr, dtype=np.float32).T)):
+            for k, (t_i, theta_arr_i) in enumerate(zip(self.__Polynomial_Cls.t, np.array(theta_arr, dtype=np.float64).T)):
                 # Get the zero configuration of each joint.
                 T_zero_cfg = self.__Get_Zero_Joint_Cfg()
 

@@ -54,14 +54,14 @@ def main():
         if nCr_Joint[i] != 0:
             # Generation of evenly spaced numbers in the specified interval.
             theta[i] = np.linspace(th_limit[0], th_limit[1], nCr_Joint[i], 
-                                   dtype=np.float32)
+                                   dtype=np.float64)
             print(f'[INFO]   - Limit (-): {theta[i][0]} | Limit (+): {theta[i][-1]}')
         else:
             theta[i] = np.array([nCr_Joint[i]])
             print(f'[INFO]   - Limit (-): {theta[i]} | Limit (+): {theta[i]}')
 
         print(f'[INFO]   - Number of samples: {len(theta[i])}')
-        print(f'[INFO]   - Data Type: {np.float32}')
+        print(f'[INFO]   - Data Type: {np.float64}')
 
     # Get the number of combinations.
     NUM_OF_COMBINATIONS = functools.reduce(operator.mul, map(len, theta[0:len(Robot_Str.Theta.Limit)]), 1)

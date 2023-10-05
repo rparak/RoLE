@@ -203,38 +203,38 @@ Universal_Robots_UR3_Str = Robot_Parameters_Str(Name='Universal_Robots_UR3', Id=
 Universal_Robots_UR3_Str.T.Base = HTM_Cls([[1.0, 0.0, 0.0, 0.0],
                                            [0.0, 1.0, 0.0, 0.0],
                                            [0.0, 0.0, 1.0, 0.0],
-                                           [0.0, 0.0, 0.0, 1.0]], np.float32)
+                                           [0.0, 0.0, 0.0, 1.0]], np.float64)
 # End-effector (tool):
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-Universal_Robots_UR3_Str.T.End_Effector = HTM_Cls(None, np.float32)
+Universal_Robots_UR3_Str.T.End_Effector = HTM_Cls(None, np.float64)
 # Denavit-Hartenberg (DH)
 Universal_Robots_UR3_Str.DH.Standard = np.array([[0.0,      0.0,  0.1519,   1.5707963267948966],
                                                  [0.0, -0.24365,     0.0,                  0.0],
                                                  [0.0, -0.21325,     0.0,                  0.0],
                                                  [0.0,      0.0, 0.11235,   1.5707963267948966],
                                                  [0.0,      0.0, 0.08535,  -1.5707963267948966],
-                                                 [0.0,      0.0,  0.0819,                  0.0]], dtype=np.float32) 
+                                                 [0.0,      0.0,  0.0819,                  0.0]], dtype=np.float64) 
 Universal_Robots_UR3_Str.DH.Modified = np.array([[0.0,      0.0,  0.1519,                  0.0],
                                                  [0.0,      0.0,     0.0,   1.5707963267948966],
                                                  [0.0, -0.24365,     0.0,                  0.0],
                                                  [0.0, -0.21325, 0.11235,                  0.0],
                                                  [0.0,      0.0, 0.08535,   1.5707963267948966],
-                                                 [0.0,      0.0,  0.0819,  -1.5707963267948966]], dtype=np.float32)
+                                                 [0.0,      0.0,  0.0819,  -1.5707963267948966]], dtype=np.float64)
 # Zero/Home absolute position of each joint.
-Universal_Robots_UR3_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float32)
+Universal_Robots_UR3_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float64)
 Universal_Robots_UR3_Str.Theta.Home = Mathematics.Degree_To_Radian(np.array([-90.0, -90.0, 0.0, -90.0, 0.0, 0.0], 
-                                                                            dtype=np.float32))
+                                                                            dtype=np.float64))
 # Limits of absolute joint position.
 Universal_Robots_UR3_Str.Theta.Limit = np.array([[-3.141592653589793, 3.141592653589793], 
                                                  [-3.141592653589793, 3.141592653589793], 
                                                  [-3.141592653589793, 3.141592653589793], 
                                                  [-3.141592653589793, 3.141592653589793], 
                                                  [-3.141592653589793, 3.141592653589793], 
-                                                 [-3.141592653589793, 3.141592653589793]], dtype = np.float32)
+                                                 [-3.141592653589793, 3.141592653589793]], dtype = np.float64)
 # Other parameters of the robot structure.
 Universal_Robots_UR3_Str.Theta.Name = [f'Joint_1_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
                                        f'Joint_2_{Universal_Robots_UR3_Str.Name}_ID_{Universal_Robots_UR3_Str.Id:03}', 
@@ -289,38 +289,38 @@ ABB_IRB_120_Str = Robot_Parameters_Str(Name='ABB_IRB_120', Id=1)
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-ABB_IRB_120_Str.T.Base = HTM_Cls(None, np.float32)
+ABB_IRB_120_Str.T.Base = HTM_Cls(None, np.float64)
 # End-effector (tool):
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-ABB_IRB_120_Str.T.End_Effector = HTM_Cls(None, np.float32)
+ABB_IRB_120_Str.T.End_Effector = HTM_Cls(None, np.float64)
 # Denavit-Hartenberg (DH)
 ABB_IRB_120_Str.DH.Standard = np.array([[0.0,                   0.0, 0.290, -1.5707963267948966],
                                         [-1.5707963267948966, 0.270,   0.0,                 0.0],
                                         [0.0,                  0.07,   0.0, -1.5707963267948966],
                                         [0.0,                   0.0, 0.302,  1.5707963267948966],
                                         [0.0,                   0.0,   0.0, -1.5707963267948966],
-                                        [3.141592653589793,     0.0, 0.072,                 0.0]], dtype = np.float32)
+                                        [3.141592653589793,     0.0, 0.072,                 0.0]], dtype = np.float64)
 ABB_IRB_120_Str.DH.Modified = np.array([[0.0,                   0.0, 0.290,                 0.0],
                                         [-1.5707963267948966,   0.0,   0.0, -1.5707963267948966],
                                         [0.0,                 0.270,   0.0,                 0.0],
                                         [0.0,                  0.07, 0.302, -1.5707963267948966],
                                         [0.0,                   0.0,   0.0,  1.5707963267948966],
-                                        [3.141592653589793,     0.0, 0.072, -1.5707963267948966]], dtype = np.float32)
+                                        [3.141592653589793,     0.0, 0.072, -1.5707963267948966]], dtype = np.float64)
 # Zero/Home absolute position of each joint.
-ABB_IRB_120_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float32)
+ABB_IRB_120_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float64)
 ABB_IRB_120_Str.Theta.Home = Mathematics.Degree_To_Radian(np.array([0.0, 0.0, 0.0, 0.0, 90.0, 0.0], 
-                                                                   dtype=np.float32))
+                                                                   dtype=np.float64))
 # Limits of absolute joint position.
 ABB_IRB_120_Str.Theta.Limit = np.array([[-2.8797932657906435, 2.8797932657906435], 
                                         [-1.9198621771937625, 1.9198621771937625], 
                                         [-1.9198621771937625, 1.2217304763960306], 
                                         [ -2.792526803190927,  2.792526803190927], 
                                         [-2.0943951023931953, 2.0943951023931953], 
-                                        [ -3.141592653589793,  3.141592653589793]], dtype = np.float32)
+                                        [ -3.141592653589793,  3.141592653589793]], dtype = np.float64)
 # Other parameters of the robot structure.
 ABB_IRB_120_Str.Theta.Name = [f'Joint_1_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
                               f'Joint_2_{ABB_IRB_120_Str.Name}_ID_{ABB_IRB_120_Str.Id:03}', 
@@ -376,14 +376,14 @@ ABB_IRB_120_L_Ax_Str = Robot_Parameters_Str(Name='ABB_IRB_120_L_Ax', Id=1)
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-ABB_IRB_120_L_Ax_Str.T.Base = HTM_Cls(None, np.float32)
+ABB_IRB_120_L_Ax_Str.T.Base = HTM_Cls(None, np.float64)
 # End-effector (tool):
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-ABB_IRB_120_L_Ax_Str.T.End_Effector = HTM_Cls(None, np.float32)
+ABB_IRB_120_L_Ax_Str.T.End_Effector = HTM_Cls(None, np.float64)
 # Denavit-Hartenberg (DH)
 ABB_IRB_120_L_Ax_Str.DH.Standard = np.array([[0.0,                   0.0, 0.113,                 0.0],
                                              [0.0,                   0.0, 0.290, -1.5707963267948966],
@@ -391,18 +391,18 @@ ABB_IRB_120_L_Ax_Str.DH.Standard = np.array([[0.0,                   0.0, 0.113,
                                              [0.0,                  0.07,   0.0, -1.5707963267948966],
                                              [0.0,                   0.0, 0.302,  1.5707963267948966],
                                              [0.0,                   0.0,   0.0, -1.5707963267948966],
-                                             [3.141592653589793,     0.0, 0.072,                 0.0]], dtype = np.float32)
+                                             [3.141592653589793,     0.0, 0.072,                 0.0]], dtype = np.float64)
 ABB_IRB_120_L_Ax_Str.DH.Modified = np.array([[0.0,                   0.0, 0.113,                 0.0],
                                              [0.0,                   0.0, 0.290,                 0.0],
                                              [-1.5707963267948966,   0.0,   0.0, -1.5707963267948966],
                                              [0.0,                 0.270,   0.0,                 0.0],
                                              [0.0,                  0.07, 0.302, -1.5707963267948966],
                                              [0.0,                   0.0,   0.0,  1.5707963267948966],
-                                             [3.141592653589793,     0.0, 0.072, -1.5707963267948966]], dtype = np.float32)
+                                             [3.141592653589793,     0.0, 0.072, -1.5707963267948966]], dtype = np.float64)
 # Zero/Home absolute position of each joint.
-ABB_IRB_120_L_Ax_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float32)
+ABB_IRB_120_L_Ax_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype = np.float64)
 ABB_IRB_120_L_Ax_Str.Theta.Home = np.array([0.400, Mathematics.Degree_To_Radian(90.0), 0.0, 0.0, 0.0, Mathematics.Degree_To_Radian(90.0), 0.0],
-                                           dtype = np.float32)
+                                           dtype = np.float64)
 # Limits of absolute joint position.
 ABB_IRB_120_L_Ax_Str.Theta.Limit = np.array([[                0.0,              0.800],
                                              [-2.8797932657906435, 2.8797932657906435], 
@@ -410,7 +410,7 @@ ABB_IRB_120_L_Ax_Str.Theta.Limit = np.array([[                0.0,              
                                              [-1.9198621771937625, 1.2217304763960306], 
                                              [ -2.792526803190927,  2.792526803190927], 
                                              [-2.0943951023931953, 2.0943951023931953], 
-                                             [ -3.141592653589793,  3.141592653589793]], dtype = np.float32)
+                                             [ -3.141592653589793,  3.141592653589793]], dtype = np.float64)
 # Other parameters of the robot structure.
 ABB_IRB_120_L_Ax_Str.Theta.Name = [f'Joint_L_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}', 
                                    f'Joint_1_{ABB_IRB_120_L_Ax_Str.Name}_ID_{ABB_IRB_120_L_Ax_Str.Id:03}',
@@ -475,7 +475,7 @@ ABB_IRB_14000_R_Str = Robot_Parameters_Str(Name='ABB_IRB_14000_R', Id=1)
 ABB_IRB_14000_R_Str.T.Base = HTM_Cls([[ 0.5713, -0.1071,  0.8138,  0.0536],
                                       [ 0.6198,  0.7063, -0.3421, -0.0725],
                                       [-0.5381,  0.6998,  0.4698,  0.4149],
-                                      [    0.0,     0.0,     0.0,     1.0]], np.float32)
+                                      [    0.0,     0.0,     0.0,     1.0]], np.float64)
 # End-effector (tool):
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
@@ -485,7 +485,7 @@ ABB_IRB_14000_R_Str.T.Base = HTM_Cls([[ 0.5713, -0.1071,  0.8138,  0.0536],
 ABB_IRB_14000_R_Str.T.End_Effector = HTM_Cls([[1.0, 0.0, 0.0, 0.0],
                                               [0.0, 1.0, 0.0, 0.0],
                                               [0.0, 0.0, 1.0, 0.0],
-                                              [0.0, 0.0, 0.0, 1.0]], np.float32)
+                                              [0.0, 0.0, 0.0, 1.0]], np.float64)
 # Denavit-Hartenberg (DH)
 ABB_IRB_14000_R_Str.DH.Standard = np.array([[                0.0, -0.030,    0.1, -1.5707963267948966],
                                             [                0.0,  0.030,    0.0,  1.5707963267948966],
@@ -493,19 +493,19 @@ ABB_IRB_14000_R_Str.DH.Standard = np.array([[                0.0, -0.030,    0.1
                                             [-1.5707963267948966, 0.0405,    0.0, -1.5707963267948966],
                                             [  3.141592653589793,  0.027,  0.265, -1.5707963267948966],
                                             [                0.0, -0.027,    0.0,  1.5707963267948966],
-                                            [                0.0,    0.0,  0.036,                 0.0]], dtype = np.float32)
+                                            [                0.0,    0.0,  0.036,                 0.0]], dtype = np.float64)
 ABB_IRB_14000_R_Str.DH.Modified = np.array([[                0.0,    0.0,    0.1,                 0.0],
                                             [                0.0, -0.030,    0.0, -1.5707963267948966],
                                             [                0.0,  0.030, 0.2515,  1.5707963267948966],
                                             [-1.5707963267948966, 0.0405,    0.0, -1.5707963267948966],
                                             [  3.141592653589793, 0.0405,  0.265, -1.5707963267948966],
                                             [                0.0,  0.027,    0.0, -1.5707963267948966],
-                                            [                0.0, -0.027,  0.036,  1.5707963267948966]], dtype = np.float32)
+                                            [                0.0, -0.027,  0.036,  1.5707963267948966]], dtype = np.float64)
 # Zero/Home absolute position of each joint.
 ABB_IRB_14000_R_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
-                                          dtype = np.float32)
+                                          dtype = np.float64)
 ABB_IRB_14000_R_Str.Theta.Home = Mathematics.Degree_To_Radian(np.array([0.0, -130.0, -135.0, 30.0, 0.0, 40.0, 0.0], 
-                                                                       dtype=np.float32))
+                                                                       dtype=np.float64))
 # Limits of absolute joint position.
 ABB_IRB_14000_R_Str.Theta.Limit = np.array([[-2.9408797896104453, 2.9408797896104453], 
                                             [ -2.504547476611863, 0.7592182246175333],
@@ -513,7 +513,7 @@ ABB_IRB_14000_R_Str.Theta.Limit = np.array([[-2.9408797896104453, 2.940879789610
                                             [ -2.155481626212997, 1.3962634015954636], 
                                             [ -5.061454830783556,  5.061454830783556], 
                                             [  -1.53588974175501, 2.4085543677521746], 
-                                            [-3.9968039870670147, 3.9968039870670147]], dtype = np.float32)
+                                            [-3.9968039870670147, 3.9968039870670147]], dtype = np.float64)
 # Other parameters of the robot structure.
 ABB_IRB_14000_R_Str.Theta.Name = [f'Joint_1_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
                                   f'Joint_2_{ABB_IRB_14000_R_Str.Name}_ID_{ABB_IRB_14000_R_Str.Id:03}', 
@@ -580,14 +580,14 @@ ABB_IRB_14000_L_Str = Robot_Parameters_Str(Name='ABB_IRB_14000_L', Id=1)
 ABB_IRB_14000_L_Str.T.Base = HTM_Cls([[ 0.5716,  0.1048, 0.8138, 0.0536],
                                       [-0.6170,  0.7088, 0.3420, 0.0725],
                                       [-0.5410, -0.6976, 0.4698, 0.4149],
-                                      [    0.0,     0.0,    0.0,    1.0]], np.float32)
+                                      [    0.0,     0.0,    0.0,    1.0]], np.float64)
 # End-effector (tool):
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-ABB_IRB_14000_L_Str.T.End_Effector = HTM_Cls(None, np.float32)
+ABB_IRB_14000_L_Str.T.End_Effector = HTM_Cls(None, np.float64)
 # Denavit-Hartenberg (DH)
 ABB_IRB_14000_L_Str.DH.Standard = np.array([[                0.0, -0.030,    0.1, -1.5707963267948966],
                                             [                0.0,  0.030,    0.0,  1.5707963267948966],
@@ -595,19 +595,19 @@ ABB_IRB_14000_L_Str.DH.Standard = np.array([[                0.0, -0.030,    0.1
                                             [-1.5707963267948966, 0.0405,    0.0, -1.5707963267948966],
                                             [  3.141592653589793,  0.027,  0.265, -1.5707963267948966],
                                             [                0.0, -0.027,    0.0,  1.5707963267948966],
-                                            [                0.0,    0.0,  0.036,                 0.0]], dtype = np.float32)
+                                            [                0.0,    0.0,  0.036,                 0.0]], dtype = np.float64)
 ABB_IRB_14000_L_Str.DH.Modified = np.array([[                0.0,    0.0,    0.1,                 0.0],
                                             [                0.0, -0.030,    0.0, -1.5707963267948966],
                                             [                0.0,  0.030, 0.2515,  1.5707963267948966],
                                             [-1.5707963267948966, 0.0405,    0.0, -1.5707963267948966],
                                             [  3.141592653589793, 0.0405,  0.265, -1.5707963267948966],
                                             [                0.0,  0.027,    0.0, -1.5707963267948966],
-                                            [                0.0, -0.027,  0.036,  1.5707963267948966]], dtype = np.float32)
+                                            [                0.0, -0.027,  0.036,  1.5707963267948966]], dtype = np.float64)
 # Zero/Home absolute position of each joint.
 ABB_IRB_14000_L_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
-                                          dtype = np.float32)
+                                          dtype = np.float64)
 ABB_IRB_14000_L_Str.Theta.Home = Mathematics.Degree_To_Radian(np.array([0.0, -130.0, 135.0, 30.0, 0.0, 40.0, 0.0], 
-                                                                       dtype=np.float32))
+                                                                       dtype=np.float64))
 # Limits of absolute joint position.
 ABB_IRB_14000_L_Str.Theta.Limit = np.array([[-2.9408797896104453, 2.9408797896104453], 
                                             [ -2.504547476611863, 0.7592182246175333],
@@ -615,7 +615,7 @@ ABB_IRB_14000_L_Str.Theta.Limit = np.array([[-2.9408797896104453, 2.940879789610
                                             [ -2.155481626212997, 1.3962634015954636], 
                                             [ -5.061454830783556,  5.061454830783556], 
                                             [  -1.53588974175501, 2.4085543677521746], 
-                                            [-3.9968039870670147, 3.9968039870670147]], dtype = np.float32)
+                                            [-3.9968039870670147, 3.9968039870670147]], dtype = np.float64)
 # Parameters of the object (Blender robot arm).
 ABB_IRB_14000_L_Str.Theta.Name = [f'Joint_1_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
                                   f'Joint_2_{ABB_IRB_14000_L_Str.Name}_ID_{ABB_IRB_14000_L_Str.Id:03}', 
@@ -695,33 +695,33 @@ EPSON_LS3_B401S_Str = Robot_Parameters_Str(Name='EPSON_LS3_B401S', Id=1)
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-EPSON_LS3_B401S_Str.T.Base = HTM_Cls(None, np.float32)
+EPSON_LS3_B401S_Str.T.Base = HTM_Cls(None, np.float64)
 # End-effector (tool):
 #   1\ None: Identity Matrix
 #       [[1.0, 0.0, 0.0, 0.0],
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-EPSON_LS3_B401S_Str.T.End_Effector = HTM_Cls(None, np.float32)
+EPSON_LS3_B401S_Str.T.End_Effector = HTM_Cls(None, np.float64)
 # Denavit-Hartenberg (DH)
 EPSON_LS3_B401S_Str.DH.Standard = np.array([[0.0, 0.225,  0.1731,               0.0],
                                             [0.0, 0.175,  0.0499, 3.141592653589793],
                                             [0.0,   0.0,     0.0,               0.0],
-                                            [0.0,   0.0,  0.0785,               0.0]], dtype = np.float32) 
+                                            [0.0,   0.0,  0.0785,               0.0]], dtype = np.float64) 
 EPSON_LS3_B401S_Str.DH.Modified = np.array([[0.0,   0.0,  0.1731,               0.0],
                                             [0.0, 0.225,  0.0499,               0.0],
                                             [0.0, 0.175,     0.0, 3.141592653589793],
-                                            [0.0,   0.0,  0.0785,               0.0]], dtype = np.float32) 
+                                            [0.0,   0.0,  0.0785,               0.0]], dtype = np.float64) 
 # Zero/Home absolute position of each joint.
 EPSON_LS3_B401S_Str.Theta.Zero = np.array([0.0, 0.0, 0.0, 0.0], 
-                                          dtype = np.float32)
+                                          dtype = np.float64)
 EPSON_LS3_B401S_Str.Theta.Home = np.array([Mathematics.Degree_To_Radian(90.0), Mathematics.Degree_To_Radian(0.0), 0.0, Mathematics.Degree_To_Radian(0.0)],
-                                          dtype = np.float32)
+                                          dtype = np.float64)
 # Limits of absolute joint position.
 EPSON_LS3_B401S_Str.Theta.Limit = np.array([[  -2.303834612632515,  2.303834612632515], 
                                             [ -2.4609142453120048, 2.4609142453120048], 
                                             [                 0.0,              0.150], 
-                                            [  -3.141592653589793,  3.141592653589793]], dtype = np.float32)
+                                            [  -3.141592653589793,  3.141592653589793]], dtype = np.float64)
 # Parameters of the object (Blender robot arm).
 EPSON_LS3_B401S_Str.Theta.Name = [f'Joint_1_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}', 
                                   f'Joint_2_{EPSON_LS3_B401S_Str.Name}_ID_{EPSON_LS3_B401S_Str.Id:03}', 

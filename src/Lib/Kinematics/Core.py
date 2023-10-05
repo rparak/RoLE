@@ -69,7 +69,7 @@ def DH_Standard(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.Li
     return HTM_Cls([[np.cos(theta), (-1.0)*(np.sin(theta))*np.cos(alpha),            np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
                     [np.sin(theta),          np.cos(theta)*np.cos(alpha), (-1.0)*(np.cos(theta))*(np.sin(alpha)), a*np.sin(theta)],
                     [          0.0,                        np.sin(alpha),                          np.cos(alpha),               d],
-                    [          0.0,                                  0.0,                                    0.0,             1.0]], np.float32)
+                    [          0.0,                                  0.0,                                    0.0,             1.0]], np.float64)
 
 def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                             tp.List[tp.List[float]]]:
@@ -121,7 +121,7 @@ def DH_Modified(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.Li
     return HTM_Cls([[np.cos(theta)              ,        (-1.0)*np.sin(theta),                  0.0,                      a],
                     [np.sin(theta)*np.cos(alpha), np.cos(theta)*np.cos(alpha), (-1.0)*np.sin(alpha), (-1.0)*np.sin(alpha)*d],
                     [np.sin(theta)*np.sin(alpha), np.cos(theta)*np.sin(alpha),        np.cos(alpha),        np.cos(alpha)*d],
-                    [                        0.0,                         0.0,                  0.0,                    1.0]], np.float32)
+                    [                        0.0,                         0.0,                  0.0,                    1.0]], np.float64)
 
 def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
                                                                                                                             tp.List[tp.List[float]]]:
@@ -614,7 +614,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         assert method in ['Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt']
 
         if isinstance(TCP_Position, (list, np.ndarray)):
-            TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float32)
+            TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float64)
 
         return {
             'Newton-Raphson': lambda tcp_p, th_0, r_param_str, ik_properties: __Inverse_Kinematics_Numerical_NR(tcp_p, th_0, r_param_str, ik_properties),
@@ -661,10 +661,10 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
         assert Robot_Parameters_Str.Name in ['EPSON_LS3_B401S']
 
         if isinstance(TCP_Position, (list, np.ndarray)):
-            TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float32)
+            TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float64)
 
         # Initialization of output solutions.
-        theta_solutions = np.zeros((2, Robot_Parameters_Str.Theta.Zero.size), dtype=np.float32)
+        theta_solutions = np.zeros((2, Robot_Parameters_Str.Theta.Zero.size), dtype=np.float64)
 
         # Get the translational and rotational part from the transformation matrix.
         p = TCP_Position.p; Euler_Angles = TCP_Position.Get_Rotation('ZYX')
@@ -752,7 +752,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
         theta_solutions[1, 3] = Robot_Parameters_Str.Theta.Direction[3] * (theta_solutions[1, 0] + theta_solutions[1, 1] + Euler_Angles.z)
 
         if method == 'All':
-            error = {'position': np.zeros(theta_solutions.shape[0], dtype=np.float32), 
+            error = {'position': np.zeros(theta_solutions.shape[0], dtype=np.float64), 
                      'orientation': np.zeros(theta_solutions.shape[0], dtype=np.float64)}
             
             for i, th_sol_i in enumerate(theta_solutions):

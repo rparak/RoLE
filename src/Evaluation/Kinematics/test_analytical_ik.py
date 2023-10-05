@@ -40,7 +40,7 @@ def main():
     #   FK: 
     #       Theta --> T
     TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(np.array([Mathematics.Degree_To_Radian(25.0), Mathematics.Degree_To_Radian(-20.0), 0.1, Mathematics.Degree_To_Radian(15.0)],
-                                                                   dtype = np.float32), 'Fast', Robot_Str)[1]
+                                                                   dtype = np.float64), 'Fast', Robot_Str)[1]
     
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:

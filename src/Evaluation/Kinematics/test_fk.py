@@ -78,11 +78,11 @@ def main():
     """
     num_of_decimals = 2
     for _, th in enumerate(theta_rand):
-        T_Standard = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Standard', Robot_Str)[1].all(), dtype=np.float32), 
+        T_Standard = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Standard', Robot_Str)[1].all(), dtype=np.float64), 
                               num_of_decimals)
-        T_Modified = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Modified', Robot_Str)[1].all(), dtype=np.float32), 
+        T_Modified = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Modified', Robot_Str)[1].all(), dtype=np.float64), 
                               num_of_decimals)
-        T_Fast = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Fast', Robot_Str)[1].all(), dtype=np.float32), 
+        T_Fast = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Fast', Robot_Str)[1].all(), dtype=np.float64), 
                           num_of_decimals)
 
         if (np.array_equal(T_Standard, T_Modified) and np.array_equal(T_Modified, T_Fast)) == False:

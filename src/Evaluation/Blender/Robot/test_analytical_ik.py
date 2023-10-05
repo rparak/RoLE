@@ -73,7 +73,7 @@ def main():
 
     # Obtain the homogeneous transformation matrix of the 'Viewpoint' object.
     TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects['TCP_Position_Viewpoint'].matrix_basis, 
-                                                                        np.float32)
+                                                                        np.float64)
     
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:

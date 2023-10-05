@@ -166,7 +166,7 @@ def Generate_Workspace_XYZ(Robot_Str: Parameters.Robot_Parameters_Str, file_path
             data = line.split(',')
 
             # Calculation of forward kinematics. Get the Homogeneous end-effector transformation matrix {T}.
-            T = Lib.Kinematics.Core.Forward_Kinematics(np.float32(data), 'Fast', Robot_Str)[1]
+            T = Lib.Kinematics.Core.Forward_Kinematics(np.float64(data), 'Fast', Robot_Str)[1]
 
             # Get the translation part from the homogeneous transformation matrix {T}.
             p = T.p.all()

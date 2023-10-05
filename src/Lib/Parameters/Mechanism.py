@@ -132,19 +132,19 @@ SMC_LEFB25_14000_0_1_Str = Mechanism_Parameters_Str(Name='SMC_LEFB25_14000', Id=
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-SMC_LEFB25_14000_0_1_Str.T.Base = HTM_Cls(None, np.float32)
+SMC_LEFB25_14000_0_1_Str.T.Base = HTM_Cls(None, np.float64)
 # Homogeneous transformation matrix of the slider position.
 #       [[1.0, 0.0, 0.0,      0.0],
 #        [0.0, 1.0, 0.0,      0.0],
 #        [0.0, 0.0, 1.0, 0.168499],
 #        [0.0, 0.0, 0.0,      1.0]]
-SMC_LEFB25_14000_0_1_Str.T.Slider = HTM_Cls(None, np.float32).Translation([0.0, 0.0, 0.168499])
-SMC_LEFB25_14000_0_1_Str.T.Shuttle = HTM_Cls(None, np.float32).Translation([0.0, 0.0, 0.019999])
+SMC_LEFB25_14000_0_1_Str.T.Slider = HTM_Cls(None, np.float64).Translation([0.0, 0.0, 0.168499])
+SMC_LEFB25_14000_0_1_Str.T.Shuttle = HTM_Cls(None, np.float64).Translation([0.0, 0.0, 0.019999])
 # Zero/Home absolute position of the joint.
 SMC_LEFB25_14000_0_1_Str.Theta.Zero = 0.0
 SMC_LEFB25_14000_0_1_Str.Theta.Home = 0.7
 # Limits of absolute joint position.
-SMC_LEFB25_14000_0_1_Str.Theta.Limit = np.array([0.0, 1.4], dtype=np.float32)
+SMC_LEFB25_14000_0_1_Str.Theta.Limit = np.array([0.0, 1.4], dtype=np.float64)
 # Other parameters of the robot structure.
 SMC_LEFB25_14000_0_1_Str.Theta.Name = f'Joint_L_{SMC_LEFB25_14000_0_1_Str.Name}_ID_{SMC_LEFB25_14000_0_1_Str.Id:03}'
 SMC_LEFB25_14000_0_1_Str.Theta.Type = 'P'
@@ -173,19 +173,19 @@ SMC_LEFB25_14000_0_2_Str = Mechanism_Parameters_Str(Name='SMC_LEFB25_14000', Id=
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-SMC_LEFB25_14000_0_2_Str.T.Base = HTM_Cls(None, np.float32)
+SMC_LEFB25_14000_0_2_Str.T.Base = HTM_Cls(None, np.float64)
 # Homogeneous transformation matrix of the slider position.
 #       [[1.0, 0.0, 0.0,      0.0],
 #        [0.0, 1.0, 0.0,      0.0],
 #        [0.0, 0.0, 1.0, 0.168499],
 #        [0.0, 0.0, 0.0,      1.0]]
-SMC_LEFB25_14000_0_2_Str.T.Slider = HTM_Cls(None, np.float32).Translation([0.0, 0.0, 0.168499])
-SMC_LEFB25_14000_0_2_Str.T.Shuttle = HTM_Cls(None, np.float32).Translation([0.0, 0.0, 0.019999])
+SMC_LEFB25_14000_0_2_Str.T.Slider = HTM_Cls(None, np.float64).Translation([0.0, 0.0, 0.168499])
+SMC_LEFB25_14000_0_2_Str.T.Shuttle = HTM_Cls(None, np.float64).Translation([0.0, 0.0, 0.019999])
 # Zero/Home absolute position of the joint.
 SMC_LEFB25_14000_0_2_Str.Theta.Zero = 0.0
 SMC_LEFB25_14000_0_2_Str.Theta.Home = 0.7
 # Limits of absolute joint position.
-SMC_LEFB25_14000_0_2_Str.Theta.Limit = np.array([0.0, 1.4], dtype=np.float32)
+SMC_LEFB25_14000_0_2_Str.Theta.Limit = np.array([0.0, 1.4], dtype=np.float64)
 # Other parameters of the robot structure.
 SMC_LEFB25_14000_0_2_Str.Theta.Name = f'Joint_L_{SMC_LEFB25_14000_0_2_Str.Name}_ID_{SMC_LEFB25_14000_0_2_Str.Id:03}'
 SMC_LEFB25_14000_0_2_Str.Theta.Type = 'P'

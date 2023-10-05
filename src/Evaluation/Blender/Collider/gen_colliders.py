@@ -74,13 +74,13 @@ def main():
         obj_i_verts = Lib.Blender.Utilities.Get_Vertices_From_Object(obj.name)
 
         # Get the minimum and maximum X, Y, Z values of the input vertices.
-        (min_vec3, max_vec3) = Lib.Collider.Utilities.Get_Min_Max(np.array(obj_i_verts, dtype=np.float32))
+        (min_vec3, max_vec3) = Lib.Collider.Utilities.Get_Min_Max(np.array(obj_i_verts, dtype=np.float64))
 
         # Obtain the size and centroid of the observed object.
         Size = np.array([max_vec3[0] - min_vec3[0], max_vec3[1] - min_vec3[1],
-                         max_vec3[2] - min_vec3[2]], dtype=np.float32)
+                         max_vec3[2] - min_vec3[2]], dtype=np.float64)
         Centroid = np.array([(max_vec3[0] + min_vec3[0]) / 2.0, (max_vec3[1] + min_vec3[1]) / 2.0,
-                             (max_vec3[2] + min_vec3[2]) / 2.0], dtype=np.float32)
+                             (max_vec3[2] + min_vec3[2]) / 2.0], dtype=np.float64)
         
         # Create a new name for the collision object.
         obj_i_name_new = obj.name.removesuffix('Visual') + 'Collision'
@@ -98,7 +98,7 @@ def main():
         bpy.data.objects[obj_i_name_new].rotation_mode = bpy.data.objects[obj.name].rotation_mode
         
         # Set the origin of the observed object to zero.
-        Lib.Blender.Utilities.Set_Object_Origin(obj_i_name_new, HTM_Cls(None, np.float32).all())
+        Lib.Blender.Utilities.Set_Object_Origin(obj_i_name_new, HTM_Cls(None, np.float64).all())
 
 
         # Remove all materials from the created object.

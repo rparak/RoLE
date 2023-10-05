@@ -46,7 +46,7 @@ def __FKF_Universal_Robots_UR3(theta: tp.List[float], Robot_Parameters_Str: Para
     aux_id_0 = (s_th_04 + c_th_04_t1 + c_th_04_t2 + c_th_04_t3 + c_th_04_t4)
 
     # Computation of the homogeneous end-effector transformation matrix {T}
-    T = np.array(np.identity(4), dtype=np.float32)
+    T = np.array(np.identity(4), dtype=np.float64)
     T[0,0] = aux_id_0*c_th_5 - s_th513_t1*c_th_0
     T[0,1] = -aux_id_0*s_th_5 - s_th_13_t1*c_th_0*c_th_5
     T[0,2] = s_th_0_c_th_4 + 0.25*s_th_04_t1 - 0.25*np.sin(th_04_t2) + 0.25*s_th_04_t2 - 0.25*s_th_04_t3
@@ -119,7 +119,7 @@ def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
     aux_id_5 = (-aux_id_4*c_th_4 + s_th_0*s_th_4*c_th_12_t1); aux_id_6 = (v_s_th_0123_t1 + v_s_th_0123_t2 + v_s_th_0123_t3 - v_s_th_0123_t4 + c_th_0*c_th_3)
 
     # Computation of the homogeneous end-effector transformation matrix {T}
-    T = np.array(np.identity(4), dtype=np.float32)
+    T = np.array(np.identity(4), dtype=np.float64)
     T[0,0] = (aux_id_0*c_th_4 + s_th_4_c_th_012)*c_th_5PI + aux_id_1*s_th_5PI
     T[0,1] = ((-s_th_03 - v_s_th_0123_t1 + v_s_th_0123_t2 - v_s_th_0123_t3 - v_s_th_0123_t4)*c_th_4 - s_th_4_c_th_012)*s_th_5PI + aux_id_1*c_th_5PI
     T[0,2] = -aux_id_2 + c_th_0*c_th_412
@@ -195,7 +195,7 @@ def __FKF_ABB_IRB_120_L_Ax(theta: tp.List[float], Robot_Parameters_Str: Paramete
     aux_id_6 = v_s_th_1234_t1 + v_s_th_1234_t2 + v_s_th_1234_t3 - v_s_th_1234_t4 + c_th_1*c_th_4
 
     # Computation of the homogeneous end-effector transformation matrix {T}
-    T = np.array(np.identity(4), dtype=np.float32)
+    T = np.array(np.identity(4), dtype=np.float64)
     T[0,0] = (aux_id_1*c_th_5 + s_th_5*c_th_123_t1)*c_th_6PI + aux_id_2*s_th_6PI
     T[0,1] = ((-s_th_14 - v_s_th_1234_t1 + v_s_th_1234_t2 - v_s_th_1234_t3 - v_s_th_1234_t4)*c_th_5 - s_th_5*c_th_123_t1)*s_th_6PI + aux_id_2*c_th_6PI
     T[0,2] = -aux_id_1*s_th_5 + c_th_123_t3
@@ -278,7 +278,7 @@ def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameter
     aux_id_39 = s_th_0*s_th_1*c_th_3PI2
 
     # Computation of the homogeneous end-effector transformation matrix {T}
-    T = np.array(np.identity(4), dtype=np.float32)
+    T = np.array(np.identity(4), dtype=np.float64)
     T[0,0] = -((-(aux_id_8)*c_th_4PI - aux_id_5)*c_th_5 + aux_id_7)*c_th_6 - ((aux_id_8)*s_th_4PI - aux_id_9)*s_th_6
     T[0,1] = (((-aux_id_6 + aux_id_3)*c_th_4PI - aux_id_5)*c_th_5 + aux_id_7)*s_th_6 - ((aux_id_4*c_th_3PI2 - aux_id_3)*s_th_4PI - aux_id_9)*c_th_6
     T[0,2] = -aux_id_12*s_th_5 + aux_id_14
@@ -360,7 +360,7 @@ def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameter
     aux_id_39 = s_th_0*s_th_1*c_th_3PI2
 
     # Computation of the homogeneous end-effector transformation matrix {T}
-    T = np.array(np.identity(4), dtype=np.float32)
+    T = np.array(np.identity(4), dtype=np.float64)
     T[0,0] = -((-(aux_id_8)*c_th_4PI - aux_id_5)*c_th_5 + aux_id_7)*c_th_6 - ((aux_id_8)*s_th_4PI - aux_id_9)*s_th_6
     T[0,1] = (((-aux_id_6 + aux_id_3)*c_th_4PI - aux_id_5)*c_th_5 + aux_id_7)*s_th_6 - ((aux_id_4*c_th_3PI2 - aux_id_3)*s_th_4PI - aux_id_9)*c_th_6
     T[0,2] = -aux_id_12*s_th_5 + aux_id_14
@@ -405,7 +405,7 @@ def __FKF_EPSON_LS3_B401S(theta: tp.List[float], Robot_Parameters_Str: Parameter
     c_th_013 = np.cos(th_013); s_th_013 = np.sin(th_013)
 
     # Computation of the homogeneous end-effector transformation matrix {T}
-    T = np.array(np.identity(4), dtype=np.float32)
+    T = np.array(np.identity(4), dtype=np.float64)
     T[0,0] = c_th_013
     T[0,1] = s_th_013
     T[0,2] = 0.0
