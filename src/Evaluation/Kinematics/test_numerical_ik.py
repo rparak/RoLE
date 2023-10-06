@@ -8,12 +8,12 @@ import numpy as np
 # Custom Script:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core
-
-import Lib.Transformation.Core as Transformation
+#   ../Lib/Trajectory/Utilities
+import Lib.Trajectory.Utilities
+#   ../Configuration/Parameters
+import Configuration.Parameters
 
 """
 Description:
@@ -34,24 +34,45 @@ def main():
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
-    # Obtain the homogeneous transformation matrix of the robot end-effector from the input absolute joint positions.
-    #   FK: 
-    #       Theta --> T
-    TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(np.array([Mathematics.Degree_To_Radian(25.0), Mathematics.Degree_To_Radian(-20.0), 0.15, Mathematics.Degree_To_Radian(15.0)],
-                                                                   dtype = np.float64), 'Fast', Robot_Str)[1]
+    # Initialization of the class to generate trajectory.
+    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
 
-    # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
-    #   IK:
-    #       Theta <-- T
-    (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, Robot_Str.Theta.Zero, 'Newton-Raphson', Robot_Str, 
-                                                                     {'num_of_iteration': 100, 'tolerance': 1e-10})
+    # Obtain the constraints for absolute joint positions in order to generate multi-axis position trajectories.
+    (abs_j_pos_0, abs_j_pos_1) = Configuration.Parameters.Get_Absolute_Joint_Positions(Robot_Str.Name)
 
-    # Display results.
-    print(f'[INFO] The solution was successfully found: {info["successful"]}')
-    print(f'[INFO] >> Iteration = {info["iteration"]}')
-    print(f'[INFO] >> position_err = {info["error"]["position"]}, orientation_err = {info["error"]["orientation"]}')
-    print(f'[INFO] >> Quadratic (angle-axis) error = {info["quadratic_error"]}')
-    print(f'[INFO] >> theta = {theta}')
+    # Generation of multi-axis position trajectories from input parameters.
+    theta_arr = []
+    for _, (th_actual, th_desired) in enumerate(zip(abs_j_pos_0, abs_j_pos_1)):
+        (theta_arr_i, _, _) = Polynomial_Cls.Generate(th_actual, th_desired, 0.0, 0.0, 0.0, 0.0,
+                                                      Configuration.Parameters.CONST_T_0, Configuration.Parameters.CONST_T_1)
+        theta_arr.append(theta_arr_i)
+
+    # Calculation of inverse kinematics (IK) using the chosen numerical method.
+    theta_0 = abs_j_pos_0.copy()
+    for _, theta_arr_i in enumerate(np.array(theta_arr, dtype=np.float64).T):
+        # Obtain the homogeneous transformation matrix of the robot end-effector from the input absolute joint positions.
+        #   FK: 
+        #       Theta --> T
+        TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(theta_arr_i, 'Fast', Robot_Str)[1]
+
+        # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
+        #   IK:
+        #       Theta <-- T
+        (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, theta_0, 'Newton-Raphson', Robot_Str, 
+                                                                        {'num_of_iteration': 100, 'tolerance': 1e-10})
+
+        # Check the calculation.
+        if info["successful"] == False:
+            break
+
+        # Obtain the last absolute position of the joint.
+        theta_0 = theta.copy()
+
+    # Check that the calculation has been performed successfully.
+    if theta.all() == abs_j_pos_1.all():
+        print('[INFO] The IK solution test was successful.')
+    else:
+        print('[WARNING] A problem occurred during the calculation.')
 
 if __name__ == '__main__':
     main()

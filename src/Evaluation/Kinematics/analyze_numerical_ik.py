@@ -25,12 +25,7 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 def main():
     """
     Description:
-        A program to test the calculation of the inverse kinematics (IK) of the RRPR robotic 
-        structure, also known as SCARA, using an analytical method.
-
-        Two methods can be used to obtain IK solutions: 'All' or 'Best'.
-            1\ 'All': Obtain the all possible solutions.
-            2\ 'Best': Automatically obtain the best solution.
+        ...
     """
     
     # Set printing options.
@@ -52,18 +47,29 @@ def main():
                                                       Configuration.Parameters.CONST_T_0, Configuration.Parameters.CONST_T_1)
         theta_arr.append(theta_arr_i)
 
-    # Calculation of inverse kinematics (IK) using the analytical method.
+    # Calculation of inverse kinematics (IK) using the chosen numerical method.
     theta_0 = abs_j_pos_0.copy()
     for _, theta_arr_i in enumerate(np.array(theta_arr, dtype=np.float64).T):
         # Obtain the homogeneous transformation matrix of the robot end-effector from the input absolute joint positions.
         #   FK: 
         #       Theta --> T
         TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(theta_arr_i, 'Fast', Robot_Str)[1]
-        
+
         # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
         #   IK:
         #       Theta <-- T
-        (_, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, theta_0, Robot_Str, 'All')
+        (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, theta_0, 'Newton-Raphson', Robot_Str, 
+                                                                        {'num_of_iteration': 100, 'tolerance': 1e-20})
+
+        # Display results.
+        print(f'[INFO] The solution was successfully found: {info["successful"]}')
+        print(f'[INFO] >> Iteration = {info["iteration"]}')
+        print(f'[INFO] >> position_err = {info["error"]["position"]}, orientation_err = {info["error"]["orientation"]}')
+        print(f'[INFO] >> Quadratic (angle-axis) error = {info["quadratic_error"]}')
+        print(f'[INFO] >> theta_predicted = {theta}')
+
+        if info["successful"] == False:
+            break
 
         # Obtain the last absolute position of the joint.
         theta_0 = theta.copy()
@@ -73,6 +79,6 @@ def main():
         print('[INFO] The IK solution test was successful.')
     else:
         print('[WARNING] A problem occurred during the calculation.')
-
+        
 if __name__ == '__main__':
     main()
