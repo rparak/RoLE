@@ -379,7 +379,7 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
         # The Jacobian can be divided into 3x1 columns J_{P} and J_{O} vectors:
         J[0:3, i] = J_P.all()
         J[3:6, i] = J_O.all()
-
+             
     return J
 
 # ////////////////////
