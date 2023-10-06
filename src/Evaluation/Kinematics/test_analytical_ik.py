@@ -31,7 +31,7 @@ def main():
     """
     
     # Set printing options.
-    #np.set_printoptions(suppress=True, precision=5)
+    np.set_printoptions(suppress=True, precision=5)
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
@@ -45,12 +45,12 @@ def main():
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
-    (error, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_Str.Theta.Home, Robot_Str, 'All')
+    (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_Str.Theta.Home, Robot_Str, 'All')
 
     # Display results.
-    for i, (err_i, th_i) in enumerate(zip(error.values(), theta)):
+    for i, (info_i, th_i) in enumerate(zip(info.values(), theta)):
         print(f'[INFO] Solution {i}:')
-        print(f'[INFO] >> position_err = {err_i[0]}, orientation_err = {err_i[1]}')
+        print(f'[INFO] >> position_err = {info_i[0]}, orientation_err = {info_i[1]}')
         print(f'[INFO] >> theta = {th_i}')
 
 if __name__ == '__main__':

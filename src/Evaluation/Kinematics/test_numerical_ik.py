@@ -48,7 +48,9 @@ def main():
 
     # Display results.
     print(f'[INFO] The solution was successfully found: {info["successful"]}')
+    print(f'[INFO] >> Iteration = {info["iteration"]}')
     print(f'[INFO] >> position_err = {info["error"]["position"]}, orientation_err = {info["error"]["orientation"]}')
+    print(f'[INFO] >> Quadratic (angle-axis) error = {info["quadratic_error"]}')
     print(f'[INFO] >> theta = {theta}')
 
 if __name__ == '__main__':

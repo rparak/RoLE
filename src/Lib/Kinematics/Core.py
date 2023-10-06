@@ -398,9 +398,6 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
         called Newton-Raphson (NR).
 
-        ....
-        add output -> quadratic error and information about the iteration.
-
         Equation:
             ...
 
@@ -415,12 +412,21 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
         (4) ik_solver_properties [Dictionary {'num_of_iteration': float, 
                                               'tolerance': float}]: The properties of the inverse kinematics solver.
                                                                         Note:
-                                                                            'num_of_iteration': ...
-                                                                            'tolerance': ...
+                                                                            'num_of_iteration': The number of iterations.
+                                                                            'tolerance': Minimum required tolerance.
 
     Returns:
-        (1) parameter [Dictionary {'successful': bool, 
-                                   'error': {'position': float, 'orientation': float}}]: Information on whether the result was found within the required tolerance 
+        (1) parameter [Dictionary {'successful': bool, 'iteration': int, 'error': {'position': float, 'orientation': float}, 
+                                   'quadratic_error': float}]: Information on the best results that were found.
+                                                                Note:
+                                                                    'successful': Information on whether the result was found 
+                                                                                  within the required tolerance.
+                                                                    'iteration': Information about the iteration in which the best 
+                                                                                 result was found.
+                                                                    'error': Information about the absolute error (position, orientation)
+                                                                    'quadratic_error': Information about the quadratic (angle-axis) error.
+                                   
+                                   Information on whether the result was found within the required tolerance 
                                                                                          and information about the absolute error (position, orientation).
         (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
                                             Note:
@@ -434,14 +440,18 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
     (th_limit_err, TCP_Position_0) = Forward_Kinematics(theta_0, 'Fast', Robot_Parameters_Str)
     
     is_successful = False; th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
-    for _ in range(ik_solver_properties['num_of_iteration']):
+    for iteration_i in range(ik_solver_properties['num_of_iteration']):
         # Get the matrix of the geometric Jacobian.
         J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
 
         # Get an error (angle-axis) vector which represents the translation and rotation.
         e_i = General.Get_Angle_Axis_Error(TCP_Position, TCP_Position_0) 
 
-        if General.Get_Quadratic_Angle_Axis_Error(e_i, W_e) < ik_solver_properties['tolerance']:
+        # Get the quadratic (angle-axis) error which is weighted by the diagonal 
+        # matrix W_e.
+        E = General.Get_Quadratic_Angle_Axis_Error(e_i, W_e)
+
+        if E < ik_solver_properties['tolerance']:
             is_successful = True
             break
         else:
@@ -464,7 +474,7 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
     error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - TCP_Position_0.p).all()), 5), 
              'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', TCP_Position_0.Get_Rotation('QUATERNION')), 5)}
     
-    return ({'successful': is_successful, 'error': error}, th_i)
+    return ({'successful': is_successful, 'iteration': iteration_i, 'error': error, 'quadratic_error': E}, th_i)
 
 def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
                                       ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
