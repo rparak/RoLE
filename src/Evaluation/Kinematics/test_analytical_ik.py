@@ -40,7 +40,7 @@ def main():
     Robot_Str = CONST_ROBOT_TYPE
 
     # Initialization of the class to generate trajectory.
-    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
+    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.1)
 
     # Obtain the constraints for absolute joint positions in order to generate multi-axis position trajectories.
     (abs_j_pos_0, abs_j_pos_1) = Configuration.Parameters.Get_Absolute_Joint_Positions(Robot_Str.Name)
@@ -53,8 +53,8 @@ def main():
         theta_arr.append(theta_arr_i)
 
     # Calculation of inverse kinematics (IK) using the analytical method.
-    theta_0 = abs_j_pos_0.copy()
-    for _, theta_arr_i in enumerate(np.array(theta_arr, dtype=np.float64).T):
+    theta_0 = abs_j_pos_0.copy(); theta_T = np.array(theta_arr, dtype=np.float64).T
+    for _, theta_arr_i in enumerate(theta_T):
         # Obtain the homogeneous transformation matrix of the robot end-effector from the input absolute joint positions.
         #   FK: 
         #       Theta --> T
@@ -64,12 +64,12 @@ def main():
         #   IK:
         #       Theta <-- T
         (_, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, theta_0, Robot_Str, 'Best')
-
+        
         # Obtain the last absolute position of the joint.
         theta_0 = theta.copy()
 
     # Check that the calculation has been performed successfully.
-    print(theta, abs_j_pos_1)
+    #print(theta, abs_j_pos_1)
     if (theta == abs_j_pos_1).all():
         print('[INFO] The IK solution test was successful.')
     else:
