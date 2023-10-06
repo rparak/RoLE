@@ -63,13 +63,14 @@ def main():
         # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
         #   IK:
         #       Theta <-- T
-        (_, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, theta_0, Robot_Str, 'All')
+        (_, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, theta_0, Robot_Str, 'Best')
 
         # Obtain the last absolute position of the joint.
         theta_0 = theta.copy()
 
     # Check that the calculation has been performed successfully.
-    if theta.all() == abs_j_pos_1.all():
+    print(theta, abs_j_pos_1)
+    if (theta == abs_j_pos_1).all():
         print('[INFO] The IK solution test was successful.')
     else:
         print('[WARNING] A problem occurred during the calculation.')

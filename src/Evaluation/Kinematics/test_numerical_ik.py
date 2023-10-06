@@ -69,7 +69,7 @@ def main():
         theta_0 = theta.copy()
 
     # Check that the calculation has been performed successfully.
-    if theta.all() == abs_j_pos_1.all():
+    if (theta == abs_j_pos_1).all():
         print('[INFO] The IK solution test was successful.')
     else:
         print('[WARNING] A problem occurred during the calculation.')
