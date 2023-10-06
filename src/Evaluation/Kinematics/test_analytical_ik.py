@@ -10,6 +10,8 @@ import numpy as np
 import Lib.Parameters.Robot as Parameters
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core
+#   ../Lib/Transformation/Utilities/Mathematics
+import Lib.Transformation.Utilities.Mathematics as Mathematics
 #   ../Lib/Trajectory/Utilities
 import Lib.Trajectory.Utilities
 #   ../Configuration/Parameters
@@ -68,9 +70,12 @@ def main():
         # Obtain the last absolute position of the joint.
         theta_0 = theta.copy()
 
+    # Get the actual and desired tool center point (TCP) to check the results.
+    T_actual  = Lib.Kinematics.Core.Forward_Kinematics(theta, 'Fast', Robot_Str)[1]
+    T_desired = Lib.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
+
     # Check that the calculation has been performed successfully.
-    #print(theta, abs_j_pos_1)
-    if (theta == abs_j_pos_1).all():
+    if Mathematics.Euclidean_Norm((T_actual - T_desired).all()) <= 1e-5:
         print('[INFO] The IK solution test was successful.')
     else:
         print('[WARNING] A problem occurred during the calculation.')
