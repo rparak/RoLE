@@ -398,6 +398,9 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
         called Newton-Raphson (NR).
 
+        ....
+        add output -> quadratic error and information about the iteration.
+
         Equation:
             ...
 
@@ -409,9 +412,11 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
                                             Note:
                                                 Where n is the number of joints.
         (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (4) ik_solver_properties [Dictionary]: The properties of the inverse kinematics solver.
-                                                Note:
-                                                    The properties depend on the specific method.
+        (4) ik_solver_properties [Dictionary {'num_of_iteration': float, 
+                                              'tolerance': float}]: The properties of the inverse kinematics solver.
+                                                                        Note:
+                                                                            'num_of_iteration': ...
+                                                                            'tolerance': ...
 
     Returns:
         (1) parameter [Dictionary {'successful': bool, 
@@ -455,13 +460,9 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
             else:
                 th_i_tmp[i] = th_i[i]
 
-    # Get the homogeneous transformation matrix of the robot end-effector from the input 
-    # absolute joint positions.
-    T = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)[1]
-
     # Obtain the absolute error of position and orientation.
-    error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5), 
-             'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)}
+    error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - TCP_Position_0.p).all()), 5), 
+             'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', TCP_Position_0.Get_Rotation('QUATERNION')), 5)}
     
     return ({'successful': is_successful, 'error': error}, th_i)
 
