@@ -71,8 +71,7 @@ def DH_Standard(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.Li
                     [          0.0,                        np.sin(alpha),                          np.cos(alpha),               d],
                     [          0.0,                                  0.0,                                    0.0,             1.0]], np.float64)
 
-def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                            tp.List[tp.List[float]]]:
+def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[float]]:
     """
     Description:
         Calculation of forward kinematics using the standard Denavit-Hartenberg (DH) method.
@@ -123,8 +122,7 @@ def DH_Modified(theta: float, a: float, d: float, alpha: float) -> tp.List[tp.Li
                     [np.sin(theta)*np.sin(alpha), np.cos(theta)*np.sin(alpha),        np.cos(alpha),        np.cos(alpha)*d],
                     [                        0.0,                         0.0,                  0.0,                    1.0]], np.float64)
 
-def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                            tp.List[tp.List[float]]]:
+def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[float]]:
     """
     Description:
         Calculation of forward kinematics using the modified Denavit-Hartenberg (DH) method.
@@ -195,8 +193,7 @@ def Forward_Kinematics(theta: tp.List[float], method: str, Robot_Parameters_Str:
         'Fast': lambda th, th_err, r_param_str: (th_err, Utilities.FKFast_Solution(th, r_param_str))
     }[method](th, th_limit_err, Robot_Parameters_Str)
 
-def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                                            tp.List[tp.List[tp.List[float]]]]:
+def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[tp.List[float]]]:
     """
     Description:
         Get the configuration of the homogeneous transformation matrix of each joint using the standard forward kinematics calculation method.
@@ -237,8 +234,7 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
 
     return T_cfg
 
-def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                                            tp.List[tp.List[tp.List[float]]]]:
+def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[tp.List[float]]]:
     """
     Description:
         Get the configuration of the homogeneous transformation matrix of each joint using the modified forward kinematics calculation method.
@@ -391,6 +387,30 @@ DKT:
 https://github.com/jhavl/dkt
 """
 
+def J_Fast(theta, Robot_Parameters_Str):
+    # Change of axis direction in individual joints.
+    th = theta * Robot_Parameters_Str.Theta.Direction
+
+    J = np.zeros((4, th.size), dtype=np.float64)
+    J[0,0] = -0.225*np.sin(th[0]) - 0.175*np.sin(th[0] + th[1])
+    J[0,1] = -0.175*np.sin(th[0] + th[1])
+    J[0,2] = 0.0
+    J[0,3] = 0.0
+    J[1,0] = 0.225*np.cos(th[0]) + 0.175*np.cos(th[0] + th[1])
+    J[1,1] = 0.175*np.cos(th[0] + th[1])
+    J[1,2] = 0.0
+    J[1,3] = 0.0
+    J[2,0] = 0.0
+    J[2,1] = 0.0
+    J[2,2] = -1.0
+    J[2,3] = 0.0
+    J[3,0] = 1.0
+    J[3,1] = 1.0
+    J[3,2] = 0.0
+    J[3,3] = -1.0
+
+    return J
+
 def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
                                     ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
     """
@@ -433,8 +453,11 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
                                                 Where n is the number of joints. 
     """
 
+    # Get the number of joints.
+    n_joints = Robot_Parameters_Str.Theta.Zero.size
+
     # Diagonal weight matrix.
-    W_e = np.diag(np.ones(6))
+    W_e = np.diag(np.ones(n_joints))
 
     # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
     (th_limit_err, TCP_Position_0) = Forward_Kinematics(theta_0, 'Fast', Robot_Parameters_Str)
@@ -447,6 +470,16 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
         # Get an error (angle-axis) vector which represents the translation and rotation.
         e_i = General.Get_Angle_Axis_Error(TCP_Position, TCP_Position_0) 
 
+        # Modification of the Jacobian and angle-axis error shape with respect 
+        # to the number of joints of the robotic manipulator.
+        if n_joints == 4:
+            # Delete part of the orientation (x: index 3, y: index 4).
+            J = np.delete(J.copy(), [3, 4], axis=0); e_i = np.delete(e_i.copy(), [3, 4], axis=0)
+
+        # Check the singularity.
+        if np.linalg.det(J) == 0.0:
+            print(f'[WARNING] A predicted singularity with absolute joint angles equal to {th_i}')
+
         # Get the quadratic (angle-axis) error which is weighted by the diagonal 
         # matrix W_e.
         E = General.Get_Quadratic_Angle_Axis_Error(e_i, W_e)
@@ -455,9 +488,6 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
             is_successful = True
             break
         else:
-            #print(np.delete(J, [3, 4], axis=0))
-            #print(np.delete(e_i, [3, 4], axis=0))
-            #print(np.linalg.det(np.delete(J, [3, 4], axis=0)))
             # Newton-Raphson (NR) method.
             th_i += np.linalg.pinv(J) @ e_i
 

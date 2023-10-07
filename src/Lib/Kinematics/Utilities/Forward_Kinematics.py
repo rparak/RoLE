@@ -6,8 +6,7 @@ import typing as tp
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 
-def __FKF_Universal_Robots_UR3(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                         tp.List[tp.List[float]]]:
+def __FKF_Universal_Robots_UR3(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[float]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the Universal Robots UR3 robotic arm.
@@ -67,8 +66,7 @@ def __FKF_Universal_Robots_UR3(theta: tp.List[float], Robot_Parameters_Str: Para
     # T_Base @ T_n @ T_EE
     return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
-def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                tp.List[tp.List[float]]]:
+def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[float]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the ABB IRB 120 robotic arm.
@@ -140,8 +138,7 @@ def __FKF_ABB_IRB_120(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
     # T_Base @ T_n @ T_EE
     return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
-def __FKF_ABB_IRB_120_L_Ax(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                    tp.List[tp.List[float]]]:
+def __FKF_ABB_IRB_120_L_Ax(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[float]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the ABB IRB 120 robotic arm 
@@ -216,8 +213,7 @@ def __FKF_ABB_IRB_120_L_Ax(theta: tp.List[float], Robot_Parameters_Str: Paramete
     # T_Base @ T_n @ T_EE
     return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
-def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                    tp.List[tp.List[float]]]:
+def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[float]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the ABB IRB 1400 (YuMi) robotic arm.
@@ -299,8 +295,7 @@ def __FKF_ABB_IRB_14000_R(theta: tp.List[float], Robot_Parameters_Str: Parameter
     # T_Base @ T_n @ T_EE
     return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
-def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                    tp.List[tp.List[float]]]:
+def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[float]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the ABB IRB 1400 (YuMi) robotic arm.
@@ -381,8 +376,7 @@ def __FKF_ABB_IRB_14000_L(theta: tp.List[float], Robot_Parameters_Str: Parameter
     # T_Base @ T_n @ T_EE
     return Robot_Parameters_Str.T.Base @ T @ Robot_Parameters_Str.T.End_Effector
 
-def __FKF_EPSON_LS3_B401S(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[tp.List[float], 
-                                                                                                                    tp.List[tp.List[float]]]:
+def __FKF_EPSON_LS3_B401S(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[tp.List[float]]:
     """
     Description:
         Calculation of forward kinematics using a fast method for the Epson LS3 B401S robotic arm.

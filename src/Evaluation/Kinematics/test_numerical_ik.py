@@ -5,6 +5,8 @@ if '../' + 'src' not in sys.path:
     sys.path.append('../..')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
+# Time (Time access and conversions)
+import time
 # Custom Script:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
@@ -31,7 +33,7 @@ def main():
     """
     
     # Set printing options.
-    np.set_printoptions(suppress=True, precision=5)
+    #np.set_printoptions(suppress=True, precision=5)
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
@@ -48,6 +50,9 @@ def main():
         (theta_arr_i, _, _) = Polynomial_Cls.Generate(th_actual, th_desired, 0.0, 0.0, 0.0, 0.0,
                                                       Configuration.Parameters.CONST_T_0, Configuration.Parameters.CONST_T_1)
         theta_arr.append(theta_arr_i)
+
+    # ...
+    t_0 = time.time()
 
     # Calculation of inverse kinematics (IK) using the chosen numerical method.
     theta_0 = abs_j_pos_0.copy(); theta_T = np.array(theta_arr, dtype=np.float64).T
@@ -69,6 +74,9 @@ def main():
 
         # Obtain the last absolute position of the joint.
         theta_0 = theta.copy()
+
+    t = time.time() - t_0
+    print(f'[INFO] Time: {t:0.05f} in seconds.')
 
     # Get the actual and desired tool center point (TCP) to check the results.
     T_desired = Lib.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
