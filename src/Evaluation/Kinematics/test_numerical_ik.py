@@ -81,7 +81,7 @@ def main():
     # Get the actual and desired tool center point (TCP) to check the results.
     T_desired = Lib.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
     T_actual  = Lib.Kinematics.Core.Forward_Kinematics(theta, 'Fast', Robot_Str)[1]
-
+    
     # Check that the calculation has been performed successfully.
     if Mathematics.Euclidean_Norm((T_actual - T_desired).all()) <= 1e-5:
         print('[INFO] The IK solution test was successful.')

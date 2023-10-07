@@ -465,7 +465,8 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
     is_successful = False; th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
     for iteration_i in range(ik_solver_properties['num_of_iteration']):
         # Get the matrix of the geometric Jacobian.
-        J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
+        #J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
+        J = J_Fast(th_i, Robot_Parameters_Str)
 
         # Get an error (angle-axis) vector which represents the translation and rotation.
         e_i = General.Get_Angle_Axis_Error(TCP_Position, TCP_Position_0) 
@@ -474,11 +475,14 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
         # to the number of joints of the robotic manipulator.
         if n_joints == 4:
             # Delete part of the orientation (x: index 3, y: index 4).
-            J = np.delete(J.copy(), [3, 4], axis=0); e_i = np.delete(e_i.copy(), [3, 4], axis=0)
+            #J = np.delete(J.copy(), [3, 4], axis=0); e_i = np.delete(e_i.copy(), [3, 4], axis=0)
+            e_i = np.delete(e_i.copy(), [3, 4], axis=0)
 
+        """
         # Check the singularity.
         if np.linalg.det(J) == 0.0:
             print(f'[WARNING] A predicted singularity with absolute joint angles equal to {th_i}')
+        """
 
         # Get the quadratic (angle-axis) error which is weighted by the diagonal 
         # matrix W_e.
@@ -494,15 +498,18 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
         # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
         (th_limit_err, TCP_Position_0) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
 
-        # Check whether the desired absolute joint positions are within the limits and ensure 
-        # there are no collisions between the joints.
-        for i, (th_limit_err_i, th_is_collision_i) in enumerate(zip(th_limit_err, General.Is_Self_Collision(th_i, 
-                                                                                                            Robot_Parameters_Str))):
-            if th_limit_err_i == True or th_is_collision_i == True:
+        # Check whether the desired absolute joint positions are within the limits.
+        for i, th_limit_err_i in enumerate(th_limit_err):
+            if th_limit_err_i == True:
                 th_i[i] = th_i_tmp[i]
             else:
                 th_i_tmp[i] = th_i[i]
 
+    """
+    # Check the singularity.
+    if np.linalg.det(J) == 0.0:
+        print(f'[WARNING] A predicted singularity with absolute joint angles equal to {th_i}')
+    """
     # Obtain the absolute error of position and orientation.
     error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - TCP_Position_0.p).all()), 5), 
              'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', TCP_Position_0.Get_Rotation('QUATERNION')), 5)}
