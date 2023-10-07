@@ -391,8 +391,8 @@ DKT:
 https://github.com/jhavl/dkt
 """
 
-def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
-                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
+def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
+                                    ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
     """
     Description:
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
@@ -476,8 +476,8 @@ def __Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], the
     
     return ({'successful': is_successful, 'iteration': iteration_i, 'error': error, 'quadratic_error': E}, th_i)
 
-def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
-                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
+def Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
+                                    ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
     """
     Description:
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
@@ -493,13 +493,24 @@ def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], the
                                             Note:
                                                 Where n is the number of joints.
         (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (4) ik_solver_properties [Dictionary]: The properties of the inverse kinematics solver.
-                                                Note:
-                                                    The properties depend on the specific method.
+        (4) ik_solver_properties [Dictionary {'num_of_iteration': float, 
+                                              'tolerance': float}]: The properties of the inverse kinematics solver.
+                                                                        Note:
+                                                                            'num_of_iteration': The number of iterations.
+                                                                            'tolerance': Minimum required tolerance.
 
     Returns:
-        (1) parameter [Dictionary {'successful': bool, 
-                                   'error': {'position': float, 'orientation': float}}]: Information on whether the result was found within the required tolerance 
+        (1) parameter [Dictionary {'successful': bool, 'iteration': int, 'error': {'position': float, 'orientation': float}, 
+                                   'quadratic_error': float}]: Information on the best results that were found.
+                                                                Note:
+                                                                    'successful': Information on whether the result was found 
+                                                                                  within the required tolerance.
+                                                                    'iteration': Information about the iteration in which the best 
+                                                                                 result was found.
+                                                                    'error': Information about the absolute error (position, orientation)
+                                                                    'quadratic_error': Information about the quadratic (angle-axis) error.
+                                   
+                                   Information on whether the result was found within the required tolerance 
                                                                                          and information about the absolute error (position, orientation).
         (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
                                             Note:
@@ -508,8 +519,8 @@ def __Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], the
 
     pass
 
-def __Inverse_Kinematics_Numerical_LM(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
-                                      ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
+def Inverse_Kinematics_Numerical_LM(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
+                                    ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
     """
     Description:
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
@@ -525,13 +536,24 @@ def __Inverse_Kinematics_Numerical_LM(TCP_Position: tp.List[tp.List[float]], the
                                             Note:
                                                 Where n is the number of joints.
         (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (4) ik_solver_properties [Dictionary]: The properties of the inverse kinematics solver.
-                                                Note:
-                                                    The properties depend on the specific method.
+        (4) ik_solver_properties [Dictionary {'num_of_iteration': float, 
+                                              'tolerance': float}]: The properties of the inverse kinematics solver.
+                                                                        Note:
+                                                                            'num_of_iteration': The number of iterations.
+                                                                            'tolerance': Minimum required tolerance.
 
     Returns:
-        (1) parameter [Dictionary {'successful': bool, 
-                                   'error': {'position': float, 'orientation': float}}]: Information on whether the result was found within the required tolerance 
+        (1) parameter [Dictionary {'successful': bool, 'iteration': int, 'error': {'position': float, 'orientation': float}, 
+                                   'quadratic_error': float}]: Information on the best results that were found.
+                                                                Note:
+                                                                    'successful': Information on whether the result was found 
+                                                                                  within the required tolerance.
+                                                                    'iteration': Information about the iteration in which the best 
+                                                                                 result was found.
+                                                                    'error': Information about the absolute error (position, orientation)
+                                                                    'quadratic_error': Information about the quadratic (angle-axis) error.
+                                   
+                                   Information on whether the result was found within the required tolerance 
                                                                                          and information about the absolute error (position, orientation).
         (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
                                             Note:
@@ -557,21 +579,29 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         (2) theta_0 [Vector<float> 1xn]: Actual absolute joint position in radians / meters.
                                             Note:
                                                 Where n is the number of joints.
-        (3) method [string]: The name of the solver used to calculate the numerical method of inverse kinematics.
-                                Note:
-                                    method = 'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'.
-        (4) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (5) ik_solver_properties [Dictionary]: The properties of the inverse kinematics solver.
-                                                Note:
-                                                    The properties depend on the specific method.
+        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (4) ik_solver_properties [Dictionary {'num_of_iteration': float, 
+                                              'tolerance': float}]: The properties of the inverse kinematics solver.
+                                                                        Note:
+                                                                            'num_of_iteration': The number of iterations.
+                                                                            'tolerance': Minimum required tolerance.
 
     Returns:
-        (1) parameter [Dictionary {'successful': bool, 
-                                   'error': {'position': float, 'orientation': float}}]: Information on whether the result was found within the required tolerance 
+        (1) parameter [Dictionary {'successful': bool, 'iteration': int, 'error': {'position': float, 'orientation': float}, 
+                                   'quadratic_error': float}]: Information on the best results that were found.
+                                                                Note:
+                                                                    'successful': Information on whether the result was found 
+                                                                                  within the required tolerance.
+                                                                    'iteration': Information about the iteration in which the best 
+                                                                                 result was found.
+                                                                    'error': Information about the absolute error (position, orientation)
+                                                                    'quadratic_error': Information about the quadratic (angle-axis) error.
+                                   
+                                   Information on whether the result was found within the required tolerance 
                                                                                          and information about the absolute error (position, orientation).
         (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
                                             Note:
-                                                Where n is the number of joints.
+                                                Where n is the number of joints. 
     """
 
     try:
@@ -581,9 +611,9 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
             TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float64)
 
         return {
-            'Newton-Raphson': lambda tcp_p, th_0, r_param_str, ik_properties: __Inverse_Kinematics_Numerical_NR(tcp_p, th_0, r_param_str, ik_properties),
-            'Gauss-Newton': lambda tcp_p, th_0, r_param_str, ik_properties: __Inverse_Kinematics_Numerical_GN(tcp_p, th_0, r_param_str, ik_properties),
-            'Levenberg-Marquardt': lambda tcp_p, th_0, r_param_str, ik_properties: __Inverse_Kinematics_Numerical_LM(tcp_p, th_0, r_param_str, ik_properties)
+            'Newton-Raphson': lambda tcp_p, th_0, r_param_str, ik_properties: Inverse_Kinematics_Numerical_NR(tcp_p, th_0, r_param_str, ik_properties),
+            'Gauss-Newton': lambda tcp_p, th_0, r_param_str, ik_properties: Inverse_Kinematics_Numerical_GN(tcp_p, th_0, r_param_str, ik_properties),
+            'Levenberg-Marquardt': lambda tcp_p, th_0, r_param_str, ik_properties: Inverse_Kinematics_Numerical_LM(tcp_p, th_0, r_param_str, ik_properties)
         }[method](TCP_Position, theta_0, Robot_Parameters_Str, ik_solver_properties)
 
     except AssertionError as error:
