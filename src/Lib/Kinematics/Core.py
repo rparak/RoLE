@@ -455,6 +455,9 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
             is_successful = True
             break
         else:
+            #print(np.delete(J, [3, 4], axis=0))
+            #print(np.delete(e_i, [3, 4], axis=0))
+            #print(np.linalg.det(np.delete(J, [3, 4], axis=0)))
             # Newton-Raphson (NR) method.
             th_i += np.linalg.pinv(J) @ e_i
 
