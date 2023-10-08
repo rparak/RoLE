@@ -418,6 +418,8 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using a numerical method 
         called Newton-Raphson (NR).
 
+        Maybe add a dt time to interpolate ...
+        
         Equation:
             ...
 
