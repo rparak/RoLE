@@ -402,15 +402,16 @@ def __Modify_IKN_Parameters(name: str, J: tp.List[tp.List[float]], e_i: tp.List[
                                                 Where k is equal to the number of axes.
     """
 
-    return {
-        'Universal_Robots_UR3': None,
-        'ABB_IRB_120': None,
-        'ABB_IRB_120_L_Ax': None,
-        'ABB_IRB_14000_R': None,
-        'ABB_IRB_14000_L': None,
-        'EPSON_LS3_B401S': lambda J_in, e_i_in: (np.delete(J_in.copy(), [3, 4], axis=0), 
-                                                 np.delete(e_i_in.copy(), [3, 4], axis=0))
-    }[name](J, e_i)
+    if name in ['Universal_Robots_UR3', 'ABB_IRB_120']:
+        return (J.copy(), e_i.copy())
+    else:
+        return {
+            'ABB_IRB_120_L_Ax': None,
+            'ABB_IRB_14000_R': None,
+            'ABB_IRB_14000_L': None,
+            'EPSON_LS3_B401S': lambda J_in, e_i_in: (np.delete(J_in.copy(), [3, 4], axis=0), 
+                                                     np.delete(e_i_in.copy(), [3, 4], axis=0))
+        }[name](J, e_i)
 
 def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
                                     ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
