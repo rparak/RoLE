@@ -71,15 +71,15 @@ def Forward_Kinematics_Modified(theta: sp.symbols, Robot_Parameters_Str: Paramet
 def main():
     """
     Description:
-        A program to simplify the solution of forward kinematics (FK). The results of the simplification will be used to calculate 
-        the FK faster.
+        A program to simplify the solution of forward kinematics (FK). The results of the simplification 
+        will be used to calculate the FK faster.
     """
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
     # Initialize a string containing the symbol assigned with the variable.
-    theta = [sp.symbols(f'theta[{i}]') for i in range(len(Robot_Str.Theta.Name))]
+    theta = [sp.symbols(f'theta[{i}]') for i in range(Robot_Str.Theta.Zero.size)]
 
     print('[INFO] The calculation is in progress.')
     t_0 = time.time()
@@ -92,7 +92,7 @@ def main():
 
     print('[INFO] Code generation.')
     print('T = np.array(np.identity(4), dtype=np.float64)')
-
+    
     for i, T_i_simpl in enumerate(T_simpl.tolist()):
         for j, T_ij_simpl in enumerate(T_i_simpl):
             # Replace (convert) the old value string to the new one.

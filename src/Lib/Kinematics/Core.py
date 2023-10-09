@@ -345,8 +345,8 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
 
     Returns:
         (1) parameter [Matrix<float> 6xn]: Matrix of the geometric Jacobian (6 x n).
-                                           Note: 
-                                            n is equal to the number of joints
+                                            Note: 
+                                                Where n is equal to the number of joints.
     """
     
     # Change of axis direction in individual joints.
@@ -378,38 +378,39 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
              
     return J
 
-# ////////////////////
+def __Modify_IKN_Parameters(name: str, J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.Tuple[tp.List[tp.List[float]],
+                                                                                                    tp.List[float]]:
+    """
+    Description:
+        Modification of the inverse kinematics (numerical) parameters, such as Jacobian and angle-axis error shape with 
+        respect to the number of joints of the robotic manipulator.
 
-# ik_solver_properties = {'num_of_iteration': ..., 'tolerance': .., 'etc.'...}
+    Args:
+        (1) name [string]: 
+        (2) J [Matrix<float> 6xn]: Matrix of the geometric Jacobian (6 x n).
+                                    Note: 
+                                        Where n is equal to the number of joints 
+        (3) e_i [Vector<float> 1x6]: Vector of an error (angle-axis).
 
-"""
-DKT:
-https://github.com/jhavl/dkt
-"""
+    Returns:
+        (1) parameter [Matrix<float> kxn]: Matrix of the modified geometric Jacobian (6 x n).
+                                            Note: 
+                                                Where k is equal to the number of axes and n is equal 
+                                                to the number of joints.
+        (2) parameter [Vector<float> 1xk]: Modified vector of an error (angle-axis).
+                                            Note: 
+                                                Where k is equal to the number of axes.
+    """
 
-def J_Fast(theta, Robot_Parameters_Str):
-    # Change of axis direction in individual joints.
-    th = theta * Robot_Parameters_Str.Theta.Direction
-
-    J = np.zeros((4, th.size), dtype=np.float64)
-    J[0,0] = -0.225*np.sin(th[0]) - 0.175*np.sin(th[0] + th[1])
-    J[0,1] = -0.175*np.sin(th[0] + th[1])
-    J[0,2] = 0.0
-    J[0,3] = 0.0
-    J[1,0] = 0.225*np.cos(th[0]) + 0.175*np.cos(th[0] + th[1])
-    J[1,1] = 0.175*np.cos(th[0] + th[1])
-    J[1,2] = 0.0
-    J[1,3] = 0.0
-    J[2,0] = 0.0
-    J[2,1] = 0.0
-    J[2,2] = -1.0
-    J[2,3] = 0.0
-    J[3,0] = 1.0
-    J[3,1] = 1.0
-    J[3,2] = 0.0
-    J[3,3] = -1.0
-
-    return J
+    return {
+        'Universal_Robots_UR3': None,
+        'ABB_IRB_120': None,
+        'ABB_IRB_120_L_Ax': None,
+        'ABB_IRB_14000_R': None,
+        'ABB_IRB_14000_L': None,
+        'EPSON_LS3_B401S': lambda J_in, e_i_in: (np.delete(J_in.copy(), [3, 4], axis=0), 
+                                                 np.delete(e_i_in.copy(), [3, 4], axis=0))
+    }[name](J, e_i)
 
 def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
                                     ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
@@ -467,24 +468,14 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
     is_successful = False; th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
     for iteration_i in range(ik_solver_properties['num_of_iteration']):
         # Get the matrix of the geometric Jacobian.
-        #J = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
-        J = J_Fast(th_i, Robot_Parameters_Str)
+        J_tmp = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
 
         # Get an error (angle-axis) vector which represents the translation and rotation.
-        e_i = General.Get_Angle_Axis_Error(TCP_Position, TCP_Position_0) 
+        e_i_tmp = General.Get_Angle_Axis_Error(TCP_Position, TCP_Position_0) 
 
         # Modification of the Jacobian and angle-axis error shape with respect 
         # to the number of joints of the robotic manipulator.
-        if n_joints == 4:
-            # Delete part of the orientation (x: index 3, y: index 4).
-            #J = np.delete(J.copy(), [3, 4], axis=0); e_i = np.delete(e_i.copy(), [3, 4], axis=0)
-            e_i = np.delete(e_i.copy(), [3, 4], axis=0)
-
-        """
-        # Check the singularity.
-        if np.linalg.det(J) == 0.0:
-            print(f'[WARNING] A predicted singularity with absolute joint angles equal to {th_i}')
-        """
+        (J, e_i) = __Modify_IKN_Parameters(Robot_Parameters_Str.Name, J_tmp, e_i_tmp)
 
         # Get the quadratic (angle-axis) error which is weighted by the diagonal 
         # matrix W_e.
@@ -507,6 +498,8 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
             else:
                 th_i_tmp[i] = th_i[i]
 
+    # add singularity, and self-collision information ...
+    
     """
     # Check the singularity.
     if np.linalg.det(J) == 0.0:
@@ -614,6 +607,9 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
             1\ Newton-Raphson (NR) Method
             2\ Gauss-Newton (GN) Method
             3\ Levenberg-Marquardt (LM) Method
+
+        Reference DKT:
+            https://github.com/jhavl/dkt
 
     Args:
         (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 

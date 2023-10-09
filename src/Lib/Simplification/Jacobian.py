@@ -41,13 +41,13 @@ def __Get_Individual_Joint_Configuration_Modified(theta: sp.symbols, Robot_Param
         Get the configuration of the homogeneous transformation matrix of each joint using the modified forward kinematics calculation method.
 
     Args:
-        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+        (1) theta [Vector<sympy>]: Desired absolute joint position in radians / meters.
                                         Note:
                                             Where n is the number of joints.
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         
     Returns:
-        (1) parameter [Matrix<float> nx(4x4)]: Configuration homogeneous transformation matrix of each joint.
+        (1) parameter [Matrix<sympy> nx(4x4)]: Configuration homogeneous transformation matrix of each joint.
                                                Note:
                                                 Where n is the number of joints.
     """
@@ -142,26 +142,31 @@ def Get_Geometric_Jacobian(theta: sp.symbols, Robot_Parameters_Str: Parameters.R
 def main():
     """
     Description:
-        ...
+        A program to simplify the solution of the Jacobian calculation. The results of the simplification 
+        will be used to calculate the Jacobian faster.
+
+        Note:
+            The shape of the Jacobian matrix must be square. Rewrite the results depending 
+            on the particular robotic structure.
     """
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
     # Initialize a string containing the symbol assigned with the variable.
-    theta = [sp.symbols(f'theta[{i}]') for i in range(len(Robot_Str.Theta.Name))]
+    theta = [sp.symbols(f'theta[{i}]') for i in range(Robot_Str.Theta.Zero.size)]
 
     print('[INFO] The calculation is in progress.')
     t_0 = time.time()
 
     """
     Description:
-        ...
+        Obtain the simplified matrix of the geometric Jacobian (6 x n), where n is the number of joints.
     """
     J_simpl = Get_Geometric_Jacobian(theta, Robot_Str)
 
     print('[INFO] Code generation.')
-    print('J = ...')
+    print('J = np.zeros((6, theta.size), dtype=np.float64)')
 
     for i, J_i_simpl in enumerate(J_simpl.tolist()):
         for j, J_ij_simpl in enumerate(J_i_simpl):
@@ -172,7 +177,6 @@ def main():
 
     print('[INFO] The simplification process is successfully completed!')
     print(f'[INFO] Total Time: {(time.time() - t_0):.3f} in seconds')
-
 
 if __name__ == '__main__':
     sys.exit(main())
