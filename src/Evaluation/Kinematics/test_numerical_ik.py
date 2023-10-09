@@ -83,10 +83,13 @@ def main():
     T_actual  = Lib.Kinematics.Core.Forward_Kinematics(theta, 'Fast', Robot_Str)[1]
     
     # Check that the calculation has been performed successfully.
+    accuracy = Mathematics.Euclidean_Norm((T_actual - T_desired).all())
     if Mathematics.Euclidean_Norm((T_actual - T_desired).all()) <= 1e-5:
         print('[INFO] The IK solution test was successful.')
+        print(f'[INFO] Accuracy = {accuracy}')
     else:
         print('[WARNING] A problem occurred during the calculation.')
+        print(f'[INFO] Accuracy = {accuracy}')
 
 if __name__ == '__main__':
     main()

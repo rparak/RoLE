@@ -503,7 +503,7 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
     # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
     # between the joints.
     is_close_singularity = General.Is_Close_Singularity(J)
-    is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).any() == False
+    is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).any()
 
     # Obtain the absolute error of position and orientation.
     error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - TCP_Position_0.p).all()), 5), 
@@ -680,9 +680,15 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
                                     method = 'All' -> Obtain the all possible solutions.
                                     method = 'Best' -> Automatically obtain the best solution.
  
-
     Returns:
-        (1) parameter [Dictionary {'position': float, 'orientation': float}]: Information about the absolute error (position, orientation).
+        (1) parameter [Dictionary {'error': {'position': float, 'orientation': float}, 'is_close_singularity': bool, 
+                                   'is_self_collision': bool}]: Information on the best results that were found.
+                                                                Note:
+                                                                    'error': Information about the absolute error (position, orientation)
+                                                                    'is_close_singularity': Information about whether the Jacobian matrix 
+                                                                                            is close to singularity.
+                                                                    'is_self_collision': Information about whether there are collisions 
+                                                                                         between joints.
         (2) parameter [Matrix<float> kxn]: Obtained solution of the absolute position of the joint in radians / meters.
                                             Note:
                                                 Where k is the number of solutions and n is the number of connections.
@@ -783,19 +789,33 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
         theta_solutions[1, 3] = Robot_Parameters_Str.Theta.Direction[3] * (theta_solutions[1, 0] + theta_solutions[1, 1] + Euler_Angles.z)
 
         if method == 'All':
-            error = {'position': np.zeros(theta_solutions.shape[0], dtype=np.float64), 
-                     'orientation': np.zeros(theta_solutions.shape[0], dtype=np.float64)}
+            info = {'error': {'position': np.zeros(theta_solutions.shape[0], dtype=np.float64), 
+                              'orientation': np.zeros(theta_solutions.shape[0], dtype=np.float64)}, 
+                              'is_close_singularity': np.zeros(theta_solutions.shape[0], dtype=bool), 
+                              'is_self_collision': np.zeros(theta_solutions.shape[0], dtype=bool)}
             
             for i, th_sol_i in enumerate(theta_solutions):
                 # Get the homogeneous transformation matrix of the robot end-effector from the input 
                 # absolute joint positions.
                 T = Forward_Kinematics(th_sol_i, 'Fast', Robot_Parameters_Str)[1]
 
-                # Obtain the absolute error of position and orientation.
-                error['position'][i] = np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5)
-                error['orientation'][i] = np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)
+                # Get the matrix of the geometric Jacobian.
+                J_tmp = Get_Geometric_Jacobian(th_sol_i, Robot_Parameters_Str)
 
-            return (error, theta_solutions)
+                # Modification of the Jacobian with respect to the number of joints of the 
+                # robotic manipulator.
+                J = np.delete(J_tmp.copy(), [3, 4], axis=0)
+
+                # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
+                # between the joints.
+                info['is_close_singularity'][i] = General.Is_Close_Singularity(J)
+                info['is_self_collision'][i] = General.Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any()
+
+                # Obtain the absolute error of position and orientation.
+                info['error']['position'][i] = np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5)
+                info['error']['orientation'][i] = np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)
+
+            return (info, theta_solutions)
         
         elif method == 'Best':
             # Automatically obtain the best solution for the absolute positions of the robot's joints.
@@ -815,7 +835,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
             # between the joints.
             is_close_singularity = General.Is_Close_Singularity(J)
-            is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).any() == False
+            is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).any()
 
             # Obtain the absolute error of position and orientation.
             error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5), 
