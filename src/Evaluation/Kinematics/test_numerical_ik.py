@@ -51,7 +51,7 @@ def main():
                                                       Configuration.Parameters.CONST_T_0, Configuration.Parameters.CONST_T_1)
         theta_arr.append(theta_arr_i)
 
-    # ...
+    print('[INFO] The calculation is in progress.')
     t_0 = time.time()
 
     # Calculation of inverse kinematics (IK) using the chosen numerical method.
