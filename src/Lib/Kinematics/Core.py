@@ -386,7 +386,7 @@ def __Modify_IKN_Parameters(name: str, J: tp.List[tp.List[float]], e_i: tp.List[
         respect to the number of joints of the robotic manipulator.
 
     Args:
-        (1) name [string]: 
+        (1) name [string]: Name of the robotic structure.
         (2) J [Matrix<float> 6xn]: Matrix of the geometric Jacobian (6 x n).
                                     Note: 
                                         Where n is equal to the number of joints 
@@ -500,11 +500,9 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
 
     # add singularity, and self-collision information ...
     
-    """
     # Check the singularity.
-    if np.linalg.det(J) == 0.0:
-        print(f'[WARNING] A predicted singularity with absolute joint angles equal to {th_i}')
-    """
+    print(General.Is_Close_Singularity(J))
+    
     # Obtain the absolute error of position and orientation.
     error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - TCP_Position_0.p).all()), 5), 
              'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', TCP_Position_0.Get_Rotation('QUATERNION')), 5)}

@@ -117,6 +117,23 @@ def Get_Quadratic_Angle_Axis_Error(e: tp.List[float], W_e: tp.List[tp.List[float
     
     return 0.5 * e @ W_e @ e
 
+def Is_Close_Singularity(J: tp.List[tp.List[float]]) -> bool:
+    """
+    Description:
+        A function to determine whether the Jacobian matrix is close to singularity.
+
+    Args:
+        (1) J [Matrix<float> kxn]: Matrix of the modified geometric Jacobian (6 x n).
+                                    Note: 
+                                        Where k is equal to the number of axes and n is equal 
+                                        to the number of joints.
+
+    Returns:
+        (1) parameter [bool]: The value represents whether the Jacobian matrix is close to singularity or not.
+    """
+        
+    return np.isclose(np.linalg.det(J), 0.0, atol=1e-10, equal_nan=False)
+
 def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[bool]:
     """
     Description:
