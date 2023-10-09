@@ -203,6 +203,9 @@ def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.Li
                                                 Where n is the number of joints.
     """
 
+    # Information about whether a solution was found.
+    successful = False
+
     theta = np.zeros(Robot_Parameters_Str.Theta.Zero.size, dtype=np.float64); error = np.finfo(np.float64).max
     for _, th_sol_i in enumerate(theta_solutions):
         # Get the homogeneous transformation matrix of the robot end-effector from the input 
@@ -216,5 +219,9 @@ def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.Li
             # If a better solution is found, save it.
             if error_theta < error:
                 theta = th_sol_i; error = error_theta
+            successful = True
     
+    if successful == False:
+        print('[WARNING] No solution found.')
+
     return theta

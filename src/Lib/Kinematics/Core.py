@@ -805,8 +805,25 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             # absolute joint positions.
             T = Forward_Kinematics(theta, 'Fast', Robot_Parameters_Str)[1]
             
-            return ({'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5), 
-                     'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)}, theta)
+            # Get the matrix of the geometric Jacobian.
+            J_tmp = Get_Geometric_Jacobian(theta, Robot_Parameters_Str)
+
+            # Modification of the Jacobian with respect to the number of joints of the 
+            # robotic manipulator.
+            J = np.delete(J_tmp.copy(), [3, 4], axis=0)
+
+            # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
+            # between the joints.
+            is_close_singularity = General.Is_Close_Singularity(J)
+            is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).any() == False
+
+            # Obtain the absolute error of position and orientation.
+            error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5), 
+                     'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)}
+    
+            # Write all the information about the results of the IK solution.
+            return ({'error': error, 'is_close_singularity': is_close_singularity, 'is_self_collision': is_self_collision}, 
+                    theta)
 
     except AssertionError as error:
         print(f'[ERROR] Information: {error}')
