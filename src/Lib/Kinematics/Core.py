@@ -440,7 +440,8 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
 
     Returns:
         (1) parameter [Dictionary {'successful': bool, 'iteration': int, 'error': {'position': float, 'orientation': float}, 
-                                   'quadratic_error': float}]: Information on the best results that were found.
+                                   'quadratic_error': float, 'is_close_singularity': bool, 
+                                   'is_self_collision': bool}]: Information on the best results that were found.
                                                                 Note:
                                                                     'successful': Information on whether the result was found 
                                                                                   within the required tolerance.
@@ -448,9 +449,10 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
                                                                                  result was found.
                                                                     'error': Information about the absolute error (position, orientation)
                                                                     'quadratic_error': Information about the quadratic (angle-axis) error.
-                                   
-                                   Information on whether the result was found within the required tolerance 
-                                                                                         and information about the absolute error (position, orientation).
+                                                                    'is_close_singularity': Information about whether the Jacobian matrix 
+                                                                                            is close to singularity.
+                                                                    'is_self_collision': Information about whether there are collisions 
+                                                                                         between joints.
         (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
                                             Note:
                                                 Where n is the number of joints. 
@@ -498,16 +500,18 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
             else:
                 th_i_tmp[i] = th_i[i]
 
-    # add singularity, and self-collision information ...
-    
-    # Check the singularity.
-    print(General.Is_Close_Singularity(J))
-    
+    # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
+    # between the joints.
+    is_close_singularity = General.Is_Close_Singularity(J)
+    is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).any() == False
+
     # Obtain the absolute error of position and orientation.
     error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - TCP_Position_0.p).all()), 5), 
              'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', TCP_Position_0.Get_Rotation('QUATERNION')), 5)}
     
-    return ({'successful': is_successful, 'iteration': iteration_i, 'error': error, 'quadratic_error': E}, th_i)
+    # Write all the information about the results of the IK solution.
+    return ({'successful': is_successful, 'iteration': iteration_i, 'error': error, 'quadratic_error': E, 
+             'is_close_singularity': is_close_singularity, 'is_self_collision': is_self_collision}, th_i)
 
 def Inverse_Kinematics_Numerical_GN(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str, 
                                     ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
@@ -632,9 +636,6 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                                                                                  result was found.
                                                                     'error': Information about the absolute error (position, orientation)
                                                                     'quadratic_error': Information about the quadratic (angle-axis) error.
-                                   
-                                   Information on whether the result was found within the required tolerance 
-                                                                                         and information about the absolute error (position, orientation).
         (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute position of the joint in radians / meters.
                                             Note:
                                                 Where n is the number of joints. 
