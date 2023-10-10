@@ -30,7 +30,7 @@ CONST_IK_METHOD = 'Analytical'
 #       'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'
 CONST_NIK_METHOD = 'Newton-Raphson'
 # Save the data to a file.
-CONST_SAVE_DATA = False
+CONST_SAVE_DATA = True
 
 def main():
     """
@@ -55,38 +55,48 @@ def main():
     elif CONST_IK_METHOD == 'Numerical':
         data = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Error', 'txt', ',')
 
-    # Create a figure.
-    _, ax = plt.subplots()
-
+    # ...
     t = np.arange(0.0, len(data[:, 0]), 1)
-    #ax.plot(t, data[:, 0], 'x', color='#d0d0d0', linewidth=3.0, markersize=8.0, markeredgewidth=3.0, markerfacecolor = '#ffffff', label='...')
-    ax.plot(t, data[:, 1], 'x', color='#8d8d8d', linewidth=3.0, markersize=8.0, markeredgewidth=3.0, markerfacecolor = '#737373', label=r'$e_{q}$')
-    ax.plot(t, [np.mean(data[:, 1])] * t.size, '--', color='#4c4c4c', linewidth=1.5, label='Average Precision')
 
-    # Set parameters of the graph (plot).
-    ax.set_title(f'...', fontsize=25, pad=25.0)
-    #   Set the x ticks.
-    ax.set_xticks(np.arange(np.min(t) - 10, np.max(t) + 10, 10))
-    #   Label
-    ax.set_xlabel(r'..', fontsize=15, labelpad=10); ax.set_ylabel(r'..', fontsize=15, labelpad=10) 
-    #   Set parameters of the visualization.
-    ax.grid(which='major', linewidth = 0.15, linestyle = '--')
-    # Get handles and labels for the legend.
-    handles, labels = plt.gca().get_legend_handles_labels()
-    # Remove duplicate labels.
-    legend = dict(zip(labels, handles))
-    # Show the labels (legends) of the graph.
-    ax.legend(legend.values(), legend.keys(), fontsize=10.0)
+    # ...
+    marker = ['o', 'x', '.']; label = [r'$e_{p}$', r'$e_{q}$', r'E']; error_name = ['Absolute', 'Absolute', 'Quadratic']
+    for i, data_i in enumerate(data.T):
+        # Create a figure.
+        _, ax = plt.subplots()
 
-    if CONST_SAVE_DATA == True:
-        # Set the full scree mode.
-        plt.get_current_fig_manager().full_screen_toggle()
+        # Visualization of relevant structures.
+        ax.plot(t, data_i, marker[i], color='#8d8d8d', linewidth=3.0, markersize=8.0, markeredgewidth=3.0, markerfacecolor='#8d8d8d', label=label[i])
+        ax.plot(t, [np.mean(data_i)] * t.size, '--', color='#8d8d8d', linewidth=1.5, label=f'Mean {error_name[i]} Error')
 
-        # Save the results.
-        plt.savefig(f'{project_folder}/name.png', format='png', dpi=300)
-    else:
-        # Show the result.
-        plt.show()
+        # Set parameters of the graph (plot).
+        #   Set the x ticks.
+        ax.set_xticks(np.arange(np.min(t) - 10, np.max(t) + 10, 10))
+        #   Label
+        ax.set_xlabel(r'Number of TCP (Tool Center Point) targets', fontsize=15, labelpad=10)
+        ax.set_ylabel(f'{error_name[i]} error {label[i]} in millimeters', fontsize=15, labelpad=10) 
+        #   Set parameters of the visualization.
+        ax.grid(which='major', linewidth = 0.15, linestyle = '--')
+        # Get handles and labels for the legend.
+        handles, labels = plt.gca().get_legend_handles_labels()
+        # Remove duplicate labels.
+        legend = dict(zip(labels, handles))
+        # Show the labels (legends) of the graph.
+        ax.legend(legend.values(), legend.keys(), fontsize=10.0)
+
+        if CONST_SAVE_DATA == True:
+            # Set the full scree mode.
+            plt.get_current_fig_manager().full_screen_toggle()
+
+            # Save the results.
+            if CONST_IK_METHOD == 'Analytical':
+                plt.savefig(f'{project_folder}/images/IK/{Robot_Str.Name}/Method_{CONST_IK_METHOD}_IK_Error_{label[i]}.png', 
+                            format='png', dpi=300)
+            elif CONST_IK_METHOD == 'Numerical':
+                plt.savefig(f'{project_folder}/images/IK/{Robot_Str.Name}/Method_{CONST_IK_METHOD}_IK_{CONST_NIK_METHOD}_Error_{label[i]}.png', 
+                            format='png', dpi=300)
+        else:
+            # Show the result.
+            plt.show()
 
 if __name__ == "__main__":
     sys.exit(main())
