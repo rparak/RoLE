@@ -1,8 +1,8 @@
 # System (Default)
 import sys
 #   Add access if it is not in the system path.
-if '../../../..' + 'src' not in sys.path:
-    sys.path.append('../../../..')
+if '../../..' + 'src' not in sys.path:
+    sys.path.append('../../..')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # OS (Operating system interfaces)
@@ -94,7 +94,8 @@ def main():
         File_IO.Save(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP', np.append(p, Quaternions), 'txt', ',')
         File_IO.Save(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Absolute_Joint_Positions', theta, 'txt', ',')
         File_IO.Save(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Error', [info['error']['position'], 
-                                                                 info['error']['orientation']], 'txt', ',')
+                                                                                   info['error']['orientation'], 
+                                                                                   info['quadratic_error']], 'txt', ',')
 
     # Display information.
     print(f'[INFO] The files have been successfully saved to the folder:')
