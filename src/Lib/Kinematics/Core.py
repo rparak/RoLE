@@ -507,8 +507,8 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
     is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).any()
 
     # Obtain the absolute error of position and orientation.
-    error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - TCP_Position_0.p).all()), 5), 
-             'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', TCP_Position_0.Get_Rotation('QUATERNION')), 5)}
+    error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - TCP_Position_0.p).all()), 
+             'orientation': TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', TCP_Position_0.Get_Rotation('QUATERNION'))}
     
     # Write all the information about the results of the IK solution.
     return ({'successful': is_successful, 'iteration': iteration_i, 'error': error, 'quadratic_error': E, 
@@ -816,8 +816,8 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
                 info['is_self_collision'][i] = General.Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any()
 
                 # Obtain the absolute error of position and orientation.
-                info['error']['position'][i] = np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5)
-                info['error']['orientation'][i] = np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)
+                info['error']['position'][i] = Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all())
+                info['error']['orientation'][i] = TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION'))
 
             return (info, theta_solutions)
         
@@ -842,8 +842,8 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).any()
 
             # Obtain the absolute error of position and orientation.
-            error = {'position': np.round(Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 5), 
-                     'orientation': np.round(TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION')), 5)}
+            error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 
+                     'orientation': TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION'))}
     
             # Write all the information about the results of the IK solution.
             return ({'error': error, 'is_close_singularity': is_close_singularity, 'is_self_collision': is_self_collision}, 
