@@ -1,8 +1,8 @@
 # System (Default)
 import sys
 #   Add access if it is not in the system path.
-if '../' + 'src' not in sys.path:
-    sys.path.append('../..')
+if '../../..' + 'src' not in sys.path:
+    sys.path.append('../../..')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # Time (Time access and conversions)
@@ -29,11 +29,16 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 def main():
     """
     Description:
-        ...
+        A program to test the calculation of the inverse kinematics (IK) of the RRPR robotic 
+        structure, also known as SCARA, using an analytical method.
+
+        Two methods can be used to obtain IK solutions: 'All' or 'Best'.
+            1\ 'All': Obtain the all possible solutions.
+            2\ 'Best': Automatically obtain the best solution.
     """
     
     # Set printing options.
-    #np.set_printoptions(suppress=True, precision=5)
+    np.set_printoptions(suppress=True, precision=5)
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
@@ -54,24 +59,18 @@ def main():
     print('[INFO] The calculation is in progress.')
     t_0 = time.time()
 
-    # Calculation of inverse kinematics (IK) using the chosen numerical method.
+    # Calculation of inverse kinematics (IK) using the analytical method.
     theta_0 = abs_j_pos_0.copy(); theta_T = np.array(theta_arr, dtype=np.float64).T
     for _, theta_arr_i in enumerate(theta_T):
         # Obtain the homogeneous transformation matrix of the robot end-effector from the input absolute joint positions.
         #   FK: 
         #       Theta --> T
         TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(theta_arr_i, 'Fast', Robot_Str)[1]
-
+        
         # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
         #   IK:
         #       Theta <-- T
-        (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, theta_0, 'Newton-Raphson', Robot_Str, 
-                                                                        {'num_of_iteration': 100, 'tolerance': 1e-10})
-        
-        # Check the calculation.
-        if info["successful"] == False:
-            break
-
+        (_, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, theta_0, Robot_Str, 'Best')
         # Obtain the last absolute position of the joint.
         theta_0 = theta.copy()
 
@@ -81,7 +80,7 @@ def main():
     # Get the actual and desired tool center point (TCP) to check the results.
     T_desired = Lib.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
     T_actual  = Lib.Kinematics.Core.Forward_Kinematics(theta, 'Fast', Robot_Str)[1]
-    
+
     # Check that the calculation has been performed successfully.
     accuracy = Mathematics.Euclidean_Norm((T_actual - T_desired).all())
     if Mathematics.Euclidean_Norm((T_actual - T_desired).all()) <= 1e-5:
