@@ -41,6 +41,12 @@ def main():
     # The name of the path where the file will be saved.
     file_path = f'{project_folder}/src/Data/Inverse_Kinematics/{Robot_Str.Name}'
 
+    # Remove the '*.txt' file if it already exists.
+    for _, file_i in enumerate([f'{file_path}/Method_Analytical_IK_TCP',f'{file_path}/Method_Analytical_IK_Absolute_Joint_Positions',
+                                f'{file_path}/Method_Analytical_IK_Error']):
+      if os.path.isfile(f'{file_i}.txt'):
+          os.remove(f'{file_i}.txt')
+
     # Initialization of the class to generate trajectory.
     Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
 
@@ -67,9 +73,17 @@ def main():
         #   IK:
         #       Theta <-- T
         (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, theta_0, Robot_Str, 'Best')
-        print(info['error'])
         # Obtain the last absolute position of the joint.
         theta_0 = theta.copy()
+
+        # Get the translational and rotational part from the transformation matrix.
+        p = TCP_Position.p.all(); Quaternions = TCP_Position.Get_Rotation('QUATERNION').all()
+
+        # Save the data to the '*.txt' file.
+        File_IO.Save(f'{file_path}/Method_Analytical_IK_TCP', np.append(p, Quaternions), 'txt', ',')
+        File_IO.Save(f'{file_path}/Method_Analytical_IK_Absolute_Joint_Positions', theta, 'txt', ',')
+        File_IO.Save(f'{file_path}/Method_Analytical_IK_Error', [info['error']['position'], 
+                                                                 info['error']['orientation']], 'txt', ',')
 
     # Display information.
     print(f'[INFO] The files have been successfully saved to the folder:')
