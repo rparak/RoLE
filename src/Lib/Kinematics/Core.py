@@ -620,8 +620,11 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         (2) theta_0 [Vector<float> 1xn]: Actual absolute joint position in radians / meters.
                                             Note:
                                                 Where n is the number of joints.
-        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (4) ik_solver_properties [Dictionary {'num_of_iteration': float, 
+        (3) method [string]: Name of the numerical method to be used to calculate the IK solution.
+                                Note:
+                                    method = 'Newton-Raphson'
+        (4) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (5) ik_solver_properties [Dictionary {'num_of_iteration': float, 
                                               'tolerance': float}]: The properties of the inverse kinematics solver.
                                                                         Note:
                                                                             'num_of_iteration': The number of iterations.
