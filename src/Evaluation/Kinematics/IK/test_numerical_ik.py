@@ -29,6 +29,8 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 #   Method.
 #       'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'
 CONST_NIK_METHOD = 'Newton-Raphson'
+#   Minimum required tolerance.
+CONST_NIK_TOLERANCE = 1e-10
 
 def main():
     """
@@ -67,7 +69,7 @@ def main():
         #   IK:
         #       Theta <-- T
         (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, theta_0, CONST_NIK_METHOD, Robot_Str, 
-                                                                        {'num_of_iteration': 100, 'tolerance': 1e-10})
+                                                                        {'num_of_iteration': 100, 'tolerance': CONST_NIK_TOLERANCE})
         
         # Check the calculation.
         if info["successful"] == False:
