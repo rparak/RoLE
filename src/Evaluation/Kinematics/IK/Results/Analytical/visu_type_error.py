@@ -47,7 +47,7 @@ def main():
     # Read data from the file.
     data = File_IO.Load(f'{file_path}/Method_Analytical_IK_Error', 'txt', ',')
 
-    # Get the number of TCP (Tool Center Point) targets.
+    # Get the number of targets.
     N = np.arange(0.0, len(data[:, 0]), 1)
 
     label = [r'$e_{p}$', r'$e_{q}$']
@@ -63,10 +63,11 @@ def main():
         #   Set the x ticks.
         ax.set_xticks(np.arange(np.min(N) - 10, np.max(N) + 10, 10))
         #   Set the y ticks.
-        tick_y = (np.max(data_i) - np.min(data_i))/10.0
+        tick_y_tmp = (np.max(data_i) - np.min(data_i))/10.0
+        tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
         ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
         #   Label
-        ax.set_xlabel(r'Number of TCP (Tool Center Point) targets', fontsize=15, labelpad=10)
+        ax.set_xlabel(r'Inverse Kinematics (IK) targets', fontsize=15, labelpad=10)
         ax.set_ylabel(f'Absolute error {label[i]} in millimeters', fontsize=15, labelpad=10) 
         #   Set parameters of the visualization.
         ax.grid(which='major', linewidth = 0.15, linestyle = '--')

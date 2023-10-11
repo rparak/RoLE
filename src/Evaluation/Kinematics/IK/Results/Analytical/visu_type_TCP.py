@@ -45,12 +45,14 @@ def main():
     plt.style.use('science')
 
     # Read data from the file.
-    data = File_IO.Load(f'{file_path}/Method_Analytical_IK_Absolute_Joint_Positions', 'txt', ',')
+    data = File_IO.Load(f'{file_path}/Method_Analytical_IK_TCP', 'txt', ',')
 
     # Get the number of targets.
     N = np.arange(0.0, len(data[:, 0]), 1.0)
 
-    # Display absolute joint position parameters.
+    # Display TCP(Tool Center Point) parameters.
+    y_label = [r'x(t) in meters', r'y(t) in meters', r'z(t) in meters', r'$q_{w}(t)$ in [-]', 
+               r'$q_{x}(t)$ in [-]', r'$q_{y}(t)$ in [-]', r'$q_{z}(t)$ in [-]']
     for i, data_i in enumerate(data.T):
         # Create a figure.
         _, ax = plt.subplots()
@@ -68,8 +70,7 @@ def main():
         ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
         #   Label.
         ax.set_xlabel(r'Inverse Kinematics (IK) targets', fontsize=15, labelpad=10)
-        ax.set_ylabel(r'$\theta_{%d}(t)$ in %s' % ((i + 1), 'radians' if Robot_Str.Theta.Type[i] == 'R' else 'meters'), 
-                      fontsize=15, labelpad=10) 
+        ax.set_ylabel(f'{y_label[i]}', fontsize=15, labelpad=10) 
         #   Set parameters of the visualization.
         ax.grid(which='major', linewidth = 0.15, linestyle = '--')
         # Get handles and labels for the legend.
@@ -84,7 +85,7 @@ def main():
             plt.get_current_fig_manager().full_screen_toggle()
 
             # Save the results.
-            plt.savefig(f'{project_folder}/images/IK/{Robot_Str.Name}/Method_Analytical_IK_Absolute_Joint_Positions.png', 
+            plt.savefig(f'{project_folder}/images/IK/{Robot_Str.Name}/Method_Analytical_IK_TCP.png', 
                         format='png', dpi=300)
         else:
             # Show the result.

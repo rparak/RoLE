@@ -51,9 +51,38 @@ def main():
     # Read data from the file.
     data = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP', 'txt', ',')
 
-    for i, data_i in enumerate(data):
+    # Get the number targets.
+    N = np.arange(0.0, len(data[:, 0]), 1.0)
+
+    # Display TCP(Tool Center Point) parameters.
+    y_label = [r'x(t) in meters', r'y(t) in meters', r'z(t) in meters', r'$q_{w}(t)$ in [-]', 
+               r'$q_{x}(t)$ in [-]', r'$q_{y}(t)$ in [-]', r'$q_{z}(t)$ in [-]']
+    for i, data_i in enumerate(data.T):
         # Create a figure.
         _, ax = plt.subplots()
+
+        # Visualization of relevant structures.
+        ax.plot(N, data_i, '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
+                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label='Desired Data')
+
+        # Set parameters of the graph (plot).
+        #   Set the x ticks.
+        ax.set_xticks(np.arange(np.min(N) - 10.0, np.max(N) + 10.0, 10.0))
+        #   Set the y ticks.
+        tick_y_tmp = (np.max(data_i) - np.min(data_i))/10.0
+        tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
+        ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
+        #   Label.
+        ax.set_xlabel(r'Inverse Kinematics (IK) targets', fontsize=15, labelpad=10)
+        ax.set_ylabel(f'{y_label[i]}', fontsize=15, labelpad=10) 
+        #   Set parameters of the visualization.
+        ax.grid(which='major', linewidth = 0.15, linestyle = '--')
+        # Get handles and labels for the legend.
+        handles, labels = plt.gca().get_legend_handles_labels()
+        # Remove duplicate labels.
+        legend = dict(zip(labels, handles))
+        # Show the labels (legends) of the graph.
+        ax.legend(legend.values(), legend.keys(), fontsize=10.0)
 
         if CONST_SAVE_DATA == True:
             # Set the full scree mode.

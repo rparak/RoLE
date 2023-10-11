@@ -51,9 +51,10 @@ def main():
     # Read data from the file.
     data = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Absolute_Joint_Positions', 'txt', ',')
 
-    # Get the number of TCP (Tool Center Point) targets.
+    # Get the number targets.
     N = np.arange(0.0, len(data[:, 0]), 1.0)
 
+    # Display absolute joint position parameters.
     for i, data_i in enumerate(data.T):
         # Create a figure.
         _, ax = plt.subplots()
@@ -66,10 +67,11 @@ def main():
         #   Set the x ticks.
         ax.set_xticks(np.arange(np.min(N) - 10.0, np.max(N) + 10.0, 10.0))
         #   Set the y ticks.
-        tick_y = (np.max(data_i) - np.min(data_i))/10.0
+        tick_y_tmp = (np.max(data_i) - np.min(data_i))/10.0
+        tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
         ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
         #   Label.
-        ax.set_xlabel(r'Number of TCP (Tool Center Point) targets', fontsize=15, labelpad=10)
+        ax.set_xlabel(r'Inverse Kinematics (IK) targets', fontsize=15, labelpad=10)
         ax.set_ylabel(r'$\theta_{%d}(t)$ in %s' % ((i + 1), 'radians' if Robot_Str.Theta.Type[i] == 'R' else 'meters'), 
                       fontsize=15, labelpad=10) 
         #   Set parameters of the visualization.
