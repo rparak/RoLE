@@ -60,7 +60,7 @@ def main():
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(N, data_i, '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
+        ax.plot(N, np.round(data_i, 3), '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, markerfacecolor = '#ffffff', label='Desired Data')
 
         # Set parameters of the graph (plot).
