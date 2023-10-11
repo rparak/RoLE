@@ -50,18 +50,21 @@ def main():
     # Get the number of TCP (Tool Center Point) targets.
     N = np.arange(0.0, len(data[:, 0]), 1)
 
-    marker = ['x', 'o']; label = [r'$e_{p}$', r'$e_{q}$']
+    label = [r'$e_{p}$', r'$e_{q}$']
     for i, data_i in enumerate(data.T):
         # Create a figure.
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(N, data_i, marker[i], color='#8d8d8d', linewidth=3.0, markersize=8.0, markeredgewidth=3.0, markerfacecolor='#8d8d8d', label=label[i])
+        ax.plot(N, data_i, 'x', color='#8d8d8d', linewidth=3.0, markersize=8.0, markeredgewidth=3.0, markerfacecolor='#8d8d8d', label=label[i])
         ax.plot(N, [np.mean(data_i)] * N.size, '--', color='#8d8d8d', linewidth=1.5, label=f'Mean Absolute Error')
 
         # Set parameters of the graph (plot).
         #   Set the x ticks.
         ax.set_xticks(np.arange(np.min(N) - 10, np.max(N) + 10, 10))
+        #   Set the y ticks.
+        tick_y = (np.max(data_i) - np.min(data_i))/10.0
+        ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
         #   Label
         ax.set_xlabel(r'Number of TCP (Tool Center Point) targets', fontsize=15, labelpad=10)
         ax.set_ylabel(f'Absolute error {label[i]} in millimeters', fontsize=15, labelpad=10) 

@@ -23,10 +23,6 @@ Description:
 """
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
-# Numerical IK Parameters.
-#   Method.
-#       'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'
-CONST_NIK_METHOD = 'Newton-Raphson'
 # Save the data to a file.
 CONST_SAVE_DATA = False
 
@@ -49,29 +45,29 @@ def main():
     plt.style.use('science')
 
     # Read data from the file.
-    data = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Error', 'txt', ',')
+    data = File_IO.Load(f'{file_path}/Method_Analytical_IK_Absolute_Joint_Positions', 'txt', ',')
 
     # Get the number of TCP (Tool Center Point) targets.
-    N = np.arange(0.0, len(data[:, 0]), 1)
+    N = np.arange(0.0, len(data[:, 0]), 1.0)
 
-    label = [r'$e_{p}$', r'$e_{q}$', r'E']; error_name = ['Absolute', 'Absolute', 'Quadratic']
     for i, data_i in enumerate(data.T):
         # Create a figure.
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(N, data_i, 'x', color='#8d8d8d', linewidth=3.0, markersize=8.0, markeredgewidth=3.0, markerfacecolor='#8d8d8d', label=label[i])
-        ax.plot(N, [np.mean(data_i)] * N.size, '--', color='#8d8d8d', linewidth=1.5, label=f'Mean {error_name[i]} Error')
+        ax.plot(N, data_i, '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
+                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label='Desired Data')
 
         # Set parameters of the graph (plot).
         #   Set the x ticks.
-        ax.set_xticks(np.arange(np.min(N) - 10, np.max(N) + 10, 10))
+        ax.set_xticks(np.arange(np.min(N) - 10.0, np.max(N) + 10.0, 10.0))
         #   Set the y ticks.
         tick_y = (np.max(data_i) - np.min(data_i))/10.0
         ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
-        #   Label
+        #   Label.
         ax.set_xlabel(r'Number of TCP (Tool Center Point) targets', fontsize=15, labelpad=10)
-        ax.set_ylabel(f'{error_name[i]} error {label[i]} in millimeters', fontsize=15, labelpad=10) 
+        ax.set_ylabel(r'$\theta_{%d}(t)$ in %s' % ((i + 1), 'radians' if Robot_Str.Theta.Type[i] == 'R' else 'meters'), 
+                      fontsize=15, labelpad=10) 
         #   Set parameters of the visualization.
         ax.grid(which='major', linewidth = 0.15, linestyle = '--')
         # Get handles and labels for the legend.
@@ -81,18 +77,12 @@ def main():
         # Show the labels (legends) of the graph.
         ax.legend(legend.values(), legend.keys(), fontsize=10.0)
 
-        # Display the results as the values shown in the console.
-        print(f'[INFO] Iteration: {i}')
-        print(f'[INFO] max(label{i}) = {np.max(data_i)} in mm')
-        print(f'[INFO] min(label{i}) = {np.min(data_i)} in mm')
-        print(f'[INFO] Mean {error_name[i]} Error = {np.mean(data_i)} in mm')
-
         if CONST_SAVE_DATA == True:
             # Set the full scree mode.
             plt.get_current_fig_manager().full_screen_toggle()
 
             # Save the results.
-            plt.savefig(f'{project_folder}/images/IK/{Robot_Str.Name}/Method_Numerical_IK_{CONST_NIK_METHOD}_Error_{label[i]}.png', 
+            plt.savefig(f'{project_folder}/images/IK/{Robot_Str.Name}/Method_Analytical_IK_Absolute_Joint_Positions.png', 
                         format='png', dpi=300)
         else:
             # Show the result.
