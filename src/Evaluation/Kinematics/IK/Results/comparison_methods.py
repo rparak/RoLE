@@ -30,7 +30,6 @@ def main():
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
 
-
     # Convert the list to an array.
     metrics = np.array(metrics, dtype=np.float32)
 

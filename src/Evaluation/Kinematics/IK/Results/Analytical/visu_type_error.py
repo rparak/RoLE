@@ -29,7 +29,13 @@ CONST_SAVE_DATA = False
 def main():
     """
     Description:
-        ...
+        A program to visualize the absolute error in trajectory calculation using the analytical 
+        inverse kinematics method.
+
+        Note:
+            The program for the generation of the absolute errors from the calculation 
+            can be found here.
+                ../IK/collect_analytical_ik.py
     """
 
     # Locate the path to the project folder.

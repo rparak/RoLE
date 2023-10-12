@@ -33,7 +33,13 @@ CONST_SAVE_DATA = False
 def main():
     """
     Description:
-        ...
+        A program to visualize the absolute/quadratic error in trajectory calculation using the numerical 
+        method of inverse kinematics.
+
+        Note:
+            The program for the generation of the absolute/quadratic errors from the calculation 
+            can be found here.
+                ../IK/collect_numerical_ik.py
     """
 
     # Locate the path to the project folder.
