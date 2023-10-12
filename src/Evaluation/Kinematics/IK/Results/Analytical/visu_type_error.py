@@ -48,9 +48,9 @@ def main():
     data = File_IO.Load(f'{file_path}/Method_Analytical_IK_Error', 'txt', ',')
 
     # Get the number of targets.
-    N = np.arange(0.0, len(data[:, 0]), 1)
+    N = np.linspace(0.0, 1.0, len(data[:, 0]))
 
-    label = [r'$e_{p}$', r'$e_{q}$']
+    label = [r'$e_{p}(\hat{t})$', r'$e_{q}(\hat{t})$']
     for i, data_i in enumerate(data.T):
         # Create a figure.
         _, ax = plt.subplots()
@@ -61,13 +61,13 @@ def main():
 
         # Set parameters of the graph (plot).
         #   Set the x ticks.
-        ax.set_xticks(np.arange(np.min(N) - 10, np.max(N) + 10, 10))
+        ax.set_xticks(np.arange(np.min(N) - 0.1, np.max(N) + 0.1, 0.1))
         #   Set the y ticks.
         tick_y_tmp = (np.max(data_i) - np.min(data_i))/10.0
         tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
         ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
         #   Label
-        ax.set_xlabel(r'Inverse Kinematics (IK) targets', fontsize=15, labelpad=10)
+        ax.set_xlabel(r'Normalized time $\hat{t}$ in the range of [0.0, 1.0]', fontsize=15, labelpad=10)
         ax.set_ylabel(f'Absolute error {label[i]} in millimeters', fontsize=15, labelpad=10) 
         #   Set parameters of the visualization.
         ax.grid(which='major', linewidth = 0.15, linestyle = '--')
@@ -80,8 +80,8 @@ def main():
 
         # Display the results as the values shown in the console.
         print(f'[INFO] Iteration: {i}')
-        print(f'[INFO] max(label{i}) = {np.maximum(data_i)} in mm')
-        print(f'[INFO] min(label{i}) = {np.minimum(data_i)} in mm')
+        print(f'[INFO] max(label{i}) = {np.max(data_i)} in mm')
+        print(f'[INFO] min(label{i}) = {np.min(data_i)} in mm')
         print(f'[INFO] Mean Absolute Error = {np.mean(data_i)} in mm')
 
         if CONST_SAVE_DATA == True:
