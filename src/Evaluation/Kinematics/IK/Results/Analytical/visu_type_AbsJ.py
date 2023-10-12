@@ -47,8 +47,8 @@ def main():
     # Read data from the file.
     data = File_IO.Load(f'{file_path}/Method_Analytical_IK_Absolute_Joint_Positions', 'txt', ',')
 
-    # Get the number of targets.
-    N = np.arange(0.0, len(data[:, 0]), 1.0)
+    # Get the normalized time.
+    t_hat = np.linspace(0.0, 1.0, len(data[:, 0]))
 
     # Display absolute joint position parameters.
     for i, data_i in enumerate(data.T):
@@ -56,19 +56,19 @@ def main():
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(N, data_i, '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
-                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label='Desired Data')
+        ax.plot(t_hat, data_i, '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
+                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'Analytical Method')
 
         # Set parameters of the graph (plot).
         #   Set the x ticks.
-        ax.set_xticks(np.arange(np.min(N) - 10.0, np.max(N) + 10.0, 10.0))
+        ax.set_xticks(np.arange(np.min(t_hat) - 0.1, np.max(t_hat) + 0.1, 0.1))
         #   Set the y ticks.
         tick_y_tmp = (np.max(data_i) - np.min(data_i))/10.0
         tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
         ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
         #   Label.
-        ax.set_xlabel(r'Inverse Kinematics (IK) targets', fontsize=15, labelpad=10)
-        ax.set_ylabel(r'$\theta_{%d}(t)$ in %s' % ((i + 1), 'radians' if Robot_Str.Theta.Type[i] == 'R' else 'meters'), 
+        ax.set_xlabel(r'Normalized time $\hat{t}$ in the range of [0.0, 1.0]', fontsize=15, labelpad=10)
+        ax.set_ylabel(r'$\theta_{%d}(\hat{t})$ in %s' % ((i + 1), 'radians' if Robot_Str.Theta.Type[i] == 'R' else 'meters'), 
                       fontsize=15, labelpad=10) 
         #   Set parameters of the visualization.
         ax.grid(which='major', linewidth = 0.15, linestyle = '--')

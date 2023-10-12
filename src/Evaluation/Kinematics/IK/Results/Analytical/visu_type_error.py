@@ -47,21 +47,23 @@ def main():
     # Read data from the file.
     data = File_IO.Load(f'{file_path}/Method_Analytical_IK_Error', 'txt', ',')
 
-    # Get the number of targets.
-    N = np.linspace(0.0, 1.0, len(data[:, 0]))
+    # Get the normalized time.
+    t_hat = np.linspace(0.0, 1.0, len(data[:, 0]))
 
-    label = [r'$e_{p}(\hat{t})$', r'$e_{q}(\hat{t})$']
+    label = [r'$e_{p}(\hat{t})$', r'$e_{q}(\hat{t})$']; title = ['Absolute Position Error (APE)', 
+                                                                 'Absolute Orientation Error (AOE)']
     for i, data_i in enumerate(data.T):
         # Create a figure.
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(N, data_i, 'x', color='#8d8d8d', linewidth=3.0, markersize=8.0, markeredgewidth=3.0, markerfacecolor='#8d8d8d', label=label[i])
-        ax.plot(N, [np.mean(data_i)] * N.size, '--', color='#8d8d8d', linewidth=1.5, label=f'Mean Absolute Error')
+        ax.plot(t_hat, data_i, 'x', color='#8d8d8d', linewidth=3.0, markersize=8.0, markeredgewidth=3.0, markerfacecolor='#8d8d8d', label=label[i])
+        ax.plot(t_hat, [np.mean(data_i)] * t_hat.size, '--', color='#8d8d8d', linewidth=1.5, label=f'Mean Absolute Error (MAE)')
 
         # Set parameters of the graph (plot).
+        ax.set_title(f'{title[i]}', fontsize=25, pad=25.0)
         #   Set the x ticks.
-        ax.set_xticks(np.arange(np.min(N) - 0.1, np.max(N) + 0.1, 0.1))
+        ax.set_xticks(np.arange(np.min(t_hat) - 0.1, np.max(t_hat) + 0.1, 0.1))
         #   Set the y ticks.
         tick_y_tmp = (np.max(data_i) - np.min(data_i))/10.0
         tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
@@ -82,7 +84,7 @@ def main():
         print(f'[INFO] Iteration: {i}')
         print(f'[INFO] max(label{i}) = {np.max(data_i)} in mm')
         print(f'[INFO] min(label{i}) = {np.min(data_i)} in mm')
-        print(f'[INFO] Mean Absolute Error = {np.mean(data_i)} in mm')
+        print(f'[INFO] MAE = {np.mean(data_i)} in mm')
 
         if CONST_SAVE_DATA == True:
             # Set the full scree mode.
