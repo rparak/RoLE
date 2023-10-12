@@ -35,7 +35,12 @@ CONST_NIK_TOLERANCE = 1e-10
 def main():
     """
     Description:
-        ...
+        A program to test the various methods of numerical inverse kinematics (IK) calculation 
+        for individual robotic structures.
+
+        Note:
+            The test will be performed by generating a trajectory using a polynomial 
+            profile, on which the calculation will be verified.
     """
     
     # Initialization of the structure of the main parameters of the robot.

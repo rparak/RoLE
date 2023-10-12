@@ -35,6 +35,10 @@ def main():
         Two methods can be used to obtain IK solutions: 'All' or 'Best'.
             1\ 'All': Obtain the all possible solutions.
             2\ 'Best': Automatically obtain the best solution.
+
+        Note:
+            The test will be performed by generating a trajectory using a polynomial 
+            profile, on which the calculation will be verified.
     """
     
     # Initialization of the structure of the main parameters of the robot.

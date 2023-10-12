@@ -29,7 +29,7 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 def main():
     """
     Description:
-        ...
+        The same principle applies to the program as for 'test_analytical_ik.py', but this one is for data collection.
     """
     
     # Locate the path to the project folder.

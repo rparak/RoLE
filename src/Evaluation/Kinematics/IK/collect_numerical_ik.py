@@ -35,7 +35,7 @@ CONST_NIK_TOLERANCE = 1e-10
 def main():
     """
     Description:
-        ...
+        The same principle applies to the program as for 'test_numerical_ik.py', but this one is for data collection.
     """
     
     # Locate the path to the project folder.

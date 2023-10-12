@@ -30,7 +30,7 @@ def main():
     """
     Description:
         A program to visualize the absolute error in trajectory calculation using the analytical 
-        inverse kinematics method.
+        method of inverse kinematics.
 
         Note:
             The program for the generation of the absolute errors from the calculation 
