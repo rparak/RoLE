@@ -611,8 +611,9 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
             2\ Gauss-Newton (GN) Method
             3\ Levenberg-Marquardt (LM) Method
 
-        Reference DKT:
+        Reference:
             https://github.com/jhavl/dkt
+            https://github.com/sjwil/DifferentialInverseKinematics/blob/main/DifferentialIK.py
 
     Args:
         (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 
