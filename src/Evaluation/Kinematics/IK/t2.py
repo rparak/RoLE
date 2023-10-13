@@ -27,6 +27,12 @@ Description:
 """
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
+# Numerical IK Parameters.
+#   Method.
+#       'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'
+CONST_NIK_METHOD = 'Newton-Raphson'
+#   Minimum required tolerance.
+CONST_NIK_TOLERANCE = 1e-20
 
 def main():
     """
@@ -65,8 +71,13 @@ def main():
         # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
         #   IK:
         #       Theta <-- T
-        (_, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Analytical(T_i, theta_0, Robot_Str, 'Best')
+        (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(T_i, theta_0, CONST_NIK_METHOD, Robot_Str, 
+                                                                        {'num_of_iteration': 100, 'tolerance': CONST_NIK_TOLERANCE})
         
+        # Check the calculation.
+        if info["successful"] == False:
+            break
+
         # Obtain the last absolute position of the joint.
         theta_0 = theta.copy()
 
