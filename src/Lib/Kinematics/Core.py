@@ -484,6 +484,18 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
         # matrix W_e.
         E = General.Get_Quadratic_Angle_Axis_Error(e_i, W_e)
 
+        """
+        Transpose
+        jjte = J @ J.T @ e_i
+        if jjte.all() == 0.0:
+            alpha = 0.0
+        else:
+            alpha = (e_i @ jjte) / (jjte @ jjte)
+
+        th_i += alpha * J.T @ e_i
+        """
+
+        #print(E)
         if E < ik_solver_properties['tolerance']:
             is_successful = True
             break
@@ -504,7 +516,7 @@ def Inverse_Kinematics_Numerical_NR(TCP_Position: tp.List[tp.List[float]], theta
     # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
     # between the joints.
     is_close_singularity = General.Is_Close_Singularity(J)
-    is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).any()
+    is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).all()
 
     # Obtain the absolute error of position and orientation.
     error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - TCP_Position_0.p).all()), 
@@ -814,7 +826,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
                 # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
                 # between the joints.
                 info['is_close_singularity'][i] = General.Is_Close_Singularity(J)
-                info['is_self_collision'][i] = General.Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any()
+                info['is_self_collision'][i] = General.Is_Self_Collision(th_sol_i, Robot_Parameters_Str).all()
 
                 # Obtain the absolute error of position and orientation.
                 info['error']['position'][i] = Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all())
@@ -840,7 +852,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
             # between the joints.
             is_close_singularity = General.Is_Close_Singularity(J)
-            is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).any()
+            is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).all()
 
             # Obtain the absolute error of position and orientation.
             error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 

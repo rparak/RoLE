@@ -212,7 +212,7 @@ def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.Li
         # absolute joint positions.
         (th_limit_err, _) = Lib.Kinematics.Core.Forward_Kinematics(th_sol_i, 'Fast', Robot_Parameters_Str)
 
-        if th_limit_err.any() == False and Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any() == False:
+        if th_limit_err.all() == False and Is_Self_Collision(th_sol_i, Robot_Parameters_Str).all() == False:
             # Obtain the absolute error of the joint angles.
             error_theta = Mathematics.Euclidean_Norm((theta_0 - th_sol_i))
 
