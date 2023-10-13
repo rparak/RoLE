@@ -32,7 +32,7 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 #       'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'
 CONST_NIK_METHOD = 'Newton-Raphson'
 #   Minimum required tolerance.
-CONST_NIK_TOLERANCE = 1e-20
+CONST_NIK_TOLERANCE = 1e-10
 
 def main():
     """
@@ -55,7 +55,7 @@ def main():
     q_0 = T_0.Get_Rotation('QUATERNION'); q_1 = T_1.Get_Rotation('QUATERNION')
 
     # ...
-    t = np.arange(Configuration.Parameters.CONST_T_0, Configuration.Parameters.CONST_T_1 + 0.01, 0.01)
+    t = np.arange(Configuration.Parameters.CONST_T_0, Configuration.Parameters.CONST_T_1 + 0.1, 0.1)
 
     theta_0 = abs_j_pos_0.copy(); 
     for _, t_i in enumerate(t):
@@ -72,8 +72,8 @@ def main():
         #   IK:
         #       Theta <-- T
         (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(T_i, theta_0, CONST_NIK_METHOD, Robot_Str, 
-                                                                        {'num_of_iteration': 100, 'tolerance': CONST_NIK_TOLERANCE})
-        
+                                                                        {'num_of_iteration': 1000, 'tolerance': CONST_NIK_TOLERANCE})
+
         # Check the calculation.
         if info["successful"] == False:
             break

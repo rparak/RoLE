@@ -47,7 +47,7 @@ def main():
     Robot_Str = CONST_ROBOT_TYPE
 
     # Initialization of the class to generate trajectory.
-    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
+    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.05)
 
     # Obtain the constraints for absolute joint positions in order to generate multi-axis position trajectories.
     (abs_j_pos_0, abs_j_pos_1) = Configuration.Parameters.Get_Absolute_Joint_Positions(Robot_Str.Name)
@@ -74,7 +74,7 @@ def main():
         #   IK:
         #       Theta <-- T
         (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, theta_0, CONST_NIK_METHOD, Robot_Str, 
-                                                                        {'num_of_iteration': 100, 'tolerance': CONST_NIK_TOLERANCE})
+                                                                        {'num_of_iteration': 1000, 'tolerance': CONST_NIK_TOLERANCE})
         
         # Check the calculation.
         if info["successful"] == False:
