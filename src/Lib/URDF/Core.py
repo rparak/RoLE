@@ -103,7 +103,7 @@ class URDF_Generator_Cls(object):
       Base_Collider = list(self.__Robot_Parameters_Str.Collider.Base.values())
 
       # Obtain the moment of inertia (MOI) for the bounding box.
-      moi = MOI.Cube_MOI(self.__Robot_Properties['mass'][0], Base_Collider[0].Size)
+      moi = MOI.Cube(self.__Robot_Properties['mass'][0], Base_Collider[0].Size)
 
       # Change the direction of the origin of the bounding box.
       bbox_origin = ((-1) *  Base_Collider[0].Origin) + [0.0, 0.0, 0.0]
@@ -152,7 +152,7 @@ class URDF_Generator_Cls(object):
       obj_geometry = self.__Object_Geometry(f'Base_{n}')
 
       # Obtain the moment of inertia (MOI) for the bounding box.
-      moi = MOI.Cube_MOI(self.__Robot_Properties['mass'][i], Base_Collider[-1].Size)
+      moi = MOI.Cube(self.__Robot_Properties['mass'][i], Base_Collider[-1].Size)
 
       # Change the direction of the origin of the bounding box.
       bbox_origin = ((-1) *  Base_Collider[-1].Origin) + [0.0, 0.0, 0.0]
@@ -210,7 +210,7 @@ class URDF_Generator_Cls(object):
       #   The joint axis specified in the joint frame. 
       j_ax = f'0 0 {int(self.__Robot_Parameters_Str.Theta.Direction[i])}' if self.__Robot_Parameters_Str.Theta.Axis[i] == 'Z' else f'{int(self.__Robot_Parameters_Str.Theta.Direction[i])} 0 0'
       #   Moment of inertia (MOI) of the bounding box.
-      j_moi = MOI.Cube_MOI(self.__Robot_Properties['mass'][i + i_offset], Theta_Collider[i + i_offset].Size)
+      j_moi = MOI.Cube(self.__Robot_Properties['mass'][i + i_offset], Theta_Collider[i + i_offset].Size)
       #   Origin of the bounding box..
       j_bbox_origin = ((-1) *  Theta_Collider[i + i_offset].Origin) + [0.0, 0.0, 0.0]
       
