@@ -7,7 +7,7 @@ if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
 # OS (Operating system interfaces)
 import os
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Blender/Utilities
 import Lib.Blender.Utilities
 #   ../Lib/Utilities/File_IO

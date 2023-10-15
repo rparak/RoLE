@@ -4,7 +4,7 @@ import numpy as np
 from dataclasses import dataclass, field
 # Typing (Support for type hints)
 import typing as tp
-# Custom Library:
+# Custom Lib.:
 #   ../Lib/Transformation/Core
 import Lib.Transformation.Core as Transformation 
 #   ../Lib/Transformation/Utilities

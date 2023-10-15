@@ -11,7 +11,7 @@ import numpy as np
 import functools
 # Operator (Standard operators as functions)
 import operator
-# Custom Library:
+# Custom Lib.:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 #   ../Lib/Workspace/Core

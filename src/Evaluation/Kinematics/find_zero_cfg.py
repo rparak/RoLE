@@ -5,7 +5,7 @@ if '../' + 'src' not in sys.path:
     sys.path.append('../..')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 #   ../Lib/Kinematics/Core

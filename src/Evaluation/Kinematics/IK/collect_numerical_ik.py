@@ -7,7 +7,7 @@ if '../../..' + 'src' not in sys.path:
 import numpy as np
 # OS (Operating system interfaces)
 import os
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 #   ../Lib/Kinematics/Core
@@ -16,7 +16,7 @@ import Lib.Kinematics.Core
 import Lib.Trajectory.Utilities
 #   ../Configuration/Parameters
 import Configuration.Parameters
-#   ..Lib/Utilities/File_IO
+#   ../Lib/Utilities/File_IO
 import Lib.Utilities.File_IO as File_IO
 
 """

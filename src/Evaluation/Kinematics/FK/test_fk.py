@@ -7,7 +7,7 @@ if '../../..' + 'src' not in sys.path:
 import numpy as np
 # Time (Time access and conversions)
 import time
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 #   ../Lib/Kinematics/Core

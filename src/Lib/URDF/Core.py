@@ -4,10 +4,9 @@ import typing as tp
 import os
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core
-# Custom Script:
 #   ../Lib/URDF/Utilities
 import Lib.URDF.Utilities as Utilities
 #   ../Lib/Parameters/Robot

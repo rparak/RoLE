@@ -6,10 +6,9 @@ import time
 import typing as tp
 # OS (Operating system interfaces)
 import os
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core
-# Custom Script:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 

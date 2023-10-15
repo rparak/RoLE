@@ -9,7 +9,7 @@ if '../../../../' + 'src' not in sys.path:
 import numpy as np
 if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Blender/Utilities
 import Lib.Blender.Utilities
 #   ../Lib/Collider/Utilities

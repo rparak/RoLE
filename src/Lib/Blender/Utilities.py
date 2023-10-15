@@ -8,7 +8,7 @@ import numpy as np
 import bmesh
 # Mathutils (Math Types & Utilities)
 import mathutils 
-# Custom Library:
+# Custom Lib.:
 #   ../Lib/Transformation/Core
 import Lib.Transformation.Core as Transformation
 #   ../Lib/Parameters/Robot

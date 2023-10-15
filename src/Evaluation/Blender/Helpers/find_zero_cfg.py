@@ -6,7 +6,7 @@ if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Blender/Utilities
 import Lib.Blender.Utilities
 #   ../Lib/Kinematics/Core

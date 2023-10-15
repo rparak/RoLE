@@ -13,7 +13,7 @@ import os
 import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 

@@ -4,7 +4,7 @@ import bpy
 import typing as tp
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Blender/Utilities
 import Lib.Blender.Utilities
 #   ../Lib/Parameters/Robot

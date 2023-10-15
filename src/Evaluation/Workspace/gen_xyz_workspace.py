@@ -5,7 +5,7 @@ if '../../' + 'src' not in sys.path:
     sys.path.append('../..')
 # OS (Operating system interfaces)
 import os
-# Custom Library:
+# Custom Lib.:
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 #   ../Lib/Workspace/Core
