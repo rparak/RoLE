@@ -638,10 +638,11 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                     else:
                         th_i_tmp[i] = th_i[i]
 
-            # ...
+            # Save the number of iterations needed to find the inverse 
+            # kinematics (IK) solution at point 'T_i'.
             iteration += iteration_i
 
-            # ...
+            # If the solution was not found within the required tolerance, abort the cycle.
             if is_successful != True:
                 break
 
