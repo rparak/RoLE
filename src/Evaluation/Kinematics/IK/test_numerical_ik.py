@@ -42,53 +42,39 @@ def main():
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
-    # Initialization of the class to generate trajectory.
-    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.1)
-
     # Obtain the constraints for absolute joint positions in order to generate multi-axis position trajectories.
     (abs_j_pos_0, abs_j_pos_1) = Configuration.Parameters.Get_Absolute_Joint_Positions(Robot_Str.Name)
 
-    # Generation of multi-axis position trajectories from input parameters.
-    theta_arr = []
-    for _, (th_actual, th_desired) in enumerate(zip(abs_j_pos_0, abs_j_pos_1)):
-        (theta_arr_i, _, _) = Polynomial_Cls.Generate(th_actual, th_desired, 0.0, 0.0, 0.0, 0.0,
-                                                      Configuration.Parameters.CONST_T_0, Configuration.Parameters.CONST_T_1)
-        theta_arr.append(theta_arr_i)
+    # Obtain the desired homogeneous transformation matrix T of the tool center point (TCP).
+    T_1 = Lib.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
 
     print('[INFO] The calculation is in progress.')
     t_0 = time.time()
 
-    # Calculation of inverse kinematics (IK) using the chosen numerical method.
-    theta_0 = abs_j_pos_0.copy(); theta_T = np.array(theta_arr, dtype=np.float64).T
-    for _, theta_arr_i in enumerate(theta_T):
-        # Obtain the homogeneous transformation matrix of the robot end-effector from the input absolute joint positions.
-        #   FK: 
-        #       Theta --> T
-        TCP_Position = Lib.Kinematics.Core.Forward_Kinematics(theta_arr_i, 'Fast', Robot_Str)[1]
-
-        # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
-        #   IK:
-        #       Theta <-- T
-        (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, theta_0, CONST_NIK_METHOD, Robot_Str, 
-                                                                        {'num_of_iteration': 1000, 'tolerance': CONST_NIK_TOLERANCE})
-        
-        # Check the calculation.
-        if info["successful"] == False:
-            break
-
-        # Obtain the last absolute position of the joint.
-        theta_0 = theta.copy()
-
+    # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
+    #   IK:
+    #       Theta <-- T
+    (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(T_1, abs_j_pos_0, CONST_NIK_METHOD, Robot_Str, 
+                                                                    {'delta_time': 0.2, 'num_of_iteration': 500, 
+                                                                     'tolerance': CONST_NIK_TOLERANCE})
+    
     t = time.time() - t_0
     print(f'[INFO] Time: {t:0.05f} in seconds.')
 
     # Get the actual and desired tool center point (TCP) to check the results.
-    T_desired = Lib.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
-    T_actual  = Lib.Kinematics.Core.Forward_Kinematics(theta, 'Fast', Robot_Str)[1]
-    
+    T = Lib.Kinematics.Core.Forward_Kinematics(theta, 'Fast', Robot_Str)[1]
+
+    print(f'[INFO] Absolute Joint Positions:')
+    print(f'[INFO] >> successful = {info["successful"]}')
+    print(f'[INFO] >> iteration = {info["iteration"]}')
+    print(f'[INFO] >> position_err = {info["error"]["position"]}, orientation_err = {info["error"]["orientation"]}')
+    print(f'[INFO] >> theta = {theta}')
+    print(f'[INFO] >> is_close_singularity = {info["is_close_singularity"]}')
+    print(f'[INFO] >> is_self_collision = {info["is_self_collision"]}')
+
     # Check that the calculation has been performed successfully.
-    accuracy = Mathematics.Euclidean_Norm((T_actual - T_desired).all())
-    if Mathematics.Euclidean_Norm((T_actual - T_desired).all()) <= 1e-5:
+    accuracy = Mathematics.Euclidean_Norm((T - T_1).all())
+    if accuracy <= 1e-5:
         print('[INFO] The IK solution test was successful.')
         print(f'[INFO] Accuracy = {accuracy}')
     else:

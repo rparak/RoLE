@@ -15,6 +15,8 @@ from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM
 import Lib.Transformation.Utilities.Mathematics as Mathematics
 #   ../Lib/Transformation/Core
 import Lib.Transformation.Core as Transformation
+#   ../Lib/Interpolation/Utilities
+import Lib.Interpolation.Utilities
 
 """
 Description:
@@ -512,7 +514,10 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
             https://github.com/jhavl/dkt/blob/main/Part%201/4%20Numerical%20Inverse%20Kinematics.ipynb
 
         Note:
-            Linear interpolation, add some notes about the calculation ....
+            The numerical inverse kinematics will be calculated using linear interpolation between the actual and desired positions, defined by the 
+            variable 'delta_time.'
+            
+            If 'delta_time' is equal to 'None,' the calculation will be used without interpolation.
 
     Args:
         (1) TCP_Position [Matrix<float> 4x4]: The desired TCP (tool center point) in Cartesian coordinates defined 
@@ -524,13 +529,19 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                                 Note:
                                     method = 'Newton-Raphson', 'Gauss-Newton' or 'Levenberg-Marquardt'
         (4) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-        (5) ik_solver_properties [Dictionary {'delta_time': float, 'num_of_iteration': float, 
+        (5) ik_solver_properties [Dictionary {'delta_time': float or None, 'num_of_iteration': float, 
                                               'tolerance': float}]: The properties of the inverse kinematics solver.
                                                                         Note:
                                                                             'delta_time': The difference (spacing) between 
-                                                                                          the time values.
-                                                                            'num_of_iteration': The number of iterations.
-                                                                            'tolerance': Minimum required tolerance.
+                                                                                          the time values. If equal to 'None', do not 
+                                                                                          use interpolation between the actual and desired 
+                                                                                          positions.
+                                                                            'num_of_iteration': The number of iterations per 
+                                                                                                time instant.
+                                                                            'tolerance': The minimum required tolerance per 
+                                                                                         time instant.
+                                                                                
+                                                                            Where time instant is defined by the 'delta_time' variable.
 
     Returns:
         (1) parameter [Dictionary {'successful': bool, 'iteration': int, 'error': {'position': float, 'orientation': float}, 
@@ -564,46 +575,75 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         # Diagonal weight matrix.
         W_e = np.diag(np.ones(n_joints))
 
-        # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
-        (th_limit_err, TCP_Position_0) = Forward_Kinematics(theta_0, 'Fast', Robot_Parameters_Str)
+        # Obtain the actual homogeneous transformation matrix T of the tool center point (TCP).
+        T_0 = Forward_Kinematics(theta_0, 'Fast', Robot_Parameters_Str)[1]
 
-        # Get evenly distributed time values in a given interval.
-        #   t_0(0.0) <= t <= t_1(1.0)
-        t = np.arange(0.0, 1.0 + ik_solver_properties['delta_time'], 
-                      ik_solver_properties['delta_time'])
+        # Express the actual/desired position and orientation of the tool center point (TCP).
+        #   Position: p = x, y, z in meters.
+        p_0 = T_0.p.all(); p_1 = TCP_Position.p.all()
+        #   Orientation: q = w, x, y, z in [-] -> [-1.0, 1.0].
+        q_0 = T_0.Get_Rotation('QUATERNION'); q_1 = TCP_Position.Get_Rotation('QUATERNION')
+
+        # If the variable 'delta_time' is not defined, set the variable 't' to 1.0.
+        if ik_solver_properties['delta_time'] == None:
+            t = np.array([1.0], dtype=np.float64)
+        else:
+            # Get evenly distributed time values in a given interval.
+            #   t_0(0.0) <= t <= t_1(1.0)
+            t = np.linspace(0.0, 1.0, int(1.0/ik_solver_properties['delta_time']))
         
-        is_successful = False; th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
-        for iteration_i in range(ik_solver_properties['num_of_iteration']):
-            # Get the matrix of the geometric Jacobian.
-            J_tmp = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
+        """
+        Description:
+            Calculate the numerical inverse kinematics using linear interpolation between the actual and desired positions defined by the time 't.'
+        """
+        iteration = 0.0; th_i = theta_0.copy(); th_i_tmp = theta_0.copy(); T = HTM_Cls(T_0.all(), np.float64)
+        for _, t_i in enumerate(t):
+            # Obtain the interpolation (Lerp, Slerp) between the given positions and orientations.
+            p_i = Lib.Interpolation.Utilities.Lerp('Explicit', p_0, p_1, t_i)
+            q_i = Lib.Interpolation.Utilities.Slerp('Quaternion', q_0, q_1, t_i)
+            
+            # Express the homogeneous transformation matrix for the point based on position and rotation.
+            T_i = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float64).Rotation(q_i.all(), 'QUATERNION').Translation(p_i)
 
-            # Get an error (angle-axis) vector which represents the translation and rotation.
-            e_i_tmp = General.Get_Angle_Axis_Error(TCP_Position, TCP_Position_0) 
+            is_successful = False
+            for iteration_i in range(ik_solver_properties['num_of_iteration']):
+                # Get the matrix of the geometric Jacobian.
+                J_tmp = Get_Geometric_Jacobian(th_i, Robot_Parameters_Str)
 
-            # Modification of the Jacobian and angle-axis error shape with respect 
-            # to the number of joints of the robotic manipulator.
-            (J, e_i) = __Modify_IKN_Parameters(Robot_Parameters_Str.Name, J_tmp, e_i_tmp)
+                # Get an error (angle-axis) vector which represents the translation and rotation.
+                e_i_tmp = General.Get_Angle_Axis_Error(T_i, T) 
 
-            # Get the quadratic (angle-axis) error which is weighted by the diagonal 
-            # matrix W_e.
-            E = General.Get_Quadratic_Angle_Axis_Error(e_i, W_e)
+                # Modification of the Jacobian and angle-axis error shape with respect 
+                # to the number of joints of the robotic manipulator.
+                (J, e_i) = __Modify_IKN_Parameters(Robot_Parameters_Str.Name, J_tmp, e_i_tmp)
 
-            if E < ik_solver_properties['tolerance']:
-                is_successful = True
-                break
-            else:
-                # Obtain the new theta value using the chosen numerical method.
-                th_i += __Obtain_Theta_IK_N_Method(method, J, e_i)
+                # Get the quadratic (angle-axis) error which is weighted by the diagonal 
+                # matrix W_e.
+                E = General.Get_Quadratic_Angle_Axis_Error(e_i, W_e)
 
-            # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
-            (th_limit_err, TCP_Position_0) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
-
-            # Check whether the desired absolute joint positions are within the limits.
-            for i, th_limit_err_i in enumerate(th_limit_err):
-                if th_limit_err_i == True:
-                    th_i[i] = th_i_tmp[i]
+                if E < ik_solver_properties['tolerance']:
+                    is_successful = True; th_i_tmp = th_i.copy()
+                    break
                 else:
-                    th_i_tmp[i] = th_i[i]
+                    # Obtain the new theta value using the chosen numerical method.
+                    th_i += __Obtain_Theta_IK_N_Method(method, J, e_i)
+
+                # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
+                (th_limit_err, T) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
+
+                # Check whether the desired absolute joint positions are within the limits.
+                for i, th_limit_err_i in enumerate(th_limit_err):
+                    if th_limit_err_i == True:
+                        th_i[i] = th_i_tmp[i]
+                    else:
+                        th_i_tmp[i] = th_i[i]
+
+            # ...
+            iteration += iteration_i
+
+            # ...
+            if is_successful != True:
+                break
 
         # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
         # between the joints.
@@ -611,11 +651,11 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).all()
 
         # Obtain the absolute error of position and orientation.
-        error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - TCP_Position_0.p).all()), 
-                'orientation': TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', TCP_Position_0.Get_Rotation('QUATERNION'))}
+        error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 
+                 'orientation': TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION'))}
         
         # Write all the information about the results of the IK solution.
-        return ({'successful': is_successful, 'iteration': iteration_i, 'error': error, 'quadratic_error': E, 
+        return ({'successful': is_successful, 'iteration': iteration, 'error': error, 'quadratic_error': E, 
                 'is_close_singularity': is_close_singularity, 'is_self_collision': is_self_collision}, th_i)
 
     except AssertionError as error:
