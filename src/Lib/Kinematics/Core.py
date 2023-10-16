@@ -416,7 +416,8 @@ def __Modify_IKN_Parameters(name: str, J: tp.List[tp.List[float]], e_i: tp.List[
         }[name](J, e_i)
 
 """
-Transpose Method ...
+Transpose Method ... probably Gradient-Descent
+# https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8398366
 jjte = J @ J.T @ e_i
 if jjte.all() == 0.0:
     alpha = 0.0
