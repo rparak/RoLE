@@ -566,6 +566,11 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
 
         # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
         (th_limit_err, TCP_Position_0) = Forward_Kinematics(theta_0, 'Fast', Robot_Parameters_Str)
+
+        # Get evenly distributed time values in a given interval.
+        #   t_0(0.0) <= t <= t_1(1.0)
+        t = np.arange(0.0, 1.0 + ik_solver_properties['delta_time'], 
+                      ik_solver_properties['delta_time'])
         
         is_successful = False; th_i = theta_0.copy(); th_i_tmp = theta_0.copy()
         for iteration_i in range(ik_solver_properties['num_of_iteration']):
