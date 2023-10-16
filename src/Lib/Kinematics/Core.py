@@ -454,7 +454,7 @@ def __IK_N_GN(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
             To obtain more information about the Args and Returns parameters, please refer to the '__Obtain_Theta_IK_N_Method(..)' function.   
     """
 
-    pass
+    return None
 
 def __IK_N_LM(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]:
     """
@@ -469,7 +469,7 @@ def __IK_N_LM(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
             To obtain more information about the Args and Returns parameters, please refer to the '__Obtain_Theta_IK_N_Method(..)' function.
     """
 
-    pass
+    return None
 
 def __Obtain_Theta_IK_N_Method(method: str, J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]:
     """
