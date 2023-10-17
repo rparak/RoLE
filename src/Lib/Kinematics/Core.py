@@ -425,7 +425,40 @@ else:
     alpha = (e_i @ jjte) / (jjte @ jjte)
 
 th_i += alpha * J.T @ e_i
+
+# Introduction to Inverse Kinematics with Jacobian Transpose, Pseudoinverse and Damped Least Squares methods, Samuel R. Buss.
 """
+
+def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]:
+    """
+    Description:
+        A function to obtain the absolute joint position (theta) of an individual robotic structure using an inverse kinematics (IK) numerical 
+        method called the Jacobian-Transpose (JT).
+
+        Equation:
+            delta_{theta} = alpha * J^T @ e_i
+
+            where alpha is a appropriate scalar and must be greater than 0. J^T is the transpose of J and e_i is the error (angle axis).
+
+            Reference:
+                Introduction to Inverse Kinematics with Jacobian Transpose, Pseudoinverse and Damped Least Squares methods, Samuel R. Buss.
+
+        Note:
+            To obtain more information about the Args and Returns parameters, please refer to the '__Obtain_Theta_IK_N_Method(..)' function.
+    """
+
+    # ...
+    x = J @ J.T @ e_i
+
+    # ...
+    if x.all() == 0.0:
+        # Because alpha must be greater than 0.0, set alpha
+        # as a small number.
+        alpha = 1e-5
+    else:
+        alpha = (e_i @ x) / (x @ x)
+
+    return alpha * J.T @ e_i
 
 def __IK_N_NR(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]:
     """
@@ -434,8 +467,13 @@ def __IK_N_NR(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
         method called the Newton-Raphson (NR).
 
         Equation:
-            ...
+            delta_{theta} = J^(dagger) @ e_i
 
+            where J^(dagger) is the pseudoinverse of J, also called the Moore-Penrose inverse of J and e_i is the error (angle axis).
+
+            Reference:
+                Modern Robotics: Mechanics, Planning, and Control, Kevin M. Lynch and Frank C. Park
+                
         Note:
             To obtain more information about the Args and Returns parameters, please refer to the '__Obtain_Theta_IK_N_Method(..)' function.
     """
@@ -493,6 +531,7 @@ def __Obtain_Theta_IK_N_Method(method: str, J: tp.List[tp.List[float]], e_i: tp.
     """
 
     return {
+        'Jacobian-Transpose': lambda J_in, e_i_in: __IK_N_JT(J_in, e_i_in),
         'Newton-Raphson': lambda J_in, e_i_in: __IK_N_NR(J_in, e_i_in),
         'Gauss-Newton': lambda J_in, e_i_in: __IK_N_GN(J_in, e_i_in),
         'Levenberg-Marquardt': lambda J_in, e_i_in: __IK_N_LM(J_in, e_i_in)
@@ -505,9 +544,10 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         A function to compute the inverse kinematics (IK) solution of the individual robotic structure using the chosen numerical method.
 
         Possible numerical methods that can be used include:
-            1\ Newton-Raphson (NR) Method
-            2\ Gauss-Newton (GN) Method
-            3\ Levenberg-Marquardt (LM) Method
+            1\ Jacobian-Transpose (JT) Method
+            2\ Newton-Raphson (NR) Method
+            3\ Gauss-Newton (GN) Method
+            4\ Levenberg-Marquardt (LM) Method
 
         Reference:
             https://github.com/jhavl/dkt
@@ -565,7 +605,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
     """
 
     try:
-        assert method in ['Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt']
+        assert method in ['Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt']
 
         if isinstance(TCP_Position, (list, np.ndarray)):
             TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float64)

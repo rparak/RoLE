@@ -27,7 +27,7 @@ Description:
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Numerical IK Parameters.
 #   Method.
-#       'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'
+#       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'
 CONST_NIK_METHOD = 'Newton-Raphson'
 #   Minimum required tolerance.
 CONST_NIK_TOLERANCE = 1e-10
@@ -55,7 +55,7 @@ def main():
     #   IK:
     #       Theta <-- T
     (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(T_1, abs_j_pos_0, CONST_NIK_METHOD, Robot_Str, 
-                                                                    {'delta_time': 0.2, 'num_of_iteration': 500, 
+                                                                    {'delta_time': 0.1, 'num_of_iteration': 500, 
                                                                      'tolerance': CONST_NIK_TOLERANCE})
     
     t = time.time() - t_0
