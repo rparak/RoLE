@@ -30,7 +30,7 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 #       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'
 CONST_NIK_METHOD = 'Newton-Raphson'
 #   Minimum required tolerance.
-CONST_NIK_TOLERANCE = 1e-20
+CONST_NIK_TOLERANCE = 1e-10
 
 def main():
     """
@@ -125,7 +125,8 @@ def main():
         File_IO.Save(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP_Predicted', np.append(p_predicted, q_predicted), 'txt', ',')
         File_IO.Save(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Absolute_Joint_Positions', theta_i, 'txt', ',')
         File_IO.Save(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Error', [info['error']['position'], 
-                                                                                   info['error']['orientation']], 'txt', ',')
+                                                                                   info['error']['orientation'],
+                                                                                   info['quadratic_error']], 'txt', ',')
         
         # Obtain the last absolute position of the joint.
         theta_0 = theta_i.copy()
