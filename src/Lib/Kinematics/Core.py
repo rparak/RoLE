@@ -473,7 +473,7 @@ def __IK_N_NR(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
 
             Reference:
                 Modern Robotics: Mechanics, Planning, and Control, Kevin M. Lynch and Frank C. Park
-                
+
         Note:
             To obtain more information about the Args and Returns parameters, please refer to the '__Obtain_Theta_IK_N_Method(..)' function.
     """
