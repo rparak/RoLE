@@ -60,7 +60,7 @@ def main():
 
         # Visualization of relevant structures.
         ax.plot(t_hat, data_i, '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
-                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'Analytical method: Desired data')
+                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'Desired data')
         ax.plot(t_hat, data_p_i, '.-', color='#ffbf80', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'Analytical method: Predicted data')
 
