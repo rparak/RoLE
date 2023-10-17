@@ -519,13 +519,15 @@ def __Obtain_Theta_IK_N_Method(method: str, J: tp.List[tp.List[float]], e_i: tp.
         A function to obtain the absolute joint positions (theta) of an individual robotic structure using the chosen numerical method.
 
     Args:
-        (1) parameter [Matrix<float> kxn]: Matrix of the modified geometric Jacobian (6 x n).
-                                            Note: 
-                                                Where k is equal to the number of axes and n is equal 
-                                                to the number of joints.
-        (2) parameter [Vector<float> 1xk]: Modified vector of an error (angle-axis).
-                                            Note: 
-                                                Where k is equal to the number of axes.
+        (1) method [string]: Name of the numerical method to be used to calculate the IK solution.
+        (2) J [Matrix<float> kxn]: Matrix of the modified geometric Jacobian (6 x n).
+                                        Note: 
+                                            Where k is equal to the number of axes and n is equal 
+                                            to the number of joints.
+        (3) e_i [Vector<float> 1xk]: Modified vector of an error (angle-axis).
+                                        Note: 
+                                            Where k is equal to the number of axes.
+        (4) **properties []: **properties: tp.Dict
 
     Returns:
         (1) parameter [Vector<float> 1xn]: Obtained absolute positions of joints in radians / meters.
@@ -557,6 +559,9 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
             https://github.com/sjwil/DifferentialInverseKinematics/blob/main/DifferentialIK.py
             https://github.com/jhavl/dkt/blob/main/Part%201/4%20Numerical%20Inverse%20Kinematics.ipynb
 
+        **kwargs:
+            https://realpython.com/python-kwargs-and-args/
+
         Note:
             The numerical inverse kinematics will be calculated using linear interpolation between the actual and desired positions, defined by the 
             variable 'delta_time.'
@@ -571,7 +576,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                                                 Where n is the number of joints.
         (3) method [string]: Name of the numerical method to be used to calculate the IK solution.
                                 Note:
-                                    method = 'Newton-Raphson', 'Gauss-Newton' or 'Levenberg-Marquardt'
+                                    method = 'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton' or 'Levenberg-Marquardt'
         (4) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
         (5) ik_solver_properties [Dictionary {'delta_time': float or None, 'num_of_iteration': float, 
                                               'tolerance': float}]: The properties of the inverse kinematics solver.
