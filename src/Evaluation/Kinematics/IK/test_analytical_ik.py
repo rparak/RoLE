@@ -74,4 +74,4 @@ def main():
         print(f'[INFO] Accuracy = {accuracy}')
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

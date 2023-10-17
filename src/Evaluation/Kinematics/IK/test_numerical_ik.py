@@ -30,7 +30,7 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 #       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'
 CONST_NIK_METHOD = 'Newton-Raphson'
 #   Minimum required tolerance.
-CONST_NIK_TOLERANCE = 1e-10
+CONST_NIK_TOLERANCE = 1e-20
 
 def main():
     """
@@ -82,4 +82,4 @@ def main():
         print(f'[INFO] Accuracy = {accuracy}')
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

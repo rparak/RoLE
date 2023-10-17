@@ -51,8 +51,10 @@ def main():
     file_path = f'{project_folder}/src/Data/Inverse_Kinematics/{Robot_Str.Name}'
 
     # Remove the '*.txt' file if it already exists.
-    for _, file_i in enumerate([f'{file_path}/Method_Analytical_IK_TCP_Desired', f'{file_path}/Method_Analytical_IK_TCP_Predicted',
-                                f'{file_path}/Method_Analytical_IK_Absolute_Joint_Positions', f'{file_path}/Method_Analytical_IK_Error']):
+    for _, file_i in enumerate([f'{file_path}/Method_Analytical_IK_TCP_Desired', 
+                                f'{file_path}/Method_Analytical_IK_TCP_Predicted',
+                                f'{file_path}/Method_Analytical_IK_Absolute_Joint_Positions', 
+                                f'{file_path}/Method_Analytical_IK_Error']):
       if os.path.isfile(f'{file_i}.txt'):
           os.remove(f'{file_i}.txt')
 
@@ -118,6 +120,6 @@ def main():
     print(f'[INFO] >> {file_path}/Method_Analytical_IK_TCP_Predicted.txt')
     print(f'[INFO] >> {file_path}/Method_Analytical_IK_Absolute_Joint_Positions.txt')
     print(f'[INFO] >> {file_path}/Method_Analytical_IK_Error.txt')
-
+    
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

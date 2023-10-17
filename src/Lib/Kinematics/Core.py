@@ -440,6 +440,9 @@ def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
 
             where alpha is a appropriate scalar and must be greater than 0. J^T is the transpose of J and e_i is the error (angle axis).
 
+            Expression of the parameter alpha:
+                alpha = <e_i, J @ J^T @ e_i> / <J @ J^T @ e_i, J @ J^T @ e_i>
+
             Reference:
                 Introduction to Inverse Kinematics with Jacobian Transpose, Pseudoinverse and Damped Least Squares methods, Samuel R. Buss.
 
@@ -447,10 +450,10 @@ def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
             To obtain more information about the Args and Returns parameters, please refer to the '__Obtain_Theta_IK_N_Method(..)' function.
     """
 
-    # ...
+    # Auxiliary expression.
     x = J @ J.T @ e_i
 
-    # ...
+    # Error avoidance condition.
     if x.all() == 0.0:
         # Because alpha must be greater than 0.0, set alpha
         # as a small number.

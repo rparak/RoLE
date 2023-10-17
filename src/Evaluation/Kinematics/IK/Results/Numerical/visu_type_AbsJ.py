@@ -60,7 +60,7 @@ def main():
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(t_hat, np.round(data_i, 3), '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
+        ax.plot(t_hat, data_i, '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'{CONST_NIK_METHOD} Method')
 
         # Set parameters of the graph (plot).

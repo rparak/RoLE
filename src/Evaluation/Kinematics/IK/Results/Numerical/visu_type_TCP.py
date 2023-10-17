@@ -49,7 +49,8 @@ def main():
     plt.style.use('science')
 
     # Read data from the file.
-    data = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP', 'txt', ',')
+    data = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP_Desired', 'txt', ',')
+    data_predicted = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP_Predicted', 'txt', ',')
 
     # Get the normalized time.
     t_hat = np.linspace(0.0, 1.0, len(data[:, 0]))
@@ -57,13 +58,15 @@ def main():
     # Display TCP(Tool Center Point) parameters.
     y_label = [r'$x(\hat{t})$ in meters', r'$y(\hat{t})$ in meters', r'$z(\hat{t})$ in meters', r'$q_{w}(\hat{t})$ in [-]', 
                r'$q_{x}(\hat{t})$ in [-]', r'$q_{y}(\hat{t})$ in [-]', r'$q_{z}(\hat{t})$ in [-]']
-    for i, data_i in enumerate(data.T):
+    for i, (data_i, data_p_i) in enumerate(zip(data.T, data_predicted.T)):
         # Create a figure.
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
         ax.plot(t_hat, data_i, '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
-                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'{CONST_NIK_METHOD} Method')
+                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'Desired data')
+        ax.plot(t_hat, data_p_i, '.-', color='#ffbf80', linewidth=1.0, markersize = 3.0, 
+                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'Numerical {CONST_NIK_METHOD} method: Predicted data')
 
         # Set parameters of the graph (plot).
         #   Set the x ticks.
