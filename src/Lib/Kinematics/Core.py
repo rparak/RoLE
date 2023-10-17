@@ -559,7 +559,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
             https://github.com/sjwil/DifferentialInverseKinematics/blob/main/DifferentialIK.py
             https://github.com/jhavl/dkt/blob/main/Part%201/4%20Numerical%20Inverse%20Kinematics.ipynb
 
-        **kwargs:
+        **kwargs (tp.Dict):
             https://realpython.com/python-kwargs-and-args/
 
         Note:
