@@ -436,7 +436,7 @@ def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
         method called the Jacobian-Transpose (JT).
 
         Equation:
-            delta_{theta} = alpha * J^T @ e_i
+            theta = alpha * J^T @ e_i
 
             where alpha is a appropriate scalar and must be greater than 0. J^T is the transpose of J and e_i is the error (angle axis).
 
@@ -470,7 +470,7 @@ def __IK_N_NR(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
         method called the Newton-Raphson (NR).
 
         Equation:
-            delta_{theta} = J^(dagger) @ e_i
+            theta = J^(dagger) @ e_i
 
             where J^(dagger) is the pseudoinverse of J, also called the Moore-Penrose inverse of J and e_i is the error (angle axis).
 

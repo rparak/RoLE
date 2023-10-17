@@ -66,7 +66,7 @@ def main():
         ax.plot(t_hat, data_i, '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'Desired data')
         ax.plot(t_hat, data_p_i, '.-', color='#ffbf80', linewidth=1.0, markersize = 3.0, 
-                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'Numerical {CONST_NIK_METHOD} method: Predicted data')
+                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'Numerical {CONST_NIK_METHOD} Method: Predicted data')
 
         # Set parameters of the graph (plot).
         #   Set the x ticks.
