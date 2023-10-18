@@ -26,11 +26,13 @@ Description:
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Numerical IK Parameters.
-#   Method.
-#       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt'
+#   Name of the numerical method to be used to calculate the IK solution.
+#       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
+#       'Levenberg-Marquardt'
 CONST_NIK_METHOD = 'Newton-Raphson'
-#   Minimum required tolerance.
-CONST_NIK_TOLERANCE = 1e-10
+#   The properties of the inverse kinematics solver.
+CONST_IK_PROPERTIES = {'delta_time': 0.1, 'num_of_iteration': 500, 
+                       'tolerance': 1e-10}
 
 def main():
     """
@@ -73,8 +75,7 @@ def main():
     #   IK:
     #       Theta <-- T
     (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(T_1, abs_j_pos_0, CONST_NIK_METHOD, Robot_Str, 
-                                                                     {'delta_time': 0.1, 'num_of_iteration': 500, 
-                                                                      'tolerance': CONST_NIK_TOLERANCE})
+                                                                     CONST_IK_PROPERTIES)
 
     # Check the calculation.
     if info["successful"] == False:
@@ -104,8 +105,7 @@ def main():
         #   IK:
         #       Theta <-- T
         (info, theta_i) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(T_i, theta_0, CONST_NIK_METHOD, Robot_Str, 
-                                                                           {'delta_time': None, 'num_of_iteration': 500, 
-                                                                            'tolerance': CONST_NIK_TOLERANCE})
+                                                                           CONST_IK_PROPERTIES)
         
         # Check the calculation.
         if info["successful"] == False:
