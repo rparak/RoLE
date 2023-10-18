@@ -415,20 +415,6 @@ def __Modify_IKN_Parameters(name: str, J: tp.List[tp.List[float]], e_i: tp.List[
                                                      np.delete(e_i_in.copy(), [3, 4], axis=0))
         }[name](J, e_i)
 
-"""
-Transpose Method ... probably Gradient-Descent
-# https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8398366
-jjte = J @ J.T @ e_i
-if jjte.all() == 0.0:
-    alpha = 0.0
-else:
-    alpha = (e_i @ jjte) / (jjte @ jjte)
-
-th_i += alpha * J.T @ e_i
-
-# Introduction to Inverse Kinematics with Jacobian Transpose, Pseudoinverse and Damped Least Squares methods, Samuel R. Buss.
-"""
-
 def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]:
     """
     Description:
@@ -436,12 +422,12 @@ def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
         method called the Jacobian-Transpose (JT).
 
         Equation:
-            theta = alpha * J^T @ e_i
+            theta = alpha * J^T @ e_i,
 
             where alpha is a appropriate scalar and must be greater than 0. J^T is the transpose of J and e_i is the error (angle axis).
 
             Expression of the parameter alpha:
-                alpha = <e_i, J @ J^T @ e_i> / <J @ J^T @ e_i, J @ J^T @ e_i>
+                alpha = <e_i, J @ J^T @ e_i> / <J @ J^T @ e_i, J @ J^T @ e_i>.
 
             Reference:
                 Introduction to Inverse Kinematics with Jacobian Transpose, Pseudoinverse and Damped Least Squares methods, Samuel R. Buss.
@@ -470,7 +456,7 @@ def __IK_N_NR(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
         method called the Newton-Raphson (NR).
 
         Equation:
-            theta = J^(dagger) @ e_i
+            theta = J^(dagger) @ e_i,
 
             where J^(dagger) is the pseudoinverse of J, also called the Moore-Penrose inverse of J and e_i is the error (angle axis).
 
@@ -490,12 +476,15 @@ def __IK_N_GN(J: tp.List[tp.List[float]], e_i: tp.List[float], W_e: tp.List[tp.L
         method called the Gauss-Newton (GN).
 
         Equation:
-            theta = (J^T @ W_e @ J)^(dagger) @ g
+            theta = (H)^(dagger) @ g,
 
-            where W_e is the diagonal weighted matrix and g is the error vector.
+            where H is the Hessian matrix, defined as:
+                H = J^T @ W_e @ J
+
+            and W_e is the diagonal weighted matrix and g is the error vector.
 
             Expression of the parameter g:
-                g = J^T @ W_e @ e_i
+                g = J^T @ W_e @ e_i.
 
             Reference:
                 T. Sugihara, "Solvability-Unconcerned Inverse Kinematics by the Levenberg-Marquardt Method."
@@ -515,7 +504,15 @@ def __IK_N_LM(J: tp.List[tp.List[float]], e_i: tp.List[float], W_e: tp.List[tp.L
         method called the Levenberg-Marquardt (LM).
 
         Equation:
-            ...
+            theta = (H)^(-1) @ g,
+
+            where H is the Hessian matrix, defined as:
+                H = J^T @ W_e @ J + W_n,
+
+            and W_e is the diagonal weighted matrix, g is the error vector, and W_n is the damping matrix.
+
+            Note:
+                The damping matrix (W_n) ensures that the Hessian matrix (H) is non-singular and positive definite.
 
             Reference:
                 T. Sugihara, "Solvability-Unconcerned Inverse Kinematics by the Levenberg-Marquardt Method."
@@ -569,10 +566,10 @@ def __Obtain_Theta_IK_N_Method(method: str, J: tp.List[tp.List[float]], e_i: tp.
     """
 
     return {
-        'Jacobian-Transpose': lambda J_in, e_i_in, _: __IK_N_JT(J_in, e_i_in),
-        'Newton-Raphson': lambda J_in, e_i_in, _,: __IK_N_NR(J_in, e_i_in),
-        'Gauss-Newton': lambda J_in, e_i_in, W_e_in, _: __IK_N_GN(J_in, e_i_in, W_e_in),
-        'Levenberg-Marquardt': lambda J_in, e_i_in, W_e_in, E_in: __IK_N_LM(J_in, e_i_in, W_e_in, E_in)
+        'Jacobian-Transpose': lambda *x: __IK_N_JT(x[0], x[1]),
+        'Newton-Raphson': lambda *x: __IK_N_NR(x[0], x[1]),
+        'Gauss-Newton': lambda *x: __IK_N_GN(x[0], x[1], x[2]),
+        'Levenberg-Marquardt': lambda *x: __IK_N_LM(x[0], x[1], x[2], x[3])
     }[method](J, e_i, W_e, E)
 
 def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], method: str, 
@@ -586,10 +583,6 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
             2\ Newton-Raphson (NR) Method
             3\ Gauss-Newton (GN) Method
             4\ Levenberg-Marquardt (LM) Method
-
-        Reference:
-            https://github.com/jhavl/dkt
-            https://github.com/jhavl/dkt/blob/main/Part%201/4%20Numerical%20Inverse%20Kinematics.ipynb
 
         Note:
             The numerical inverse kinematics will be calculated using linear interpolation between the actual and desired positions, defined by the 

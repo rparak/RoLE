@@ -122,6 +122,10 @@ def Is_Close_Singularity(J: tp.List[tp.List[float]]) -> bool:
     Description:
         A function to determine whether the Jacobian matrix is close to singularity.
 
+        Note:
+            If the Jacobian matrix is singular, one or more of the singular values obtained 
+            from SVD (Singular Value Decomposition) will be close to zero.
+
     Args:
         (1) J [Matrix<float> kxn]: Matrix of the modified geometric Jacobian (6 x n).
                                     Note: 
@@ -132,7 +136,10 @@ def Is_Close_Singularity(J: tp.List[tp.List[float]]) -> bool:
         (1) parameter [bool]: The value represents whether the Jacobian matrix is close to singularity or not.
     """
         
-    return np.isclose(np.linalg.det(J), 0.0, atol=1e-10, equal_nan=False)
+    # Calculate the singular value decomposition (SVD) of the Jacobian matrix.
+    _, S, _ = np.linalg.svd(J)
+
+    return any(np.isclose(S, 0.0, atol=1e-10, equal_nan=False))
 
 def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[bool]:
     """
