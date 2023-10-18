@@ -451,7 +451,7 @@ def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
     """
 
     # Auxiliary expression.
-    x = J @ J.T @ e_i
+    J_T = J.T; x = J @ J_T @ e_i
 
     # Error avoidance condition.
     if x.all() == 0.0:
@@ -461,7 +461,7 @@ def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
     else:
         alpha = (e_i @ x) / (x @ x)
 
-    return alpha * J.T @ e_i
+    return alpha * J_T @ e_i
 
 def __IK_N_NR(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]:
     """
@@ -483,22 +483,32 @@ def __IK_N_NR(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
     
     return np.linalg.pinv(J) @ e_i
 
-def __IK_N_GN(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]:
+def __IK_N_GN(J: tp.List[tp.List[float]], e_i: tp.List[float], W_e: tp.List[tp.List[float]]) -> tp.List[float]:
     """
     Description:
         A function to obtain the absolute joint positions (theta) of an individual robotic structure using an inverse kinematics (IK) numerical 
         method called the Gauss-Newton (GN).
 
         Equation:
-            ...
+            theta = (J^T @ W_e @ J)^(dagger) @ g
+
+            where W_e is the diagonal weighted matrix and g is the error vector.
+
+            Expression of the parameter g:
+                g = J^T @ W_e @ e_i
+
+            Reference:
+                T. Sugihara, "Solvability-Unconcerned Inverse Kinematics by the Levenberg-Marquardt Method."
 
         Note:
             To obtain more information about the Args and Returns parameters, please refer to the '__Obtain_Theta_IK_N_Method(..)' function.   
     """
+    # Auxiliary expression.
+    J_T = J.T; g = J_T @ W_e @ e_i
 
-    return None
+    return np.linalg.pinv(J_T @ W_e @ J) @ g
 
-def __IK_N_LM(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]:
+def __IK_N_LM(J: tp.List[tp.List[float]], e_i: tp.List[float], W_e: tp.List[tp.List[float]], E: float) -> tp.List[float]:
     """
     Description:
         A function to obtain the absolute joint positions (theta) of an individual robotic structure using an inverse kinematics (IK) numerical 
@@ -507,27 +517,50 @@ def __IK_N_LM(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
         Equation:
             ...
 
+            Reference:
+                T. Sugihara, "Solvability-Unconcerned Inverse Kinematics by the Levenberg-Marquardt Method."
+
         Note:
             To obtain more information about the Args and Returns parameters, please refer to the '__Obtain_Theta_IK_N_Method(..)' function.
     """
 
-    return None
+    # Number of joints.
+    n = W_e.shape[0]
 
-def __Obtain_Theta_IK_N_Method(method: str, J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]:
+    # Biasing value.
+    gamma = 0.0001
+
+    # Auxiliary expression.
+    J_T = J.T; g = J_T @ W_e @ e_i
+
+    # Obtain the diagonal damping matrix.
+    W_n = E * np.eye(n) + gamma * np.eye(n)
+
+    return np.linalg.inv(J.T @ W_e @ J + W_n) @ g
+
+def __Obtain_Theta_IK_N_Method(method: str, J: tp.List[tp.List[float]], e_i: tp.List[float], W_e: tp.List[tp.List[float]], 
+                               E: float) -> tp.List[float]:
     """
     Description:
         A function to obtain the absolute joint positions (theta) of an individual robotic structure using the chosen numerical method.
 
+        Note:
+            The pseudoinverse function in numpy is computed using singular value decomposition (SVD), which is robust to 
+            singular matrices.
+
     Args:
         (1) method [string]: Name of the numerical method to be used to calculate the IK solution.
         (2) J [Matrix<float> kxn]: Matrix of the modified geometric Jacobian (6 x n).
-                                        Note: 
-                                            Where k is equal to the number of axes and n is equal 
-                                            to the number of joints.
+                                    Note: 
+                                        Where k is equal to the number of axes and n is equal 
+                                        to the number of joints.
         (3) e_i [Vector<float> 1xk]: Modified vector of an error (angle-axis).
                                         Note: 
                                             Where k is equal to the number of axes.
-        (4) **properties []: **properties: tp.Dict
+        (4) W_e [Matrix<float, float> nxn]: Diagonal weight matrix.
+                                                Note:
+                                                    Where n s equal to the number of joints.
+        (5) E [float]: Quadratic (angle-axis) error.
 
     Returns:
         (1) parameter [Vector<float> 1xn]: Obtained absolute positions of joints in radians / meters.
@@ -536,11 +569,11 @@ def __Obtain_Theta_IK_N_Method(method: str, J: tp.List[tp.List[float]], e_i: tp.
     """
 
     return {
-        'Jacobian-Transpose': lambda J_in, e_i_in: __IK_N_JT(J_in, e_i_in),
-        'Newton-Raphson': lambda J_in, e_i_in: __IK_N_NR(J_in, e_i_in),
-        'Gauss-Newton': lambda J_in, e_i_in: __IK_N_GN(J_in, e_i_in),
-        'Levenberg-Marquardt': lambda J_in, e_i_in: __IK_N_LM(J_in, e_i_in)
-    }[method](J, e_i)
+        'Jacobian-Transpose': lambda J_in, e_i_in, _: __IK_N_JT(J_in, e_i_in),
+        'Newton-Raphson': lambda J_in, e_i_in, _,: __IK_N_NR(J_in, e_i_in),
+        'Gauss-Newton': lambda J_in, e_i_in, W_e_in, _: __IK_N_GN(J_in, e_i_in, W_e_in),
+        'Levenberg-Marquardt': lambda J_in, e_i_in, W_e_in, E_in: __IK_N_LM(J_in, e_i_in, W_e_in, E_in)
+    }[method](J, e_i, W_e, E)
 
 def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0: tp.List[float], method: str, 
                                  Robot_Parameters_Str: Parameters.Robot_Parameters_Str, ik_solver_properties: tp.Dict) -> tp.Tuple[tp.Dict, tp.List[float]]:
@@ -556,11 +589,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
 
         Reference:
             https://github.com/jhavl/dkt
-            https://github.com/sjwil/DifferentialInverseKinematics/blob/main/DifferentialIK.py
             https://github.com/jhavl/dkt/blob/main/Part%201/4%20Numerical%20Inverse%20Kinematics.ipynb
-
-        **kwargs (tp.Dict):
-            https://realpython.com/python-kwargs-and-args/
 
         Note:
             The numerical inverse kinematics will be calculated using linear interpolation between the actual and desired positions, defined by the 
@@ -602,7 +631,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                                                                     'iteration': Information about the iteration in which the best 
                                                                                  result was found.
                                                                     'error': Information about the absolute error (position, orientation)
-                                                                    'quadratic_error': Information about the quadratic (angle-axis) error.
+                                                                    'quadratic_error': Information about Quadratic (angle-axis) error.
                                                                     'is_close_singularity': Information about whether the Jacobian matrix 
                                                                                             is close to singularity.
                                                                     'is_self_collision': Information about whether there are collisions 
@@ -675,7 +704,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                     break
                 else:
                     # Obtain the new theta value using the chosen numerical method.
-                    th_i += __Obtain_Theta_IK_N_Method(method, J, e_i)
+                    th_i += __Obtain_Theta_IK_N_Method(method, J, e_i, W_e, E)
 
                 # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
                 (th_limit_err, T) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
