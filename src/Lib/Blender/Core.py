@@ -355,6 +355,10 @@ class Mechanism_Cls(object):
                 self.__Update()
                 print(f'[WARNING] The desired input joint {th} is out of limit.')
                 return False
+    
+            # Update the scene.
+            self.__Update()
+            return True
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
@@ -410,7 +414,6 @@ class Mechanism_Cls(object):
 
             # Update the scene.
             self.__Update()
-
             return True
             
         except AssertionError as error:
@@ -664,6 +667,10 @@ class Robot_Cls(object):
                     print(f'[WARNING] The desired input joint {th_i} in index {i} is out of limit.')
                     return False
 
+            # Update the scene.
+            self.__Update()
+            return True
+            
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
             print('[ERROR] Incorrect reset mode selected. The selected mode must be chosen from the three options (Zero, Home, Individual).')
