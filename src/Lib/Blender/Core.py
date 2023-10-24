@@ -351,8 +351,8 @@ class Mechanism_Cls(object):
                                                                                             Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
                                                                                                                                 th)).p.all()
             else:
-                # Reset the absolute position of the robot joints to the 'Zero'.
-                self.Reset('Zero')
+                # Update the scene.
+                self.__Update()
                 print(f'[WARNING] The desired input joint {th} is out of limit.')
                 return False
             
@@ -403,8 +403,8 @@ class Mechanism_Cls(object):
                         # Insert a keyframe of the object (Joint_{i}) into the frame at time t(i). 
                         Lib.Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', np.int32(t_i * self.__fps), 'ALL')
                 else:
-                    # Reset the absolute position of the robot joints to the 'Zero'.
-                    self.Reset('Zero')
+                    # Update the scene.
+                    self.__Update()
                     print(f'[WARNING] The desired input joint {theta} is out of limit.')
                     return False
 
