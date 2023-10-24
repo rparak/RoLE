@@ -200,7 +200,7 @@ class Mechanism_Cls(object):
             Features:
                 # Properties of the class.
                 Cls.Parameters
-                Cls.Theta_0, Cls.T_EE
+                Cls.Theta_0; Cls.T_EE
 
                 # Functions of the class.
                 Cls.Set_Absolute_Joint_Position([0.0], 0.0, 1.0)
@@ -453,7 +453,7 @@ class Robot_Cls(object):
             Features:
                 # Properties of the class.
                 Cls.Parameters
-                Cls.Theta_0, Cls.T_EE
+                Cls.Theta_0; Cls.T_EE
 
                 # Functions of the class.
                 Cls.Set_Absolute_Joint_Position([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 0.0, 1.0)
