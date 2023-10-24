@@ -409,7 +409,7 @@ class Mechanism_Cls(object):
                 else:
                     # Update the scene.
                     self.__Update()
-                    print(f'[WARNING] The desired input joint {theta} is out of limit.')
+                    print(f'[WARNING] The desired input joint {theta_arr_i} is out of limit.')
                     return False
 
             # Update the scene.
