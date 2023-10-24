@@ -203,7 +203,7 @@ class Mechanism_Cls(object):
                 Cls.Theta_0; Cls.T_EE
 
                 # Functions of the class.
-                Cls.Set_Absolute_Joint_Position([0.0], 0.0, 1.0)
+                Cls.Set_Absolute_Joint_Position(0.0, 0.0, 1.0)
     """
         
     def __init__(self, Mechanism_Parameters_Str: Lib.Parameters.Mechanism.Mechanism_Parameters_Str, visibility: tp.Dict[str, str]) -> None:
@@ -312,7 +312,7 @@ class Mechanism_Cls(object):
 
         bpy.context.view_layer.update()
 
-    def Reset(self, mode: str, theta: float = None) -> bool:
+    def Reset(self, mode: str, theta: tp.Union[None, float] = None) -> bool:
         """
         Description:
             Function to reset the absolute position of the mechanism joint from the selected mode.
@@ -625,7 +625,7 @@ class Robot_Cls(object):
 
         bpy.context.view_layer.update()
 
-    def Reset(self, mode: str, theta: tp.List[float] = None) -> bool:
+    def Reset(self, mode: str, theta: tp.Union[None, tp.List[float]] = None) -> bool:
         """
         Description:
             Function to reset the absolute position of the robot joints from the selected mode.
