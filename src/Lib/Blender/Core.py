@@ -203,7 +203,7 @@ class Mechanism_Cls(object):
                 Cls.Theta_0, Cls.T_EE
 
                 # Functions of the class.
-                Cls.Set_Absolute_Joint_Position([0.0])
+                Cls.Set_Absolute_Joint_Position([0.0], 0.0, 1.0)
     """
         
     def __init__(self, Mechanism_Parameters_Str: Lib.Parameters.Mechanism.Mechanism_Parameters_Str, visibility: tp.Dict[str, str]) -> None:
@@ -312,7 +312,7 @@ class Mechanism_Cls(object):
 
         bpy.context.view_layer.update()
 
-    def Reset(self, mode: str, theta: float = None) -> None:
+    def Reset(self, mode: str, theta: float = None) -> bool:
         """
         Description:
             Function to reset the absolute position of the mechanism joint from the selected mode.
@@ -324,10 +324,14 @@ class Mechanism_Cls(object):
         Args:
             (1) mode [string]: Possible modes to reset the absolute position of the joint.
             (2) theta [float]: Desired absolute joint position in radians / meters.
+
+        Returns:
+            (1) parameter [bool]: The result is 'True' if the mechanism is in the desired position,
+                                  and 'False' if it is not.
         """
 
         try:
-            assert mode in ['Zero', 'Home', 'Individual']
+            assert mode in ['Zero', 'Home', 'Individual'] and isinstance(theta, float) == True
 
             if mode == 'Individual':
                 theta_internal = theta
@@ -362,7 +366,10 @@ class Mechanism_Cls(object):
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
-            print('[ERROR] Incorrect reset mode selected. The selected mode must be chosen from the three options (Zero, Home, Individual).')
+            if mode not in ['Zero', 'Home', 'Individual']:
+                print('[ERROR] Incorrect reset mode selected. The selected mode must be chosen from the three options (Zero, Home, Individual).')
+            if isinstance(theta, float) == False:
+                print('[ERROR] Incorrect value type in the input variable theta. The input variable must be of type float.')
 
     def Set_Absolute_Joint_Position(self, theta: float, t_0: float, t_1: float) -> bool:
         """
@@ -374,9 +381,9 @@ class Mechanism_Cls(object):
             (2) t_0 [float]: Animation start time in seconds.
             (3) t_1 [float]: Animation stop time in seconds.
 
-        Returns:
-            (1) parameter [bool]: The result is 'True' if the required absolute joint positions 
-                                  are within the limits, and 'False' if they are not.
+         Returns:
+            (1) parameter [bool]: The result is 'True' if the mechanism is in the desired position,
+                                  and 'False' if it is not.
         """
         
         try:
@@ -449,7 +456,7 @@ class Robot_Cls(object):
                 Cls.Theta_0, Cls.T_EE
 
                 # Functions of the class.
-                Cls.Set_Absolute_Joint_Position([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+                Cls.Set_Absolute_Joint_Position([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 0.0, 1.0)
     """
 
     def __init__(self, Robot_Parameters_Str: Lib.Parameters.Robot.Robot_Parameters_Str, visibility: tp.Dict[str, str]) -> None:
@@ -618,7 +625,7 @@ class Robot_Cls(object):
 
         bpy.context.view_layer.update()
 
-    def Reset(self, mode: str, theta: tp.List[float] = None) -> None:
+    def Reset(self, mode: str, theta: tp.List[float] = None) -> bool:
         """
         Description:
             Function to reset the absolute position of the robot joints from the selected mode.
@@ -633,10 +640,14 @@ class Robot_Cls(object):
                                            mode.
                                             Note:
                                                 Where n is the number of joints.
+
+        Returns:
+            (1) parameter [bool]: The result is 'True' if the robot is in the desired position,
+                                  and 'False' if it is not.
         """
 
         try:
-            assert mode in ['Zero', 'Home', 'Individual']
+            assert mode in ['Zero', 'Home', 'Individual'] and self.__Robot_Parameters_Str.Theta.Zero.size == theta.size
 
             if mode == 'Individual':
                 theta_internal = theta
@@ -673,7 +684,10 @@ class Robot_Cls(object):
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
-            print('[ERROR] Incorrect reset mode selected. The selected mode must be chosen from the three options (Zero, Home, Individual).')
+            if mode not in ['Zero', 'Home', 'Individual']:
+                print('[ERROR] Incorrect reset mode selected. The selected mode must be chosen from the three options (Zero, Home, Individual).')
+            if self.__Robot_Parameters_Str.Theta.Zero.size != theta.size:
+                print(f'[ERROR] Incorrect number of values in the input variable theta. The input variable "theta" must contain {self.__Robot_Parameters_Str.Theta.Zero.size} values.')
 
     def Set_Absolute_Joint_Position(self, theta: tp.List[float], t_0: float, t_1: float) -> bool:
         """
@@ -688,8 +702,8 @@ class Robot_Cls(object):
             (3) t_1 [float]: Animation stop time in seconds.
 
         Returns:
-            (1) parameter [bool]: The result is 'True' if the required absolute joint positions 
-                                  are within the limits, and 'False' if they are not.
+            (1) parameter [bool]: The result is 'True' if the robot is in the desired position,
+                                  and 'False' if it is not.
         """
 
         try:
