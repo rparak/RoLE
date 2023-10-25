@@ -331,9 +331,11 @@ class Mechanism_Cls(object):
         """
 
         try:
-            assert mode in ['Zero', 'Home', 'Individual'] and isinstance(theta, float) == True
+            assert mode in ['Zero', 'Home', 'Individual']
 
             if mode == 'Individual':
+                assert isinstance(theta, float) == True
+                
                 theta_internal = theta
             else:
                 theta_internal = self.Theta_0 if mode == 'Zero' else self.__Mechanism_Parameters_Str.Theta.Home
@@ -647,9 +649,11 @@ class Robot_Cls(object):
         """
 
         try:
-            assert mode in ['Zero', 'Home', 'Individual'] and self.__Robot_Parameters_Str.Theta.Zero.size == theta.size
+            assert mode in ['Zero', 'Home', 'Individual']
 
             if mode == 'Individual':
+                assert self.__Robot_Parameters_Str.Theta.Zero.size == theta.size
+                
                 theta_internal = theta
             else:
                 theta_internal = self.Theta_0 if mode == 'Zero' else self.__Robot_Parameters_Str.Theta.Home
