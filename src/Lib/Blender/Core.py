@@ -30,23 +30,16 @@ class Poly_3D_Cls(object):
             (1) name [string]: The name of the polyline (object).
             (2) curve_properties [Dictionary {'bevel_depth': float, 
                                               'color': Vector<float>}]: Properties of the curve (polyline).
-                                                                        Note:
-                                                                            bevel_depth: Radius of the bevel geometry.
-                                                                            color: The color of the curve.
-            (3) point_properties [Dictionary {'visibility': bool, 'radius': float, 'color': Vector<float>}]: Properties of curve points.
-            
-            Explanations:
-                (2: bevel_depth)
-                    Radius of the bevel geometry.
-                (2: color)
-                    The color of the curve.
-                (3: visibility)
-                    Visibility of points on the curve.
-                (3: radius)
-                    Radius of points.
-                (3: color)
-                    The color of the points.
-    
+                                                                            Note:
+                                                                                'bevel_depth': Radius of the bevel geometry.
+                                                                                'color': The color of the curve.
+            (3) point_properties [Dictionary {'visibility': bool, 'radius': float, 
+                                              'color': Vector<float>}]: Properties of curve points.
+                                                                            Note:
+                                                                                'visibility': Visibility of points on the curve.
+                                                                                'radius': Radius of points.
+                                                                                'color': The color of the points.
+                                                                                
         Example:
             Initialization:
                 Cls = Poly_3D_Cls(name, {'bevel_depth': bevel_depth, 'color': color}, 
@@ -183,9 +176,8 @@ class Mechanism_Cls(object):
     Initialization of the Class:
         Args:
             (1) Mechanism_Parameters_Str [Mechanism_Parameters_Str(object)]: The structure of the main parameters of the mechanism.
-            (2) visibility [Dictionary {string, string}]: The state to enable/disable the visibility of additional mechanism objects.
-                                                          Note:
-                                                            visibility = {'Viewpoint_EE': False/True, 'Colliders': False/True}
+            (2) visibility [Dictionary {'Viewpoint_EE': string, 'Colliders': string}]: The state to enable/disable the visibility of additional 
+                                                                                       mechanism objects.
 
         Example:
             Initialization:
@@ -437,10 +429,8 @@ class Robot_Cls(object):
     Initialization of the Class:
         Args:
             (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-            (2) visibility [Dictionary {string, string}]: The state to enable/disable the visibility of additional robot objects.
-                                                          Note:
-                                                            visibility = {'Viewpoint_EE': False/True, 'Colliders': False/True,
-                                                                          'Workspace': False/True}
+            (2) visibility [Dictionary {'Viewpoint_EE': string, 'Colliders': string}]: The state to enable/disable the visibility of additional 
+                                                                                       robot objects.
 
         Example:
             Initialization:
