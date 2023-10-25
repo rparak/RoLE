@@ -57,7 +57,7 @@ def main():
     if Lib.Blender.Utilities.Object_Exist('Camera'):
         Lib.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
 
-    # Set the structure of the main parameters of the controlled mechanism.
+    # Initialization of the class to work with a mechanism object in a Blender scene.
     Mechanism_ID_0_1_Cls = Lib.Blender.Core.Mechanism_Cls(CONST_MECHANISM_TYPE, {'Viewpoint_EE': False, 'Colliders': False})
     print(f'[INFO] Mechanism Name: {Mechanism_ID_0_1_Cls.Parameters.Name}_ID_{Mechanism_ID_0_1_Cls.Parameters.Id:03}')
     
