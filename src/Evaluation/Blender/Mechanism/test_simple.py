@@ -73,7 +73,7 @@ def main():
     print('[INFO] Absolute Joint Positions (desired):')
     print(f'[INFO] >> Joint_0({Mechanism_ID_0_1_Cls.Parameters.Theta.Home:.3f})')
 
-    # Set the absolute position of the robot joints.
+    # Set the absolute position of the mechanism joints.
     Mechanism_ID_0_1_Cls.Set_Absolute_Joint_Position(Mechanism_ID_0_1_Cls.Parameters.Theta.Home, CONST_T_0, CONST_T_1)
 
     # The last frame on which the animation stops.
