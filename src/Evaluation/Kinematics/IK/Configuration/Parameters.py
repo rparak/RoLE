@@ -31,12 +31,18 @@ def Get_Absolute_Joint_Positions(name: str) -> tp.Tuple[tp.List[float],
     """
 
     return {
-        'Universal_Robots_UR3': (None, None),
-        'ABB_IRB_120': (None, None),
+        'Universal_Robots_UR3': (Mathematics.Degree_To_Radian(np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+                                                                       dtype=np.float64)),
+                                 Mathematics.Degree_To_Radian(np.array([-90.0, -90.0, 0.0, -90.0, 0.0, 0.0], 
+                                                                       dtype=np.float64))),
+        'ABB_IRB_120': (Mathematics.Degree_To_Radian(np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+                                                              dtype=np.float64)),
+                        Mathematics.Degree_To_Radian(np.array([0.0, 0.0, 0.0, 0.0, 90.0, 0.0], 
+                                                              dtype=np.float64))),
         'ABB_IRB_120_L_Ax': (None, None),
         'ABB_IRB_14000_R': (None, None),
         'ABB_IRB_14000_L': (None, None),
-        'EPSON_LS3_B401S': (np.array([Mathematics.Degree_To_Radian(0.0), Mathematics.Degree_To_Radian(0.0), 0.0, Mathematics.Degree_To_Radian(0.0)], 
+        'EPSON_LS3_B401S': (np.array([Mathematics.Degree_To_Radian(-40.0), Mathematics.Degree_To_Radian(50.0), 0.0, Mathematics.Degree_To_Radian(-30.0)], 
                                      dtype = np.float64), 
                             np.array([Mathematics.Degree_To_Radian(115.0), Mathematics.Degree_To_Radian(-20.0), 0.10, Mathematics.Degree_To_Radian(15.0)],
                                      dtype = np.float64))
