@@ -1,6 +1,7 @@
 from sympy import symbols, init_printing, Matrix, eye, sin, cos, pi
 init_printing(use_unicode=True)
 
+# https://github.com/jhavl/dkt/blob/main/Part%201/2%20The%20Manipulator%20Jacobian.ipynb
 # https://gist.github.com/mlaves/a60cbc5541bd6c9974358fbaad9e4c51
 q1, q2, q3, q4, q5, q6, q7 = symbols('theta_1 theta_2 theta_3 theta_4 theta_5 theta_6 theta_7')
 joint_angles = [q1, q2, q3, q4, q5, q6, q7]
