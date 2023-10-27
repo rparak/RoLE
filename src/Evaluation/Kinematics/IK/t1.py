@@ -71,8 +71,7 @@ def incremental_ik(q, A, A_final, step=0.1, atol=1e-4):
         
         # multiply by step to interpolate between current and target pose
         #print(J_q.shape, (delta_A*step).shape)
-        print(J_q.shape)
-        print((np.linalg.pinv(J_q) @ (delta_A*step)).shape)
+        #print((np.linalg.pinv(J_q) @ (delta_A*step)).shape)
         delta_q = np.linalg.pinv(J_q) @ (delta_A*step)
         
         q = q + delta_q
