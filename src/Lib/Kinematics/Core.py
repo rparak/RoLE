@@ -404,16 +404,12 @@ def __Modify_IKN_Parameters(name: str, J: tp.List[tp.List[float]], e_i: tp.List[
                                                 Where k is equal to the number of axes.
     """
 
-    if name in ['Universal_Robots_UR3', 'ABB_IRB_120']:
-        return (J.copy(), e_i.copy())
+    if name in ['EPSON_LS3_B401S']:
+        return (np.delete(J.copy(), [3, 4], axis=0), 
+                np.delete(e_i.copy(), [3, 4], axis=0))
     else:
-        return {
-            'ABB_IRB_120_L_Ax': None,
-            'ABB_IRB_14000_R': None,
-            'ABB_IRB_14000_L': None,
-            'EPSON_LS3_B401S': lambda J_in, e_i_in: (np.delete(J_in.copy(), [3, 4], axis=0), 
-                                                     np.delete(e_i_in.copy(), [3, 4], axis=0))
-        }[name](J, e_i)
+        return (J.copy(), e_i.copy())
+
 
 def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]:
     """
@@ -466,7 +462,7 @@ def __IK_N_NR(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
         Note:
             To obtain more information about the Args and Returns parameters, please refer to the '__Obtain_Theta_IK_N_Method(..)' function.
     """
-    
+
     return np.linalg.pinv(J) @ e_i
 
 def __IK_N_GN(J: tp.List[tp.List[float]], e_i: tp.List[float], W_e: tp.List[tp.List[float]]) -> tp.List[float]:
@@ -696,6 +692,8 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                     is_successful = True; th_i_tmp = th_i.copy()
                     break
                 else:
+                    #print(e_i.reshape(4, 1).shape)
+                    # When I reshape the error, the problem will be in output. The output shape will be (4, 1)
                     # Obtain the new theta value using the chosen numerical method.
                     th_i += __Obtain_Theta_IK_N_Method(method, J, e_i, W_e, E)
 
