@@ -11,7 +11,9 @@ import Lib.Kinematics.Core as Kinematics
 #   ../Lib/Parameters/Robot
 import Lib.Parameters.Robot as Parameters
 
-Robot_Str = Parameters.EPSON_LS3_B401S_Str
+Robot_Str = Parameters.ABB_IRB_120_L_Ax_Str
 
 # ...
-J = Kinematics.Get_Geometric_Jacobian(Robot_Str.Theta.Zero, Robot_Str)
+J = Kinematics.Get_Geometric_Jacobian(Robot_Str.Theta.Home, Robot_Str)
+
+print(np.round(J, 5))
