@@ -3,8 +3,6 @@ import sys
 #   Add access if it is not in the system path.
 if '../../..' + 'src' not in sys.path:
     sys.path.append('../../..')
-# Numpy (Array computing) [pip3 install numpy]
-import numpy as np
 # Time (Time access and conversions)
 import time
 # Custom Lib.:
@@ -24,7 +22,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
+CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
 # Numerical IK Parameters.
 #   Name of the numerical method to be used to calculate the IK solution.
 #       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
@@ -65,11 +63,12 @@ def main():
     # Get the actual and desired tool center point (TCP) to check the results.
     T = Lib.Kinematics.Core.Forward_Kinematics(theta, 'Fast', Robot_Str)[1]
 
+    import numpy as np
     print(f'[INFO] Absolute Joint Positions:')
     print(f'[INFO] >> successful = {info["successful"]}')
     print(f'[INFO] >> iteration = {info["iteration"]}')
     print(f'[INFO] >> position_err = {info["error"]["position"]}, orientation_err = {info["error"]["orientation"]}')
-    print(f'[INFO] >> theta = {theta}')
+    print(f'[INFO] >> theta = {np.rad2deg(theta)}')
     print(f'[INFO] >> is_close_singularity = {info["is_close_singularity"]}')
     print(f'[INFO] >> is_self_collision = {info["is_self_collision"]}')
 

@@ -91,7 +91,7 @@ def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: P
     """
 
     T_i = Robot_Parameters_Str.T.Base
-    for _, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type, 
+    for _, (th_i, dh_i, th_i_type, th_i_ax) in enumerate(zip(theta, Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type, 
                                                              Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using standard DH parameters.
         if th_i_type == 'R':
@@ -99,7 +99,7 @@ def __Forward_Kinematics_Standard(theta: tp.List[float], Robot_Parameters_Str: P
             T_i = T_i @ DH_Standard(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            if th_ax_i == 'Z':
+            if th_i_ax == 'Z':
                 T_i = T_i @ DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
             else:
                 # Translation along the X axis.
@@ -144,7 +144,7 @@ def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: P
     """
     
     T_i = Robot_Parameters_Str.T.Base
-    for _, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type, 
+    for _, (th_i, dh_i, th_i_type, th_i_ax) in enumerate(zip(theta, Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type, 
                                                              Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using modified DH parameters.
         if th_i_type == 'R':
@@ -152,7 +152,7 @@ def __Forward_Kinematics_Modified(theta: tp.List[float], Robot_Parameters_Str: P
             T_i = T_i @ DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            if th_ax_i == 'Z':
+            if th_i_ax == 'Z':
                 T_i = T_i @ DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
             else:
                 # Translation along the X axis.
@@ -213,7 +213,7 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
     """
     
     T_i = Robot_Parameters_Str.T.Base; T_cfg = []
-    for i, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type, 
+    for i, (th_i, dh_i, th_i_type, th_i_ax) in enumerate(zip(theta, Robot_Parameters_Str.DH.Standard, Robot_Parameters_Str.Theta.Type, 
                                                              Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using standard DH parameters.
         if th_i_type == 'R':
@@ -221,7 +221,7 @@ def __Get_Individual_Joint_Configuration_Standard(theta: tp.List[float], Robot_P
             T_i = T_i @ DH_Standard(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            if th_ax_i == 'Z':
+            if th_i_ax == 'Z':
                 T_i = T_i @ DH_Standard(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
             else:
                 # Translation along the X axis.
@@ -254,7 +254,7 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
     """
     
     T_i = Robot_Parameters_Str.T.Base; T_cfg = []
-    for i, (th_i, dh_i, th_i_type, th_ax_i) in enumerate(zip(theta, Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type, 
+    for i, (th_i, dh_i, th_i_type, th_i_ax) in enumerate(zip(theta, Robot_Parameters_Str.DH.Modified, Robot_Parameters_Str.Theta.Type, 
                                                              Robot_Parameters_Str.Theta.Axis)):
         # Forward kinematics using modified DH parameters.
         if th_i_type == 'R':
@@ -262,7 +262,7 @@ def __Get_Individual_Joint_Configuration_Modified(theta: tp.List[float], Robot_P
             T_i = T_i @ DH_Modified(dh_i[0] + th_i, dh_i[1], dh_i[2], dh_i[3])
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            if th_ax_i == 'Z':
+            if th_i_ax == 'Z':
                 T_i = T_i @ DH_Modified(dh_i[0], dh_i[1], dh_i[2] - th_i, dh_i[3])
             else:
                 # Translation along the X axis.
@@ -336,8 +336,10 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
             Revolute Joint = [[z_{i-1} x (p_{ee} - p_{i-1})],
                               [z_{i-1}]]
 
-            Prismatic Joint = [[z_{i-1}],
-                               [0.0]]
+            Prismatic Joint('Z - Axis') = [[z_{i-1}],
+                                           [0.0]]
+            Prismatic Joint('X - Axis') = [[(-1) * x_{i-1}],
+                                           [0.0]]
 
     Args:
         (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
@@ -363,7 +365,7 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
     T_n_p_ee = T_Cfg_Arr[-1].p
 
     J = np.zeros((6, th.size), dtype=T_n_p_ee.Type); z_i = Vector3_Cls(None, T_n_p_ee.Type)
-    for i, (T_Cfg_i, th_i_type) in enumerate(zip(T_Cfg_Arr, Robot_Parameters_Str.Theta.Type)):
+    for i, (T_Cfg_i, th_i_type, th_i_ax) in enumerate(zip(T_Cfg_Arr, Robot_Parameters_Str.Theta.Type, Robot_Parameters_Str.Theta.Axis)):
         z_i[:] = T_Cfg_i[0:3, 2]
         if th_i_type == 'R':
             # Identification of joint type: R - Revolute
@@ -371,7 +373,10 @@ def Get_Geometric_Jacobian(theta: tp.List[float], Robot_Parameters_Str: Paramete
             J_O = z_i
         elif th_i_type == 'P':
             # Identification of joint type: P - Prismatic
-            J_P = z_i
+            if th_i_ax == 'Z':
+                J_P = z_i
+            else:
+                J_P = np.float64(-1.0) * Vector3_Cls(T_Cfg_i[0:3, 0], T_n_p_ee.Type)
             J_O = Vector3_Cls([0.0, 0.0, 0.0], z_i.Type)
 
         # The Jacobian can be divided into 3x1 columns J_{P} and J_{O} vectors:
@@ -487,7 +492,7 @@ def __IK_N_LM(J: tp.List[tp.List[float]], e_i: tp.List[float], W_e: tp.List[tp.L
     """
 
     # Number of joints.
-    n = W_e.shape[0]
+    n = J.shape[1]
 
     # Biasing value.
     gamma = 0.0001
@@ -657,7 +662,6 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                     # Obtain the new theta value using the chosen numerical method.
                     th_i += __Obtain_Theta_IK_N_Method(method, J, e_i, W_e, E)
 
-                #th_i[0] *= (-1)
                 # Get the current TCP position of the robotic arm using Forward Kinematics (FK).
                 (th_limit_err, T) = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)
 

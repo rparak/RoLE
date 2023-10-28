@@ -23,7 +23,6 @@ Description:
 """
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
-
 def main():
     """
     Description:
