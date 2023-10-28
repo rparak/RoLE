@@ -682,6 +682,9 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
             if is_successful != True:
                 break
 
+        # Get the best TCP position of the robotic arm using Forward Kinematics (FK).
+        T = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)[1]
+
         # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
         # between the joints.
         is_close_singularity = General.Is_Close_Singularity(J)

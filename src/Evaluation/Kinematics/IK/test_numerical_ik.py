@@ -22,7 +22,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 # Numerical IK Parameters.
 #   Name of the numerical method to be used to calculate the IK solution.
 #       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
@@ -30,7 +30,7 @@ CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
 CONST_NIK_METHOD = 'Newton-Raphson'
 #   The properties of the inverse kinematics solver.
 CONST_IK_PROPERTIES = {'delta_time': 0.1, 'num_of_iteration': 500, 
-                       'tolerance': 1e-05}
+                       'tolerance': 1e-10}
 
 def main():
     """
@@ -63,12 +63,11 @@ def main():
     # Get the actual and desired tool center point (TCP) to check the results.
     T = Lib.Kinematics.Core.Forward_Kinematics(theta, 'Fast', Robot_Str)[1]
 
-    import numpy as np
     print(f'[INFO] Absolute Joint Positions:')
     print(f'[INFO] >> successful = {info["successful"]}')
     print(f'[INFO] >> iteration = {info["iteration"]}')
     print(f'[INFO] >> position_err = {info["error"]["position"]}, orientation_err = {info["error"]["orientation"]}')
-    print(f'[INFO] >> theta = {np.rad2deg(theta)}')
+    print(f'[INFO] >> theta = {theta}')
     print(f'[INFO] >> is_close_singularity = {info["is_close_singularity"]}')
     print(f'[INFO] >> is_self_collision = {info["is_self_collision"]}')
 
