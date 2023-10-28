@@ -22,7 +22,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
 # Numerical IK Parameters.
 #   Name of the numerical method to be used to calculate the IK solution.
 #       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
@@ -30,7 +30,7 @@ CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 CONST_NIK_METHOD = 'Newton-Raphson'
 #   The properties of the inverse kinematics solver.
 CONST_IK_PROPERTIES = {'delta_time': 0.1, 'num_of_iteration': 500, 
-                       'tolerance': 1e-10}
+                       'tolerance': 1e-30}
 
 def main():
     """
