@@ -30,7 +30,7 @@ CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
 CONST_NIK_METHOD = 'Newton-Raphson'
 #   The properties of the inverse kinematics solver.
 CONST_IK_PROPERTIES = {'delta_time': 0.1, 'num_of_iteration': 500, 
-                       'tolerance': 1e-10}
+                       'tolerance': 1e-05}
 
 def main():
     """
