@@ -611,6 +611,8 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
             TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float64)
 
         # Diagonal weight matrix.
+        #   Note:
+        #       Translation(x, y, z) part + Rotation(x, y, z) part.
         W_e = np.diag(np.ones(6))
 
         # Obtain the actual homogeneous transformation matrix T of the tool center point (TCP).
