@@ -186,17 +186,6 @@ def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
             # Set the individual parts where the collision occurs.
             is_collision[i] = True; is_collision[j] = True  
 
-    """
-    # Check whether the 3D primitives (bounding boxes AABB, OBB) overlap or not.
-    is_collision = np.zeros(All_Colliders.size, dtype=bool)
-    for i, Collider_i in enumerate(All_Colliders):
-        for j, Collider_j in enumerate(All_Colliders[(i + 1) + Robot_Parameters_Str.Collider.Offset::], 
-                                        start=(i + 1) + Robot_Parameters_Str.Collider.Offset):
-            if Collider_i.Overlap(Collider_j) == True:
-                # Set the individual parts where the collision occurs.
-                is_collision[i] = True; is_collision[j] = True
-    """
-
     return is_collision
 
 def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.List[float]], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[float]:

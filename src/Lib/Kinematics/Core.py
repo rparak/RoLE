@@ -688,7 +688,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
         # between the joints.
         is_close_singularity = General.Is_Close_Singularity(J)
-        is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).any()
+        is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).any() != True
 
         # Obtain the absolute error of position and orientation.
         error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 
@@ -854,7 +854,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
                 # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
                 # between the joints.
                 info['is_close_singularity'][i] = General.Is_Close_Singularity(J)
-                info['is_self_collision'][i] = General.Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any()
+                info['is_self_collision'][i] = General.Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any() != True
 
                 # Obtain the absolute error of position and orientation.
                 info['error']['position'][i] = Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all())
@@ -880,7 +880,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
             # between the joints.
             is_close_singularity = General.Is_Close_Singularity(J)
-            is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).any()
+            is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).any() != True
 
             # Obtain the absolute error of position and orientation.
             error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 

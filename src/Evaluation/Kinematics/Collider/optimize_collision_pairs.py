@@ -20,7 +20,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_R_Str
 # Number of randomly generated samples.
 CONST_SIZE = 100000
 
@@ -108,12 +108,15 @@ def main():
                 if c_pair_i not in collision_pairs_opt:
                     collision_pairs_opt.append(c_pair_i)
 
-    # Sort the array of collision pairs by the first column.
-    data = np.matrix(collision_pairs_opt)
-    sorted_collision_pairs_opt = data[np.argsort(data.A[:, 0])]
+    if bool(collision_pairs_opt) == True:
+        # Sort the array of collision pairs by the first column.
+        data = np.matrix(collision_pairs_opt)
+        sorted_collision_pairs_opt = data[np.argsort(data.A[:, 0])]
 
-    print(f'[INFO] Optimized number of collision pairs: {sorted_collision_pairs_opt.shape[0]}')
-    print(f'[INFO] >> Collision pairs {sorted_collision_pairs_opt.shape}: {sorted_collision_pairs_opt.tolist()}')
+        print(f'[INFO] Optimized number of collision pairs: {sorted_collision_pairs_opt.shape[0]}')
+        print(f'[INFO] >> Collision pairs {sorted_collision_pairs_opt.shape}: {sorted_collision_pairs_opt.tolist()}')
+    else:
+        print(f'[WARNING] No collision pairs were found.')
 
     print('[INFO] The calculation process is complete.')
     print(f'[INFO] >> Time: {(time.time() - t_0):0.05f} in seconds.')
