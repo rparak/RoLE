@@ -10,8 +10,6 @@ import time
 import Lib.Parameters.Robot as Parameters
 #   ../Lib/Kinematics/Core
 import Lib.Kinematics.Core
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
 #   ../Lib/Trajectory/Utilities
 import Lib.Trajectory.Utilities
 #   ../Configuration/Parameters
@@ -72,8 +70,8 @@ def main():
     print(f'[INFO] >> is_self_collision = {info["is_self_collision"]}')
 
     # Check that the calculation has been performed successfully.
-    accuracy = Mathematics.Euclidean_Norm((T - T_1).all())
-    if accuracy <= 1e-5:
+    accuracy = info["error"]["position"] + info["error"]["orientation"]
+    if info["successful"] == True:
         print('[INFO] The IK solution test was successful.')
         print(f'[INFO] Accuracy = {accuracy}')
     else:

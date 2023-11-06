@@ -23,6 +23,7 @@ Description:
 """
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
+
 def main():
     """
     Description:
@@ -64,7 +65,7 @@ def main():
     print(f'[INFO] >> is_self_collision = {info["is_self_collision"]}')
 
     # Check that the calculation has been performed successfully.
-    accuracy = Mathematics.Euclidean_Norm((T - T_1).all())
+    accuracy = info["error"]["position"] + info["error"]["orientation"]
     if accuracy <= 1e-5:
         print('[INFO] The IK solution test was successful.')
         print(f'[INFO] Accuracy = {accuracy}')

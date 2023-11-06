@@ -410,7 +410,7 @@ def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
     J_T = J.T; x = J @ J_T @ e_i
 
     # Error avoidance condition.
-    if x.any() != 0.0:
+    if x.any() == False:
         # Because alpha must be greater than 0.0, set alpha
         # as a small number.
         alpha = 1e-5
@@ -688,7 +688,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
         # between the joints.
         is_close_singularity = General.Is_Close_Singularity(J)
-        is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).any() != True
+        is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).any() == True
 
         # Obtain the absolute error of position and orientation.
         error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 
@@ -854,7 +854,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
                 # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
                 # between the joints.
                 info['is_close_singularity'][i] = General.Is_Close_Singularity(J)
-                info['is_self_collision'][i] = General.Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any() != True
+                info['is_self_collision'][i] = General.Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any() == True
 
                 # Obtain the absolute error of position and orientation.
                 info['error']['position'][i] = Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all())
@@ -880,7 +880,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
             # between the joints.
             is_close_singularity = General.Is_Close_Singularity(J)
-            is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).any() != True
+            is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).any() == True
 
             # Obtain the absolute error of position and orientation.
             error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 
