@@ -144,13 +144,13 @@ def Is_Close_Singularity(J: tp.List[tp.List[float]]) -> bool:
 def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[bool]:
     """
     Description:
-        A function to obtain information whether there is a collision between the joints of the robotic structure.
+        A function to obtain information on whether there is a collision between the joints of the robotic structure.
 
     Args:
-        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+        (2) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
                                         Note:
                                             Where n is the number of joints.
-        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
         (1) parameter [Vector<bool> 1xk]: A vector of errors where a collision occurred between the joints of the robotic structure.
@@ -163,7 +163,7 @@ def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
     
     # Transformation of the base collider according to the input homogeneous transformation matrix.
     Base_Collider[0].Transformation(Robot_Parameters_Str.T.Base)
- 
+
     # Obtain the individual (theta) configuration of the homogeneous matrix of each joint using forward kinematics
     T_Arr = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(theta, 'Modified', Robot_Parameters_Str)[1]
 
@@ -175,67 +175,27 @@ def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
     if Robot_Parameters_Str.External_Axis == True:
         Base_Collider[1].Transformation(T_Arr[0])
         All_Colliders = np.concatenate(([Base_Collider[0], Theta_Collider[0], Base_Collider[1]], 
-                                         Theta_Collider[1::]))
+                                        Theta_Collider[1::]))
     else:
         All_Colliders = np.concatenate((Base_Collider, Theta_Collider))
 
     # Check whether the 3D primitives (bounding boxes AABB, OBB) overlap or not.
     is_collision = np.zeros(All_Colliders.size, dtype=bool)
-    for i, Collider_i in enumerate(All_Colliders):
-        for j, Collider_j in enumerate(All_Colliders[(i + 1) + Robot_Parameters_Str.Collider.Offset::], 
-                                       start=(i + 1) + Robot_Parameters_Str.Collider.Offset):
-            if Collider_i.Overlap(Collider_j) == True:
-                # Set the individual parts where the collision occurs.
-                is_collision[i] = True; is_collision[j] = True
+    for _, (i, j) in enumerate(Robot_Parameters_Str.Collider.Pairs):
+        if All_Colliders[i].Overlap(All_Colliders[j]) == True:
+            # Set the individual parts where the collision occurs.
+            is_collision[i] = True; is_collision[j] = True  
 
-    return is_collision
-
-def Is_Self_Collision_Fast(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[bool]:
     """
-    Description:
-        ....
-
-    Args:
-        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
-                                        Note:
-                                            Where n is the number of joints.
-        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-
-    Returns:
-        (1) parameter [Vector<bool> 1xk]: A vector of errors where a collision occurred between the joints of the robotic structure.
-                                            Note:
-                                                Where k is the number of all colliders of the robotic structure.
-    """
-
-    # Get a list of base and joint colliders.
-    Base_Collider = list(Robot_Parameters_Str.Collider.Base.values()); Theta_Collider = list(Robot_Parameters_Str.Collider.Theta.values())
-    
-    # Transformation of the base collider according to the input homogeneous transformation matrix.
-    Base_Collider[0].Transformation(Robot_Parameters_Str.T.Base)
- 
-    # Obtain the individual (theta) configuration of the homogeneous matrix of each joint using forward kinematics
-    T_Arr = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(theta, 'Modified', Robot_Parameters_Str)[1]
-
-    # Transformation of the joint colliders according to the input homogeneous transformation matrix.
-    for _, (T_i, th_collider_i) in enumerate(zip(T_Arr, Theta_Collider)):
-        th_collider_i.Transformation(T_i)
-
-    # Concatenate all colliders (base, joint) into single array according to a predefined constraint.
-    if Robot_Parameters_Str.External_Axis == True:
-        Base_Collider[1].Transformation(T_Arr[0])
-        All_Colliders = np.concatenate(([Base_Collider[0], Theta_Collider[0], Base_Collider[1]], 
-                                         Theta_Collider[1::]))
-    else:
-        All_Colliders = np.concatenate((Base_Collider, Theta_Collider))
-
     # Check whether the 3D primitives (bounding boxes AABB, OBB) overlap or not.
     is_collision = np.zeros(All_Colliders.size, dtype=bool)
     for i, Collider_i in enumerate(All_Colliders):
         for j, Collider_j in enumerate(All_Colliders[(i + 1) + Robot_Parameters_Str.Collider.Offset::], 
-                                       start=(i + 1) + Robot_Parameters_Str.Collider.Offset):
+                                        start=(i + 1) + Robot_Parameters_Str.Collider.Offset):
             if Collider_i.Overlap(Collider_j) == True:
                 # Set the individual parts where the collision occurs.
                 is_collision[i] = True; is_collision[j] = True
+    """
 
     return is_collision
 
@@ -268,7 +228,7 @@ def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.Li
         # absolute joint positions.
         (th_limit_err, _) = Lib.Kinematics.Core.Forward_Kinematics(th_sol_i, 'Fast', Robot_Parameters_Str)
 
-        if th_limit_err.all() == False and Is_Self_Collision(th_sol_i, Robot_Parameters_Str).all() == False:
+        if th_limit_err.any() != True and Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any() != True:
             # Obtain the absolute error of the joint angles.
             error_theta = Mathematics.Euclidean_Norm((theta_0 - th_sol_i))
 

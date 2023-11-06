@@ -20,9 +20,9 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
+CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Number of randomly generated samples.
-CONST_SIZE = 100
+CONST_SIZE = 100000
 
 def main():
     """
@@ -51,8 +51,18 @@ def main():
     n = (len(Robot_Str.Collider.Base) + \
          len(Robot_Str.Collider.Theta) + \
          len(Robot_Str.Collider.External)); r = 2
-    print(f'[INFO] Initial number of collision pairs: {Mathematics.Combinations(n, r)}')
 
+    # Get the number of possible combinations.
+    C = Mathematics.Combinations(n - Robot_Str.Collider.Offset, r)
+    print(f'[INFO] Initial number of collision pairs: {C}')
+
+    # Save a list of the collision pairs.
+    v = np.arange(0, n); collision_pairs_init = []
+    for i, n_i in enumerate(v):
+        for _, n_ij in enumerate(v[(i + 1) + Robot_Str.Collider.Offset::]):
+            collision_pairs_init.append([n_i, n_ij])
+    print(f'[INFO] >> Collision pairs ({C}, {r}): {collision_pairs_init}')
+          
     print('[INFO] The calculation is in progress.')
     t_0 = time.time()
 
@@ -60,7 +70,7 @@ def main():
     Description:
         Obtain information on whether there is a collision between the joints of the robotic structure.
     """
-    collision_pairs = []
+    collision_pairs_opt = []
     for _, th_rand_i in enumerate(theta_rand):
         # Get a list of base and joint colliders.
         Base_Collider = list(Robot_Str.Collider.Base.values()); Theta_Collider = list(Robot_Str.Collider.Theta.values())
@@ -84,26 +94,26 @@ def main():
             All_Colliders = np.concatenate((Base_Collider, Theta_Collider))
 
         # Check whether the 3D primitives (bounding boxes AABB, OBB) overlap or not.
-        collision_pairs_tmp = []
+        collision_pairs_opt_tmp = []
         for i, Collider_i in enumerate(All_Colliders):
             for j, Collider_j in enumerate(All_Colliders[(i + 1) + Robot_Str.Collider.Offset::], 
                                         start=(i + 1) + Robot_Str.Collider.Offset):
                 if Collider_i.Overlap(Collider_j) == True:
                     # Store the individual parts where the collision occurs.
-                    collision_pairs_tmp.append([i, j])
+                    collision_pairs_opt_tmp.append([i, j])
 
         # Save the collision pairs if they are not already saved.
-        if bool(collision_pairs_tmp) == True:
-            for _, c_pair_i in enumerate(collision_pairs_tmp):
-                if c_pair_i not in collision_pairs:
-                    collision_pairs.append(c_pair_i)
+        if bool(collision_pairs_opt_tmp) == True:
+            for _, c_pair_i in enumerate(collision_pairs_opt_tmp):
+                if c_pair_i not in collision_pairs_opt:
+                    collision_pairs_opt.append(c_pair_i)
 
     # Sort the array of collision pairs by the first column.
-    data = np.matrix(collision_pairs)
-    sorted_collision_pairs = data[np.argsort(data.A[:, 0])]
+    data = np.matrix(collision_pairs_opt)
+    sorted_collision_pairs_opt = data[np.argsort(data.A[:, 0])]
 
-    print(f'[INFO] Optimized number of collision pairs: {sorted_collision_pairs.shape[0]}')
-    print(f'[INFO] Collision pairs {sorted_collision_pairs.shape}: {sorted_collision_pairs.tolist()}')
+    print(f'[INFO] Optimized number of collision pairs: {sorted_collision_pairs_opt.shape[0]}')
+    print(f'[INFO] >> Collision pairs {sorted_collision_pairs_opt.shape}: {sorted_collision_pairs_opt.tolist()}')
 
     print('[INFO] The calculation process is complete.')
     print(f'[INFO] >> Time: {(time.time() - t_0):0.05f} in seconds.')

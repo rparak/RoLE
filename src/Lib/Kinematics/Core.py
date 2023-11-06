@@ -410,7 +410,7 @@ def __IK_N_JT(J: tp.List[tp.List[float]], e_i: tp.List[float]) -> tp.List[float]
     J_T = J.T; x = J @ J_T @ e_i
 
     # Error avoidance condition.
-    if x.all() == 0.0:
+    if x.any() != 0.0:
         # Because alpha must be greater than 0.0, set alpha
         # as a small number.
         alpha = 1e-5
