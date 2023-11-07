@@ -20,20 +20,16 @@ class DH_Parameters_Str:
     Description:
         The auxiliary structure of the Denavit-Hartenberg (DH) parameters.
 
-        Note 1:
-            Private structure.
-
-        Note 2:
+        Note:
             DH (Denavit-Hartenberg) parameters: 
-    
-            (1) theta_zero [Vector<float>]: Joint angle (Theta_i). Rotation part in radians.
-                                            Unit: [radian]                        
-            (2) a [Vector<float>]: Link length (a_i). Translation part in meters.
-                                   Unit: [meter]
-            (3) d [Vector<float>]: Link offset (d_i). Translation part in meters.
-                                   Unit: [meter]
-            (4) alpha [Vector<float>]: Link twist (alpha_i). Rotation part in radians.
-                                       Unit: [radian]
+                (1) theta_zero [Vector<float>]: Joint angle (Theta_i). Rotation part in radians.
+                                                Unit: [radian]                        
+                (2) a [Vector<float>]: Link length (a_i). Translation part in meters.
+                                       Unit: [meter]
+                (3) d [Vector<float>]: Link offset (d_i). Translation part in meters.
+                                       Unit: [meter]
+                (4) alpha [Vector<float>]: Link twist (alpha_i). Rotation part in radians.
+                                           Unit: [radian]
     """
 
     # Standard Denavit-Hartenberg (DH):
@@ -56,9 +52,6 @@ class Theta_Parameters_Str(object):
     """
     Description:
         The auxiliary structure of the joint (theta) parameters.
-
-        Note:
-            Private structure.
     """
 
     # Zero absolute position of each joint.
@@ -92,9 +85,6 @@ class T_Parameters_Str:
     """
     Description:
         The auxiliary structure of the homogeneous transformation matrix {T} parameters.
-
-        Note:
-            Private structure.
     """
 
     # Homogeneous transformation matrix of the base.
