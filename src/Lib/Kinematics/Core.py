@@ -893,7 +893,3 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
     except AssertionError as error:
         print(f'[ERROR] Information: {error}')
         print('[ERROR] An incorrect robot structure was selected for the analytical inverse kinematics calculation.')
-
-
-
-
