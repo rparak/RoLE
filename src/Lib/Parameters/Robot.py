@@ -353,8 +353,8 @@ ABB_IRB_120_Str.Collider.Offset = 1
 #   2\ External.
 ABB_IRB_120_Str.Collider.External = {}
 #   Collision pairs.
-ABB_IRB_120_Str.Collider.Pairs = np.array([[0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [1, 4], 
-                                           [1, 3], [1, 5], [1, 6], [2, 4], [4, 6]], dtype=np.int8)
+ABB_IRB_120_Str.Collider.Pairs = np.array([[0, 2], [0, 3], [0, 4], [0, 5], [0, 6], 
+                                           [1, 4], [1, 3], [1, 5], [1, 6], [2, 4]], dtype=np.int8)
 
 """
 Robot Type - ABB IRB 120 with SMC Linear Axis (LEJSH63NZA 800):
@@ -452,7 +452,7 @@ ABB_IRB_120_L_Ax_Str.Collider.Offset = 1
 ABB_IRB_120_L_Ax_Str.Collider.External = {}
 #   Collision pairs.
 ABB_IRB_120_L_Ax_Str.Collider.Pairs = np.array([[0, 6], [0, 8], [0, 7], [0, 5], [1, 8], [1, 6], [1, 7], [2, 6], [2, 5], 
-                                                [2, 8], [2, 4], [2, 7], [3, 5], [3, 6], [3, 7], [3, 8], [4, 6], [6, 8]], dtype=np.int8)
+                                                [2, 8], [2, 4], [2, 7], [3, 5], [3, 6], [3, 7], [3, 8], [4, 6]], dtype=np.int8)
 
 """
 Robot Type - ABB IRB 14000 (Right):
@@ -560,9 +560,8 @@ ABB_IRB_14000_R_Str.Collider.Offset = 2
 #   2\ External.
 ABB_IRB_14000_R_Str.Collider.External = {}
 #   Collision pairs.
-ABB_IRB_14000_R_Str.Collider.Pairs = np.array([[0, 3], [0, 9], [0, 8], [0, 10], [0, 4], [1, 7], [1, 8], [1, 9], [1, 10], [2, 7], [2, 8], [2, 10], 
-                                               [2, 9], [3, 9], [3, 6], [3, 8], [3, 7], [3, 10], [4, 8], [4, 9], [4, 10], [4, 7], [5, 8], [5, 9], 
-                                               [5, 10]], dtype=np.int8)
+ABB_IRB_14000_R_Str.Collider.Pairs = np.array([[1, 7], [1, 8], [1, 9], [1, 10], [2, 7], [2, 8], [2, 10], [2, 9], [3, 9], [3, 6], 
+                                               [3, 8], [3, 7], [3, 10], [4, 8], [4, 9], [4, 10], [4, 7], [5, 8], [5, 9], [5, 10]], dtype=np.int8)
 
 """
 Robot Type - ABB IRB 14000 (Left):
@@ -667,9 +666,8 @@ ABB_IRB_14000_L_Str.Collider.Offset = 2
 #   2\ External.
 ABB_IRB_14000_L_Str.Collider.External = {}
 #   Collision pairs.
-ABB_IRB_14000_L_Str.Collider.Pairs = np.array([[0, 3], [0, 9], [0, 8], [0, 10], [0, 4], [1, 10], [1, 7], [1, 8], [1, 9], [2, 9], [2, 10], [2, 6], 
-                                               [2, 7], [2, 8], [3, 7], [3, 8], [3, 9], [3, 6], [3, 10], [4, 10], [4, 7], [4, 9], [4, 8], [5, 9], 
-                                               [5, 8], [5, 10]], dtype=np.int8)
+ABB_IRB_14000_L_Str.Collider.Pairs = np.array([[1, 10], [1, 7], [1, 8], [1, 9], [2, 9], [2, 10], [2, 6], [2, 7], [2, 8], [3, 7], [3, 8], 
+                                               [3, 9], [3, 6], [3, 10], [4, 10], [4, 7], [4, 9], [4, 8], [5, 9], [5, 8], [5, 10]], dtype=np.int8)
 
 """
 Robot Type - Epson LS3-B401S:
