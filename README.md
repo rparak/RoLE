@@ -1,3 +1,3 @@
-# Kinematics_Lib
+# Industrial Robotics Library for Everyone (IRLE)
 
 ...
