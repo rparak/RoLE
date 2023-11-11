@@ -7,13 +7,13 @@ if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
 # OS (Operating system interfaces)
 import os
-# Custom Lib.:
-#   ../Lib/Blender/Utilities
-import Lib.Blender.Utilities
-#   ../Lib/Utilities/File_IO
-import Lib.Utilities.File_IO
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Blender/Utilities
+import IRLE.Blender.Utilities
+#   ../IRLE/Utilities/File_IO
+import IRLE.Utilities.File_IO
+#   ../IRLE/Parameters/Robot
+import IRLE.Parameters.Robot as Parameters
 
 """
 Description:
@@ -45,7 +45,7 @@ def main():
     """
 
     # Deselect all objects in the current scene.
-    Lib.Blender.Utilities.Deselect_All()
+    IRLE.Blender.Utilities.Deselect_All()
 
     # Locate the path to the project folder.
     project_folder = os.getcwd().split('Kinematics')[0] + 'Kinematics'
@@ -55,13 +55,13 @@ def main():
 
     # Example: 
     #   Robot workspace dataset (x, y, z).
-    data = Lib.Utilities.File_IO.Load(f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME}', 'txt', ',')
+    data = IRLE.Utilities.File_IO.Load(f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME}', 'txt', ',')
     
     # Generate a simplified convex polyhedron from the input data (x, y, z).
-    Lib.Blender.Utilities.Generate_Convex_Polyhedron_From_Data(f'Workspace_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', data, {'RGBA': [0.0, 1.0, 0.0, 1.0], 'alpha': 1.0})
+    IRLE.Blender.Utilities.Generate_Convex_Polyhedron_From_Data(f'Workspace_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', data, {'RGBA': [0.0, 1.0, 0.0, 1.0], 'alpha': 1.0})
     
     # Set the transparency of the object material.
-    Lib.Blender.Utilities.Set_Object_Material_Transparency(f'Workspace_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', 0.05)
+    IRLE.Blender.Utilities.Set_Object_Material_Transparency(f'Workspace_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', 0.05)
 
 if __name__ == '__main__':
     main()

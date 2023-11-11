@@ -7,11 +7,11 @@ if '../../..' + 'src' not in sys.path:
 import numpy as np
 # Time (Time access and conversions)
 import time
-# Custom Lib.:
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
-#   ../Lib/Kinematics/Core
-import Lib.Kinematics.Core
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Parameters/Robot
+import IRLE.Parameters.Robot as Parameters
+#   ../IRLE/Kinematics/Core
+import IRLE.Kinematics.Core
 
 """
 Description:
@@ -51,7 +51,7 @@ def main():
     # 1\ Forward Kinematics (Standard)
     t_0 = time.time()
     for _, th in enumerate(theta_rand):
-        Lib.Kinematics.Core.Forward_Kinematics(th, 'Standard', Robot_Str)
+        IRLE.Kinematics.Core.Forward_Kinematics(th, 'Standard', Robot_Str)
     t = time.time() - t_0
     print(f'[INFO]  1\ Forward Kinematics (Standard)')
     print(f'[INFO]      Time: {t:0.05f} in seconds.')
@@ -59,7 +59,7 @@ def main():
     # 2\ Forward Kinematics (Modified)
     t_0 = time.time()
     for _, th in enumerate(theta_rand):
-        Lib.Kinematics.Core.Forward_Kinematics(th, 'Modified', Robot_Str)
+        IRLE.Kinematics.Core.Forward_Kinematics(th, 'Modified', Robot_Str)
     t = time.time() - t_0
     print(f'[INFO]  2\ Forward Kinematics (Modified)')
     print(f'[INFO]      Time: {t:0.05f} in seconds.')
@@ -67,7 +67,7 @@ def main():
     # 3\ Forward Kinematics (Fast)
     t_0 = time.time()
     for _, th in enumerate(theta_rand):
-        Lib.Kinematics.Core.Forward_Kinematics(th, 'Fast', Robot_Str)
+        IRLE.Kinematics.Core.Forward_Kinematics(th, 'Fast', Robot_Str)
     t = time.time() - t_0
     print(f'[INFO]  3\ Forward Kinematics (Fast)')
     print(f'[INFO]      Time: {t:0.05f} in seconds.')
@@ -78,11 +78,11 @@ def main():
     """
     num_of_decimals = 2
     for _, th in enumerate(theta_rand):
-        T_Standard = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Standard', Robot_Str)[1].all(), dtype=np.float64), 
+        T_Standard = np.round(np.array(IRLE.Kinematics.Core.Forward_Kinematics(th, 'Standard', Robot_Str)[1].all(), dtype=np.float64), 
                               num_of_decimals)
-        T_Modified = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Modified', Robot_Str)[1].all(), dtype=np.float64), 
+        T_Modified = np.round(np.array(IRLE.Kinematics.Core.Forward_Kinematics(th, 'Modified', Robot_Str)[1].all(), dtype=np.float64), 
                               num_of_decimals)
-        T_Fast = np.round(np.array(Lib.Kinematics.Core.Forward_Kinematics(th, 'Fast', Robot_Str)[1].all(), dtype=np.float64), 
+        T_Fast = np.round(np.array(IRLE.Kinematics.Core.Forward_Kinematics(th, 'Fast', Robot_Str)[1].all(), dtype=np.float64), 
                           num_of_decimals)
 
         if (np.array_equal(T_Standard, T_Modified) and np.array_equal(T_Modified, T_Fast)) == False:

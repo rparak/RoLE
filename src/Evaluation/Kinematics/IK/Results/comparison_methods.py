@@ -17,7 +17,6 @@ Description:
     Initialization of constants.
 """
 
-
 def main():
     """
     Description:
@@ -57,7 +56,6 @@ def main():
     legend = dict(zip(labels, handles))
     # Show the labels (legends) of the graph.
     ax.legend(legend.values(), legend.keys(), fontsize=10.0)
-
 
 if __name__ == '__main__':
     sys.exit(main())

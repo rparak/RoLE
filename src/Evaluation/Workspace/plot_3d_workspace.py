@@ -13,9 +13,9 @@ import os
 import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
-# Custom Lib.:
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Parameters/Robot
+import IRLE.Parameters.Robot as Parameters
 
 """
 Description:

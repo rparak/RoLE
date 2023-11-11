@@ -9,19 +9,19 @@ if '../../../../' + 'src' not in sys.path:
 import numpy as np
 if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
-# Custom Lib.:
-#   ../Lib/Blender/Utilities
-import Lib.Blender.Utilities
-#   ../Lib/Collider/Utilities
-import Lib.Collider.Utilities
-#   ../Lib/Transformation/Core
-from Lib.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
-#   ../Lib/Kinematics/Core
-import Lib.Kinematics.Core
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
-#   ../Lib/Blender/Parameters/Camera
-import Lib.Blender.Parameters.Camera
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Blender/Utilities
+import IRLE.Blender.Utilities
+#   ../IRLE/Collider/Utilities
+import IRLE.Collider.Utilities
+#   ../IRLE/Transformation/Core
+from IRLE.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
+#   ../IRLE/Kinematics/Core
+import IRLE.Kinematics.Core
+#   ../IRLE/Parameters/Robot
+import IRLE.Parameters.Robot as Parameters
+#   ../IRLE/Blender/Parameters/Camera
+import IRLE.Blender.Parameters.Camera
 
 """
 Description:
@@ -57,24 +57,23 @@ def main():
 
     
     # Deselect all objects in the current scene.
-    Lib.Blender.Utilities.Deselect_All()
+    IRLE.Blender.Utilities.Deselect_All()
 
-    
     # Remove animation data from objects (Clear keyframes).
-    Lib.Blender.Utilities.Remove_Animation_Data()
+    IRLE.Blender.Utilities.Remove_Animation_Data()
 
     i = 0
     for _, obj in enumerate(bpy.data.objects):
         # Removes objects, if they exist.
         if 'Collision' in obj.name:
-            Lib.Blender.Utilities.Remove_Object(obj.name)
+            IRLE.Blender.Utilities.Remove_Object(obj.name)
             continue
 
         # Get positions of the vertices of the mesh object.
-        obj_i_verts = Lib.Blender.Utilities.Get_Vertices_From_Object(obj.name)
+        obj_i_verts = IRLE.Blender.Utilities.Get_Vertices_From_Object(obj.name)
 
         # Get the minimum and maximum X, Y, Z values of the input vertices.
-        (min_vec3, max_vec3) = Lib.Collider.Utilities.Get_Min_Max(np.array(obj_i_verts, dtype=np.float64))
+        (min_vec3, max_vec3) = IRLE.Collider.Utilities.Get_Min_Max(np.array(obj_i_verts, dtype=np.float64))
 
         # Obtain the size and centroid of the observed object.
         Size = np.array([max_vec3[0] - min_vec3[0], max_vec3[1] - min_vec3[1],
@@ -92,17 +91,17 @@ def main():
                           'material': {'RGBA': [1.0,1.0,1.0,1.0], 'alpha': 1.0}}
         
         # Create a primitive three-dimensional object (cuboid) with additional properties.
-        Lib.Blender.Utilities.Create_Primitive('Cube', obj_i_name_new, box_properties)
+        IRLE.Blender.Utilities.Create_Primitive('Cube', obj_i_name_new, box_properties)
         
         # Set the rotation mode to be the same as the observed object.
         bpy.data.objects[obj_i_name_new].rotation_mode = bpy.data.objects[obj.name].rotation_mode
         
         # Set the origin of the observed object to zero.
-        Lib.Blender.Utilities.Set_Object_Origin(obj_i_name_new, HTM_Cls(None, np.float64).all())
+        IRLE.Blender.Utilities.Set_Object_Origin(obj_i_name_new, HTM_Cls(None, np.float64).all())
 
 
         # Remove all materials from the created object.
-        Lib.Blender.Utilities.Remove_Object_Material(obj_i_name_new)
+        IRLE.Blender.Utilities.Remove_Object_Material(obj_i_name_new)
 
         # Origin (o), Size (s)
         o = np.round((-1) * Centroid, 5) + [0.0, 0.0, 0.0]; s = np.round(Size, 5) + [0.0, 0.0, 0.0]

@@ -7,17 +7,17 @@ if '../../..' + 'src' not in sys.path:
 import numpy as np
 # OS (Operating system interfaces)
 import os
-# Custom Lib.:
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
-#   ../Lib/Kinematics/Core
-import Lib.Kinematics.Core
-#   ../Lib/Trajectory/Utilities
-import Lib.Trajectory.Utilities
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Parameters/Robot
+import IRLE.Parameters.Robot as Parameters
+#   ../IRLE/Kinematics/Core
+import IRLE.Kinematics.Core
+#   ../IRLE/Trajectory/Utilities
+import IRLE.Trajectory.Utilities
 #   ../Configuration/Parameters
 import Configuration.Parameters
-#   ../Lib/Utilities/File_IO
-import Lib.Utilities.File_IO as File_IO
+#   ../IRLE/Utilities/File_IO
+import IRLE.Utilities.File_IO as File_IO
 
 """
 Description:
@@ -63,18 +63,18 @@ def main():
           os.remove(f'{file_i}.txt')
 
     # Initialization of the class to generate trajectory.
-    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
+    Polynomial_Cls = IRLE.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
 
     # Obtain the constraints for absolute joint positions in order to generate multi-axis position trajectories.
     (abs_j_pos_0, abs_j_pos_1) = Configuration.Parameters.Get_Absolute_Joint_Positions(Robot_Str.Name)
 
     # Obtain the desired homogeneous transformation matrix T of the tool center point (TCP).
-    T_1 = Lib.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
+    T_1 = IRLE.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
 
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
-    (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(T_1, abs_j_pos_0, CONST_NIK_METHOD, Robot_Str, 
+    (info, theta) = IRLE.Kinematics.Core.Inverse_Kinematics_Numerical(T_1, abs_j_pos_0, CONST_NIK_METHOD, Robot_Str, 
                                                                      CONST_IK_PROPERTIES)
 
     # Check the calculation.
@@ -99,12 +99,12 @@ def main():
         # Obtain the homogeneous transformation matrix of the robot end-effector from the input absolute joint positions.
         #   FK: 
         #       Theta --> T
-        T_i = Lib.Kinematics.Core.Forward_Kinematics(theta_arr_i, 'Fast', Robot_Str)[1]
+        T_i = IRLE.Kinematics.Core.Forward_Kinematics(theta_arr_i, 'Fast', Robot_Str)[1]
 
         # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
         #   IK:
         #       Theta <-- T
-        (info, theta_i) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(T_i, theta_0, CONST_NIK_METHOD, Robot_Str, 
+        (info, theta_i) = IRLE.Kinematics.Core.Inverse_Kinematics_Numerical(T_i, theta_0, CONST_NIK_METHOD, Robot_Str, 
                                                                            CONST_IK_PROPERTIES)
         
         # Check the calculation.
@@ -117,7 +117,7 @@ def main():
         #   1\ Desired.
         p_i = T_i.p.all(); q_i = T_i.Get_Rotation('QUATERNION').all()
         #   2\ Predicted.
-        T_predicted = Lib.Kinematics.Core.Forward_Kinematics(theta_i, 'Fast', Robot_Str)[1]
+        T_predicted = IRLE.Kinematics.Core.Forward_Kinematics(theta_i, 'Fast', Robot_Str)[1]
         p_predicted = T_predicted.p.all(); q_predicted = T_predicted.Get_Rotation('QUATERNION').all()
 
         # Save the data to the '*.txt' file.

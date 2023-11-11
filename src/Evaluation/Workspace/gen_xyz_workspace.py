@@ -5,11 +5,11 @@ if '../../' + 'src' not in sys.path:
     sys.path.append('../..')
 # OS (Operating system interfaces)
 import os
-# Custom Lib.:
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
-#   ../Lib/Workspace/Core
-import Lib.Workspace.Core
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Parameters/Robot
+import IRLE.Parameters.Robot as Parameters
+#   ../IRLE/Workspace/Core
+import IRLE.Workspace.Core
 
 """
 Description:
@@ -43,7 +43,7 @@ def main():
 
     # Generate x, y, z positions of the workspace from the absolute positions
     # of the joints.
-    Lib.Workspace.Core.Generate_Workspace_XYZ(Robot_Str, f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_IN}.txt', 
+    IRLE.Workspace.Core.Generate_Workspace_XYZ(Robot_Str, f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_IN}.txt', 
                                               f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_OUT}.txt')
     
 if __name__ == "__main__":

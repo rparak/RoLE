@@ -7,17 +7,17 @@ if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Lib.:
-#   ../Lib/Blender/Parameters/Camera
-import Lib.Blender.Parameters.Camera
-#   ../Lib/Blender/Utilities
-import Lib.Blender.Utilities
-#   ../Lib/Blender/Core
-import Lib.Blender.Core
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Blender/Parameters/Camera
+import IRLE.Blender.Parameters.Camera
+#   ../IRLE/Blender/Utilities
+import IRLE.Blender.Utilities
+#   ../IRLE/Blender/Core
+import IRLE.Blender.Core
+#   ../IRLE/Parameters/Robot
+import IRLE.Parameters.Robot as Parameters
 
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+import IRLE.Transformation.Utilities.Mathematics as Mathematics
 
 """
 Description:
@@ -38,7 +38,7 @@ Description:
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
 # Set the structure of the main parameters of the camera.
-CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
+CONST_CAMERA_TYPE = IRLE.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
 def main():
     """
@@ -47,17 +47,17 @@ def main():
     """
     
     # Deselect all objects in the current scene.
-    Lib.Blender.Utilities.Deselect_All()
+    IRLE.Blender.Utilities.Deselect_All()
     
     # Remove animation data from objects (Clear keyframes).
-    Lib.Blender.Utilities.Remove_Animation_Data()
+    IRLE.Blender.Utilities.Remove_Animation_Data()
 
     # Set the camera (object) transformation and projection.
-    if Lib.Blender.Utilities.Object_Exist('Camera'):
-        Lib.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
+    if IRLE.Blender.Utilities.Object_Exist('Camera'):
+        IRLE.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
     
     # Initialization of the class to work with a robotic arm object in a Blender scene.
-    Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, {'Viewpoint_EE': False, 'Colliders': False, 
+    Robot_ID_0_Cls = IRLE.Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, {'Viewpoint_EE': False, 'Colliders': False, 
                                                                    'Workspace': False})
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 

@@ -11,11 +11,11 @@ import numpy as np
 import functools
 # Operator (Standard operators as functions)
 import operator
-# Custom Lib.:
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
-#   ../Lib/Workspace/Core
-import Lib.Workspace.Core
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Parameters/Robot
+import IRLE.Parameters.Robot as Parameters
+#   ../IRLE/Workspace/Core
+import IRLE.Workspace.Core
 
 """
 Description:
@@ -31,7 +31,7 @@ def main():
 
         Note:
             More information can be found here:
-                ../Lib/Wokrspace/Core.py
+                ../IRLE/Wokrspace/Core.py
     """
 
     # Locate the path to the project folder.
@@ -42,12 +42,12 @@ def main():
 
     # Number of samples for joint orientation combinations to generate 
     # the workspace of a robotic arm.
-    nCr_Joint = Lib.Workspace.Core.Get_Number_of_Samples(Robot_Str.Name)
+    nCr_Joint = IRLE.Workspace.Core.Get_Number_of_Samples(Robot_Str.Name)
 
     # The name of the resulting file.
     print(f'[INFO] Path: {project_folder}/src/Data/Workspace/{Robot_Str.Name}/abs_joint_pos_data.txt')
 
-    theta = list([[Lib.Workspace.Core.CONST_NONE_VALUE]] * 7)
+    theta = list([[IRLE.Workspace.Core.CONST_NONE_VALUE]] * 7)
     print('[INFO] Input Data:')
     for i, th_limit in enumerate(Robot_Str.Theta.Limit):
         print(f'[INFO]  Theta {i}:')
@@ -69,7 +69,7 @@ def main():
 
     # Generate the absolute orientation of the joints to calculate the robot's workspace 
     # and save this data to a file.
-    Lib.Workspace.Core.Generate_Absolute_Joint_Orientation(f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/abs_joint_pos_data.txt', 
+    IRLE.Workspace.Core.Generate_Absolute_Joint_Orientation(f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/abs_joint_pos_data.txt', 
                                                            NUM_OF_COMBINATIONS, theta)
 
 if __name__ == "__main__":

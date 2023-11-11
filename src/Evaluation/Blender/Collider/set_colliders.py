@@ -5,15 +5,15 @@ import sys
 #   Add access if it is not in the system path.
 if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
-# Custom Lib.:
-#   ../Lib/Blender/Utilities
-import Lib.Blender.Utilities
-#   ../Lib/Kinematics/Core
-import Lib.Kinematics.Core
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
-#   ../Lib/Blender/Parameters/Camera
-import Lib.Blender.Parameters.Camera
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Blender/Utilities
+import IRLE.Blender.Utilities
+#   ../IRLE/Kinematics/Core
+import IRLE.Kinematics.Core
+#   ../IRLE/Parameters/Robot
+import IRLE.Parameters.Robot as Parameters
+#   ../IRLE/Blender/Parameters/Camera
+import IRLE.Blender.Parameters.Camera
 
 """
 Description:
@@ -44,28 +44,28 @@ def main():
     """
     
     # Deselect all objects in the current scene.
-    Lib.Blender.Utilities.Deselect_All()
+    IRLE.Blender.Utilities.Deselect_All()
     
     # Remove animation data from objects (Clear keyframes).
-    Lib.Blender.Utilities.Remove_Animation_Data()
+    IRLE.Blender.Utilities.Remove_Animation_Data()
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
     # Set the structure of the main parameters of the controlled robot.
-    Robot_ID_0_Cls = Lib.Blender.Core.Robot_Cls(Robot_Str, {'Viewpoint_EE': False, 'Colliders': True, 
+    Robot_ID_0_Cls = IRLE.Blender.Core.Robot_Cls(Robot_Str, {'Viewpoint_EE': False, 'Colliders': True, 
                                                             'Workspace': False})
 
     # Reset the absolute position of the robot joints to the 'Zero'.
     Robot_ID_0_Cls.Reset('Zero')
     
     # Set the collision object transformation of the base robot.
-    Lib.Blender.Utilities.Set_Object_Transformation(f'Base_Collider_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', Robot_Str.T.Base)
+    IRLE.Blender.Utilities.Set_Object_Transformation(f'Base_Collider_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', Robot_Str.T.Base)
     
     # Get the configuration of the homogeneous matrix of each joint using forward kinematics.
     #   Note:
     #       The absolute position of the joints must be the same as in the Robot_Cls reset function at the top.
-    T_Arr = Lib.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
+    T_Arr = IRLE.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
     
     # Places collision objects on the remaining parts of the robot.
     for _, (th_name_i, T_i) in enumerate(zip(Robot_Str.Theta.Name, T_Arr)):
@@ -73,7 +73,7 @@ def main():
         id = th_name_i.removesuffix(f'_{Robot_Str.Name}_ID_{Robot_Str.Id:03}').removeprefix('Joint_')
 
         # Set the collision object transformation of the robot joint.
-        Lib.Blender.Utilities.Set_Object_Transformation(f'Joint_{id}_Collider_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', T_i)
+        IRLE.Blender.Utilities.Set_Object_Transformation(f'Joint_{id}_Collider_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', T_i)
     
 if __name__ == '__main__':
     main()

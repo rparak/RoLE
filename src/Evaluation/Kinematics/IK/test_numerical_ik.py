@@ -5,13 +5,13 @@ if '../../..' + 'src' not in sys.path:
     sys.path.append('../../..')
 # Time (Time access and conversions)
 import time
-# Custom Lib.:
-#   ../Lib/Parameters/Robot
-import Lib.Parameters.Robot as Parameters
-#   ../Lib/Kinematics/Core
-import Lib.Kinematics.Core
-#   ../Lib/Trajectory/Utilities
-import Lib.Trajectory.Utilities
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Parameters/Robot
+import IRLE.Parameters.Robot as Parameters
+#   ../IRLE/Kinematics/Core
+import IRLE.Kinematics.Core
+#   ../IRLE/Trajectory/Utilities
+import IRLE.Trajectory.Utilities
 #   ../Configuration/Parameters
 import Configuration.Parameters
 
@@ -44,7 +44,7 @@ def main():
     (abs_j_pos_0, abs_j_pos_1) = Configuration.Parameters.Get_Absolute_Joint_Positions(Robot_Str.Name)
 
     # Obtain the desired homogeneous transformation matrix T of the tool center point (TCP).
-    T_1 = Lib.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
+    T_1 = IRLE.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
 
     print('[INFO] The calculation is in progress.')
     t_0 = time.time()
@@ -52,15 +52,13 @@ def main():
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
-    (info, theta) = Lib.Kinematics.Core.Inverse_Kinematics_Numerical(T_1, abs_j_pos_0, CONST_NIK_METHOD, Robot_Str, 
+    (info, theta) = IRLE.Kinematics.Core.Inverse_Kinematics_Numerical(T_1, abs_j_pos_0, CONST_NIK_METHOD, Robot_Str, 
                                                                      CONST_IK_PROPERTIES)
     
     t = time.time() - t_0
     print(f'[INFO] Time: {t:0.05f} in seconds.')
 
-    # Get the actual and desired tool center point (TCP) to check the results.
-    T = Lib.Kinematics.Core.Forward_Kinematics(theta, 'Fast', Robot_Str)[1]
-
+    # Display results.
     print(f'[INFO] Absolute Joint Positions:')
     print(f'[INFO] >> successful = {info["successful"]}')
     print(f'[INFO] >> iteration = {info["iteration"]}')

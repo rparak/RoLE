@@ -7,15 +7,15 @@ if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Lib.:
-#   ../Lib/Blender/Parameters/Camera
-import Lib.Blender.Parameters.Camera
-#   ../Lib/Blender/Utilities
-import Lib.Blender.Utilities
-#   ../Lib/Blender/Core
-import Lib.Blender.Core
-#   ../Lib/Parameters/Mechanism
-import Lib.Parameters.Mechanism as Parameters
+# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
+#   ../IRLE/Blender/Parameters/Camera
+import IRLE.Blender.Parameters.Camera
+#   ../IRLE/Blender/Utilities
+import IRLE.Blender.Utilities
+#   ../IRLE/Blender/Core
+import IRLE.Blender.Core
+#   ../IRLE/Parameters/Mechanism
+import IRLE.Parameters.Mechanism as Parameters
 
 """
 Description:
@@ -36,7 +36,7 @@ Description:
 # Set the structure of the main parameters of the controlled mechanism.
 CONST_MECHANISM_TYPE = Parameters.SMC_LEFB25_14000_0_1_Str
 # Set the structure of the main parameters of the camera.
-CONST_CAMERA_TYPE = Lib.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
+CONST_CAMERA_TYPE = IRLE.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 # Animation stop(t_0), start(t_1) time in seconds.
 CONST_T_0 = 0.0
 CONST_T_1 = 2.0
@@ -48,17 +48,17 @@ def main():
     """
     
     # Deselect all objects in the current scene.
-    Lib.Blender.Utilities.Deselect_All()
+    IRLE.Blender.Utilities.Deselect_All()
     
     # Remove animation data from objects (Clear keyframes).
-    Lib.Blender.Utilities.Remove_Animation_Data()
+    IRLE.Blender.Utilities.Remove_Animation_Data()
 
     # Set the camera (object) transformation and projection.
-    if Lib.Blender.Utilities.Object_Exist('Camera'):
-        Lib.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
+    if IRLE.Blender.Utilities.Object_Exist('Camera'):
+        IRLE.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
 
     # Initialization of the class to work with a mechanism object in a Blender scene.
-    Mechanism_ID_0_1_Cls = Lib.Blender.Core.Mechanism_Cls(CONST_MECHANISM_TYPE, {'Viewpoint_EE': False, 'Colliders': False})
+    Mechanism_ID_0_1_Cls = IRLE.Blender.Core.Mechanism_Cls(CONST_MECHANISM_TYPE, {'Viewpoint_EE': False, 'Colliders': False})
     print(f'[INFO] Mechanism Name: {Mechanism_ID_0_1_Cls.Parameters.Name}_ID_{Mechanism_ID_0_1_Cls.Parameters.Id:03}')
     
     # Reset the absolute position of the mechanism joints to the 'Zero'.
