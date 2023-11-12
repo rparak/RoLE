@@ -22,7 +22,7 @@ import IRLE.Trajectory.Utilities
 #   ../IRLE/Primitives/Core
 from IRLE.Primitives.Core import Box_Cls
 #   ../IRLE/Primitives/Core
-from IRLE.Collider.Core import AABB_Cls
+from IRLE.Collider.Core import OBB_Cls
 
 class Poly_3D_Cls(object):
     """
@@ -344,12 +344,11 @@ class Mechanism_Cls(object):
         # Enable collision of the added object.
         if enable_collision == True:
             # Add a collider (type AABB) as a part of the mechanism structure.
-            self.__Mechanism_Parameters_Str.Collider.External = {object_name: AABB_Cls(Box_Cls([0.0, 0.0, 0.0], 
-                                                                                            size))}
+            self.__Mechanism_Parameters_Str.Collider.External = {object_name: OBB_Cls(Box_Cls([0.0, 0.0, 0.0], 
+                                                                                               size))}
             # Axis-aligned Bounding Box (AABB) transformation according to the input homogeneous 
             # transformation matrix.
-            T_Identity = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float64)
-            self.__Mechanism_Parameters_Str.Collider.External[object_name].Transformation(T_Identity.Translation(T.p.all()))
+            self.__Mechanism_Parameters_Str.Collider.External[object_name].Transformation(T)
 
         self.__external_object_id += 1
         
@@ -720,12 +719,11 @@ class Robot_Cls(object):
         # Enable collision of the added object.
         if enable_collision == True:
             # Add a collider (type AABB) as a part of the robotic arm structure.
-            self.__Robot_Parameters_Str.Collider.External = {object_name: AABB_Cls(Box_Cls([0.0, 0.0, 0.0], 
-                                                                                            size))}
+            self.__Robot_Parameters_Str.Collider.External = {object_name: OBB_Cls(Box_Cls([0.0, 0.0, 0.0], 
+                                                                                          size))}
             # Axis-aligned Bounding Box (AABB) transformation according to the input homogeneous 
             # transformation matrix.
-            T_Identity = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float64)
-            self.__Robot_Parameters_Str.Collider.External[object_name].Transformation(T_Identity.Translation(T.p.all()))
+            self.__Robot_Parameters_Str.Collider.External[object_name].Transformation(T)
 
         self.__external_object_id += 1
         
