@@ -19,6 +19,10 @@ import IRLE.Transformation.Core as Transformation
 import IRLE.Transformation.Utilities.Mathematics as Mathematics
 #   ../IRLE/Trajectory/Utilities
 import IRLE.Trajectory.Utilities
+#   ../IRLE/Primitives/Core
+from IRLE.Primitives.Core import Box_Cls
+#   ../IRLE/Primitives/Core
+from IRLE.Collider.Core import AABB_Cls
 
 class Poly_3D_Cls(object):
     """
@@ -204,6 +208,7 @@ class Mechanism_Cls(object):
             
             # << PRIVATE >> #
             self.__Mechanism_Parameters_Str = Mechanism_Parameters_Str
+            self.__external_object_id = 0
             # Modified the name of the robot structure. Addition of robot structure Id (identification number).
             self.__name = f'{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}'
             # Get the homogeneous transformation matrix of the mechanism based on the position of the mechanism structure in Blender.
@@ -290,7 +295,7 @@ class Mechanism_Cls(object):
             (1) parameter [Matrix<float> 4x4]: Homogeneous transformation matrix of the mechanism slider.
         """
 
-        # Get the actual homogenous transformation matrix of the mechanism slider.
+        # Get the actual homogeneous transformation matrix of the mechanism slider.
         T_Slider = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].matrix_basis, 
                                                                          np.float64)
 
@@ -303,6 +308,69 @@ class Mechanism_Cls(object):
         """
 
         bpy.context.view_layer.update()
+
+    def Add_External_Object(self, T: tp.List[tp.List[float]], color: tp.List[float], 
+                            size: tp.List[float], enable_collision: bool) -> None:
+        """
+        Description:
+            A function to add external objects (cube) to the Blender environment.
+
+        Args:
+            (1) T [Matrix<float> 4x4]: Homogeneous transformation matrix of the object.
+            (2) color [Vector<float> 1x4]: The color of the object.
+                                            Note:
+                                                Format: rgba(red, green, blue, alpha)
+            (3) size [Vector<float> 1x3]: The size of the object.
+            (4) enable_collision [bool]: Information on whether or not the object is to be exposed 
+                                         to collisions
+        """
+
+        if isinstance(T, (list, np.ndarray)):
+            T = Transformation.Homogeneous_Transformation_Matrix_Cls(T, np.float64)
+
+        # Set the properties of the added object.
+        box_properties = {'transformation': {'Size': 1.0, 
+                                             'Scale': size, 
+                                             'Location': [0.0, 0.0, 0.0]}, 
+                          'material': {'RGBA': color, 'alpha': color[-1]}}
+        #  Object name.
+        object_name = f'Object_ID_{self.__external_object_id}'
+        
+        # Create a primitive three-dimensional object with additional properties.
+        IRLE.Blender.Utilities.Create_Primitive('Cube', object_name, box_properties)
+
+        # Set the object transformation.
+        IRLE.Blender.Utilities.Set_Object_Transformation(object_name, T)
+
+        # Enable collision of the added object.
+        if enable_collision == True:
+            # Add a collider (type AABB) as a part of the mechanism structure.
+            self.__Mechanism_Parameters_Str.Collider.External = {object_name: AABB_Cls(Box_Cls([0.0, 0.0, 0.0], 
+                                                                                            size))}
+            # Axis-aligned Bounding Box (AABB) transformation according to the input homogeneous 
+            # transformation matrix.
+            T_Identity = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float64)
+            self.__Mechanism_Parameters_Str.Collider.External[object_name].Transformation(T_Identity.Translation(T.p.all()))
+
+        self.__external_object_id += 1
+        
+    def Remove_All_External_Objects(self) -> None:
+        """
+        Description:
+            A function to remove all external objects from the Blender environment that were added 
+            using the 'Add_External_Object' function of the class.
+        """
+
+        i = 0
+        while True:
+            # Obtain the name of the object.
+            object_name = f'Object_ID_{i}'
+
+            if IRLE.Blender.Utilities.Object_Exist(object_name) == True:
+                IRLE.Blender.Utilities.Remove_Object(object_name)
+            else:
+                break     
+            i += 1
 
     def Reset(self, mode: str, theta: tp.Union[None, float] = None) -> bool:
         """
@@ -457,6 +525,7 @@ class Robot_Cls(object):
             
             # << PRIVATE >> #
             self.__Robot_Parameters_Str = Robot_Parameters_Str
+            self.__external_object_id = 0
             # Modified the name of the robot structure. Addition of robot structure Id (identification number).
             self.__name = f'{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}'
             # Get the homogeneous transformation matrix of the robot based on the position of the robot structure in Blender.
@@ -616,6 +685,70 @@ class Robot_Cls(object):
         """
 
         bpy.context.view_layer.update()
+        
+    def Add_External_Object(self, T: tp.List[tp.List[float]], color: tp.List[float], 
+                            size: tp.List[float], enable_collision: bool) -> None:
+        """
+        Description:
+            A function to add external objects (cube) to the Blender environment.
+
+        Args:
+            (1) T [Matrix<float> 4x4]: Homogeneous transformation matrix of the object.
+            (2) color [Vector<float> 1x4]: The color of the object.
+                                            Note:
+                                                Format: rgba(red, green, blue, alpha)
+            (3) size [Vector<float> 1x3]: The size of the object.
+            (4) enable_collision [bool]: Information on whether or not the object is to be exposed 
+                                         to collisions
+        """
+
+        if isinstance(T, (list, np.ndarray)):
+            T = Transformation.Homogeneous_Transformation_Matrix_Cls(T, np.float64)
+
+        # Set the properties of the added object.
+        box_properties = {'transformation': {'Size': 1.0, 
+                                             'Scale': size, 
+                                             'Location': [0.0, 0.0, 0.0]}, 
+                          'material': {'RGBA': color, 'alpha': color[-1]}}
+        #  Object name.
+        object_name = f'Object_ID_{self.__external_object_id}'
+        
+        # Create a primitive three-dimensional object with additional properties.
+        IRLE.Blender.Utilities.Create_Primitive('Cube', object_name, box_properties)
+
+        # Set the object transformation.
+        IRLE.Blender.Utilities.Set_Object_Transformation(object_name, T)
+
+        # Enable collision of the added object.
+        if enable_collision == True:
+            # Add a collider (type AABB) as a part of the robotic arm structure.
+            self.__Robot_Parameters_Str.Collider.External = {object_name: AABB_Cls(Box_Cls([0.0, 0.0, 0.0], 
+                                                                                            size))}
+            # Axis-aligned Bounding Box (AABB) transformation according to the input homogeneous 
+            # transformation matrix.
+            T_Identity = Transformation.Homogeneous_Transformation_Matrix_Cls(None, np.float64)
+            self.__Robot_Parameters_Str.Collider.External[object_name].Transformation(T_Identity.Translation(T.p.all()))
+
+        self.__external_object_id += 1
+        
+    def Remove_All_External_Objects(self) -> None:
+        """
+        Description:
+            A function to remove all external objects from the Blender environment that were added 
+            using the 'Add_External_Object' function of the class.
+        """
+
+        i = 0
+        while True:
+            # Obtain the name of the object.
+            object_name = f'Object_ID_{i}'
+
+            if IRLE.Blender.Utilities.Object_Exist(object_name) == True:
+                print('Yeeeees')
+                IRLE.Blender.Utilities.Remove_Object(object_name)
+            else:
+                break     
+            i += 1
 
     def Reset(self, mode: str, theta: tp.Union[None, tp.List[float]] = None) -> bool:
         """
@@ -710,7 +843,7 @@ class Robot_Cls(object):
                                                                      t_0, t_1)
                 theta_arr.append(theta_arr_i)
 
-            for k, (t_i, theta_arr_i) in enumerate(zip(self.__Polynomial_Cls.t, np.array(theta_arr, dtype=np.float64).T)):
+            for _, (t_i, theta_arr_i) in enumerate(zip(self.__Polynomial_Cls.t, np.array(theta_arr, dtype=np.float64).T)):
                 # Get the zero configuration of each joint.
                 T_zero_cfg = self.__Get_Zero_Joint_Cfg()
 

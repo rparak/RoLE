@@ -51,7 +51,7 @@ def Remove_Object(name: str) -> None:
     Args:
         (1) name [string]: The name of the object.
     """
-
+    
     # Find the object with the desired name in the scene.
     object_name = None
     for obj in bpy.data.objects:
@@ -63,7 +63,7 @@ def Remove_Object(name: str) -> None:
     if object_name is not None:
         bpy.data.objects[object_name].select_set(True)
         for child in bpy.data.objects[object_name].children:
-            child.select_set(True)
+            child.select_set(True) 
         bpy.ops.object.delete()
         bpy.context.view_layer.update()
 

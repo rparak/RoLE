@@ -36,7 +36,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_L_Ax_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = IRLE.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
@@ -71,7 +71,7 @@ def main():
     """
                                      
     # ...
-    Robot_ID_0_Cls.Reset('Individual', th_0)
+    #Robot_ID_0_Cls.Reset('Individual', th_0)
 
     
 if __name__ == '__main__':
