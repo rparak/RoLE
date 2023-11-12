@@ -227,8 +227,7 @@ class Mechanism_Cls(object):
 
             # Enable or disable the visibility of the colliders.
             for _, collider_name in enumerate(np.concatenate((list(self.__Mechanism_Parameters_Str.Collider.Base), 
-                                                              list(self.__Mechanism_Parameters_Str.Collider.Theta),
-                                                              list(self.__Mechanism_Parameters_Str.Collider.External)), dtype=str)):
+                                                              list(self.__Mechanism_Parameters_Str.Collider.Theta)), dtype=str)):
                 if IRLE.Blender.Utilities.Object_Exist(collider_name):
                     IRLE.Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
 
@@ -547,8 +546,7 @@ class Robot_Cls(object):
 
             # Enable or disable the visibility of the colliders.
             for _, collider_name in enumerate(np.concatenate((list(self.__Robot_Parameters_Str.Collider.Base), 
-                                                              list(self.__Robot_Parameters_Str.Collider.Theta),
-                                                              list(self.__Robot_Parameters_Str.Collider.External)), dtype=str)):
+                                                              list(self.__Robot_Parameters_Str.Collider.Theta)), dtype=str)):
                 if IRLE.Blender.Utilities.Object_Exist(collider_name):
                     IRLE.Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
 
