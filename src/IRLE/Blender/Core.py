@@ -726,12 +726,15 @@ class Robot_Cls(object):
             self.__Robot_Parameters_Str.Collider.External[object_name].Transformation(T)
 
         self.__external_object_id += 1
-        
+
     def Remove_All_External_Objects(self) -> None:
         """
         Description:
             A function to remove all external objects from the Blender environment that were added 
             using the 'Add_External_Object' function of the class.
+
+            Note:
+                The function also removes external colliders added to the robotic structure.
         """
 
         i = 0
@@ -744,6 +747,8 @@ class Robot_Cls(object):
             else:
                 break     
             i += 1
+
+        self.__external_object_id = 0; self.__Robot_Parameters_Str.Collider.External = {}
 
     def Reset(self, mode: str, theta: tp.Union[None, tp.List[float]] = None) -> bool:
         """
