@@ -740,7 +740,6 @@ class Robot_Cls(object):
             object_name = f'Object_ID_{i}'
 
             if IRLE.Blender.Utilities.Object_Exist(object_name) == True:
-                print('Yeeeees')
                 IRLE.Blender.Utilities.Remove_Object(object_name)
             else:
                 break     
