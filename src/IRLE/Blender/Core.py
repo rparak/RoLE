@@ -343,10 +343,10 @@ class Mechanism_Cls(object):
 
         # Enable collision of the added object.
         if enable_collision == True:
-            # Add a collider (type AABB) as a part of the mechanism structure.
+            # Add a collider (type OBB) as a part of the mechanism structure.
             self.__Mechanism_Parameters_Str.Collider.External = {object_name: OBB_Cls(Box_Cls([0.0, 0.0, 0.0], 
                                                                                                size))}
-            # Axis-aligned Bounding Box (AABB) transformation according to the input homogeneous 
+            # Oriented Bounding Box (OBB) transformation according to the input homogeneous 
             # transformation matrix.
             self.__Mechanism_Parameters_Str.Collider.External[object_name].Transformation(T)
 
@@ -718,10 +718,10 @@ class Robot_Cls(object):
 
         # Enable collision of the added object.
         if enable_collision == True:
-            # Add a collider (type AABB) as a part of the robotic arm structure.
+            # Add a collider (type OBB) as a part of the robotic arm structure.
             self.__Robot_Parameters_Str.Collider.External = {object_name: OBB_Cls(Box_Cls([0.0, 0.0, 0.0], 
                                                                                           size))}
-            # Axis-aligned Bounding Box (AABB) transformation according to the input homogeneous 
+            # Oriented Bounding Box (OBB) transformation according to the input homogeneous 
             # transformation matrix.
             self.__Robot_Parameters_Str.Collider.External[object_name].Transformation(T)
 
