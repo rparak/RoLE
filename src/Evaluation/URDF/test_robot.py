@@ -10,9 +10,9 @@ import pybullet as pb
 import pybullet_data
 # Time (Time access and conversions)
 import time
-# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
-#   ../IRLE/Parameters/Robot
-import IRLE.Parameters.Robot as Parameters
+# Custom Lib.: Robotics Library for Everyone (RoLE)
+#   ../RoLE/Parameters/Robot
+import RoLE.Parameters.Robot as Parameters
 
 """
 Description:
@@ -21,7 +21,7 @@ Description:
 # Set the structure of the main parameters of the robot.
 CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
 # Locate the path to the project folder.
-CONST_PROJECT_FOLDER = os.getcwd().split('IRLE')[0] + 'IRLE'
+CONST_PROJECT_FOLDER = os.getcwd().split('RoLE')[0] + 'RoLE'
 
 def main():
     """

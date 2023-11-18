@@ -13,9 +13,9 @@ import os
 import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
-# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
-#   ../IRLE/Parameters/Robot
-import IRLE.Parameters.Robot as Parameters
+# Custom Lib.: Robotics Library for Everyone (RoLE)
+#   ../RoLE/Parameters/Robot
+import RoLE.Parameters.Robot as Parameters
 
 """
 Description:
@@ -37,7 +37,7 @@ def main():
     """
 
     # Locate the path to the project folder.
-    project_folder = os.getcwd().split('IRLE')[0] + 'IRLE'
+    project_folder = os.getcwd().split('RoLE')[0] + 'RoLE'
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE

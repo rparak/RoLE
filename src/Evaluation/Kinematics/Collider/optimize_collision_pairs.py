@@ -7,13 +7,13 @@ if '../../..' + 'src' not in sys.path:
 import numpy as np
 # Time (Time access and conversions)
 import time
-# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
-#   ../IRLE/Parameters/Robot
-import IRLE.Parameters.Robot as Parameters
-#   ../IRLE/Transformation/Utilities/Mathematics
-import IRLE.Transformation.Utilities.Mathematics as Mathematics
-#   ../IRLE/Kinematics/Core
-import IRLE.Kinematics.Core
+# Custom Lib.: Robotics Library for Everyone (RoLE)
+#   ../RoLE/Parameters/Robot
+import RoLE.Parameters.Robot as Parameters
+#   ../RoLE/Transformation/Utilities/Mathematics
+import RoLE.Transformation.Utilities.Mathematics as Mathematics
+#   ../RoLE/Kinematics/Core
+import RoLE.Kinematics.Core
 
 """
 Description:
@@ -79,7 +79,7 @@ def main():
         Base_Collider[0].Transformation(Robot_Str.T.Base)
     
         # Obtain the individual (theta) configuration of the homogeneous matrix of each joint using forward kinematics
-        T_Arr = IRLE.Kinematics.Core.Get_Individual_Joint_Configuration(th_rand_i, 'Modified', Robot_Str)[1]
+        T_Arr = RoLE.Kinematics.Core.Get_Individual_Joint_Configuration(th_rand_i, 'Modified', Robot_Str)[1]
 
         # Transformation of the joint colliders according to the input homogeneous transformation matrix.
         for _, (T_i, th_collider_i) in enumerate(zip(T_Arr, Theta_Collider)):

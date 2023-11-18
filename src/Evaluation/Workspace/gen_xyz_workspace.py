@@ -5,11 +5,11 @@ if '../../' + 'src' not in sys.path:
     sys.path.append('../..')
 # OS (Operating system interfaces)
 import os
-# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
-#   ../IRLE/Parameters/Robot
-import IRLE.Parameters.Robot as Parameters
-#   ../IRLE/Workspace/Core
-import IRLE.Workspace.Core
+# Custom Lib.: Robotics Library for Everyone (RoLE)
+#   ../RoLE/Parameters/Robot
+import RoLE.Parameters.Robot as Parameters
+#   ../RoLE/Workspace/Core
+import RoLE.Workspace.Core
 
 """
 Description:
@@ -29,7 +29,7 @@ def main():
     """
 
     # Locate the path to the project folder.
-    project_folder = os.getcwd().split('IRLE')[0] + 'IRLE'
+    project_folder = os.getcwd().split('RoLE')[0] + 'RoLE'
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
@@ -43,7 +43,7 @@ def main():
 
     # Generate x, y, z positions of the workspace from the absolute positions
     # of the joints.
-    IRLE.Workspace.Core.Generate_Workspace_XYZ(Robot_Str, f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_IN}.txt', 
+    RoLE.Workspace.Core.Generate_Workspace_XYZ(Robot_Str, f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_IN}.txt', 
                                               f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/{CONST_FILE_NAME_OUT}.txt')
     
 if __name__ == "__main__":

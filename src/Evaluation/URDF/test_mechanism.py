@@ -10,9 +10,9 @@ import pybullet as pb
 import pybullet_data
 # Time (Time access and conversions)
 import time
-# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
-#   ../IRLE/Parameters/Mechanism
-import IRLE.Parameters.Mechanism as Parameters
+# Custom Lib.: Robotics Library for Everyone (RoLE)
+#   ../RoLE/Parameters/Mechanism
+import RoLE.Parameters.Mechanism as Parameters
 
 """
 Description:
@@ -21,7 +21,7 @@ Description:
 # Set the structure of the main parameters of the controlled mechanism.
 CONST_MECHANISM_TYPE = Parameters.SMC_LEFB25_14000_0_1_Str
 # Locate the path to the project folder.
-CONST_PROJECT_FOLDER = os.getcwd().split('IRLE')[0] + 'IRLE'
+CONST_PROJECT_FOLDER = os.getcwd().split('RoLE')[0] + 'RoLE'
 
 def main():
     """
@@ -29,7 +29,7 @@ def main():
         Program to verify the correctness of the generated URDF file for the mechanism
         in the PyBullet environment.
 
-        The project, which explains how to use a PyBullet physics simulation 
+        The project, which simply explains how to use a PyBullet physics simulation 
         environment, can be found here:
             https://github.com/rparak/PyBullet_Template_Industrial_Robotics/
     """

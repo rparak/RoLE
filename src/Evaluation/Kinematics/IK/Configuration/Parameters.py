@@ -2,9 +2,9 @@
 import numpy as np
 # Typing (Support for type hints)
 import typing as tp
-# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
-#   ../IRLE/Transformation/Utilities/Mathematics
-import IRLE.Transformation.Utilities.Mathematics as Mathematics
+# Custom Lib.: Robotics Library for Everyone (RoLE)
+#   ../RoLE/Transformation/Utilities/Mathematics
+import RoLE.Transformation.Utilities.Mathematics as Mathematics
 
 """
 Description:

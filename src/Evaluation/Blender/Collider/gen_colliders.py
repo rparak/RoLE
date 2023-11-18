@@ -9,26 +9,24 @@ if '../../../../' + 'src' not in sys.path:
 import numpy as np
 if '../../' + 'src' not in sys.path:
     sys.path.append('../../' + 'src')
-# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
-#   ../IRLE/Blender/Utilities
-import IRLE.Blender.Utilities
-#   ../IRLE/Collider/Utilities
-import IRLE.Collider.Utilities
-#   ../IRLE/Transformation/Core
-from IRLE.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
-#   ../IRLE/Kinematics/Core
-import IRLE.Kinematics.Core
-#   ../IRLE/Parameters/Robot
-import IRLE.Parameters.Robot as Parameters
-#   ../IRLE/Blender/Parameters/Camera
-import IRLE.Blender.Parameters.Camera
+# Custom Lib.: Robotics Library for Everyone (RoLE)
+#   ../RoLE/Blender/Utilities
+import RoLE.Blender.Utilities
+#   ../RoLE/Collider/Utilities
+import RoLE.Collider.Utilities
+#   ../RoLE/Transformation/Core
+from RoLE.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
+#   ../RoLE/Kinematics/Core
+import RoLE.Kinematics.Core
+#   ../RoLE/Blender/Parameters/Camera
+import RoLE.Blender.Parameters.Camera
 
 """
 Description:
     Open {robot_name}.blend from the URDFs folder and copy + paste this script and run it.
 
     Terminal:
-        $ cd Documents/GitHub/Open_Industrial_Robotics/URDFs/Robots/{robot_name}/Blender
+        $ cd Documents/GitHub/RoLE/URDFs/Robots/{robot_name}/Blender
         $ blender {robot_name}.blend
 
     Note 1:
@@ -38,7 +36,7 @@ Description:
         The program can also be used to generate colliders for primitive objects in the blender, see below:
 
         Terminal:
-            $ cd Documents/GitHub/Open_Industrial_Robotics/Blender/Primitives/Primitives.blend
+            $ cd Documents/GitHub/RoLE/Blender/Primitives/Primitives.blend
             $ blender Primitives.blend
 """
 
@@ -57,23 +55,23 @@ def main():
 
     
     # Deselect all objects in the current scene.
-    IRLE.Blender.Utilities.Deselect_All()
+    RoLE.Blender.Utilities.Deselect_All()
 
     # Remove animation data from objects (Clear keyframes).
-    IRLE.Blender.Utilities.Remove_Animation_Data()
+    RoLE.Blender.Utilities.Remove_Animation_Data()
 
     i = 0
     for _, obj in enumerate(bpy.data.objects):
         # Removes objects, if they exist.
         if 'Collision' in obj.name:
-            IRLE.Blender.Utilities.Remove_Object(obj.name)
+            RoLE.Blender.Utilities.Remove_Object(obj.name)
             continue
 
         # Get positions of the vertices of the mesh object.
-        obj_i_verts = IRLE.Blender.Utilities.Get_Vertices_From_Object(obj.name)
+        obj_i_verts = RoLE.Blender.Utilities.Get_Vertices_From_Object(obj.name)
 
         # Get the minimum and maximum X, Y, Z values of the input vertices.
-        (min_vec3, max_vec3) = IRLE.Collider.Utilities.Get_Min_Max(np.array(obj_i_verts, dtype=np.float64))
+        (min_vec3, max_vec3) = RoLE.Collider.Utilities.Get_Min_Max(np.array(obj_i_verts, dtype=np.float64))
 
         # Obtain the size and centroid of the observed object.
         Size = np.array([max_vec3[0] - min_vec3[0], max_vec3[1] - min_vec3[1],
@@ -91,17 +89,17 @@ def main():
                           'material': {'RGBA': [1.0,1.0,1.0,1.0], 'alpha': 1.0}}
         
         # Create a primitive three-dimensional object (cuboid) with additional properties.
-        IRLE.Blender.Utilities.Create_Primitive('Cube', obj_i_name_new, box_properties)
+        RoLE.Blender.Utilities.Create_Primitive('Cube', obj_i_name_new, box_properties)
         
         # Set the rotation mode to be the same as the observed object.
         bpy.data.objects[obj_i_name_new].rotation_mode = bpy.data.objects[obj.name].rotation_mode
         
         # Set the origin of the observed object to zero.
-        IRLE.Blender.Utilities.Set_Object_Origin(obj_i_name_new, HTM_Cls(None, np.float64).all())
+        RoLE.Blender.Utilities.Set_Object_Origin(obj_i_name_new, HTM_Cls(None, np.float64).all())
 
 
         # Remove all materials from the created object.
-        IRLE.Blender.Utilities.Remove_Object_Material(obj_i_name_new)
+        RoLE.Blender.Utilities.Remove_Object_Material(obj_i_name_new)
 
         # Origin (o), Size (s)
         o = np.round((-1) * Centroid, 5) + [0.0, 0.0, 0.0]; s = np.round(Size, 5) + [0.0, 0.0, 0.0]

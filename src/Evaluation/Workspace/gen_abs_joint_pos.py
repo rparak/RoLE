@@ -11,11 +11,11 @@ import numpy as np
 import functools
 # Operator (Standard operators as functions)
 import operator
-# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
-#   ../IRLE/Parameters/Robot
-import IRLE.Parameters.Robot as Parameters
-#   ../IRLE/Workspace/Core
-import IRLE.Workspace.Core
+# Custom Lib.: Robotics Library for Everyone (RoLE)
+#   ../RoLE/Parameters/Robot
+import RoLE.Parameters.Robot as Parameters
+#   ../RoLE/Workspace/Core
+import RoLE.Workspace.Core
 
 """
 Description:
@@ -31,23 +31,23 @@ def main():
 
         Note:
             More information can be found here:
-                ../IRLE/Wokrspace/Core.py
+                ../RoLE/Wokrspace/Core.py
     """
 
     # Locate the path to the project folder.
-    project_folder = os.getcwd().split('IRLE')[0] + 'IRLE'
+    project_folder = os.getcwd().split('RoLE')[0] + 'RoLE'
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
     # Number of samples for joint orientation combinations to generate 
     # the workspace of a robotic arm.
-    nCr_Joint = IRLE.Workspace.Core.Get_Number_of_Samples(Robot_Str.Name)
+    nCr_Joint = RoLE.Workspace.Core.Get_Number_of_Samples(Robot_Str.Name)
 
     # The name of the resulting file.
     print(f'[INFO] Path: {project_folder}/src/Data/Workspace/{Robot_Str.Name}/abs_joint_pos_data.txt')
 
-    theta = list([[IRLE.Workspace.Core.CONST_NONE_VALUE]] * 7)
+    theta = list([[RoLE.Workspace.Core.CONST_NONE_VALUE]] * 7)
     print('[INFO] Input Data:')
     for i, th_limit in enumerate(Robot_Str.Theta.Limit):
         print(f'[INFO]  Theta {i}:')
@@ -69,7 +69,7 @@ def main():
 
     # Generate the absolute orientation of the joints to calculate the robot's workspace 
     # and save this data to a file.
-    IRLE.Workspace.Core.Generate_Absolute_Joint_Orientation(f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/abs_joint_pos_data.txt', 
+    RoLE.Workspace.Core.Generate_Absolute_Joint_Orientation(f'{project_folder}/src/Data/Workspace/{Robot_Str.Name}/abs_joint_pos_data.txt', 
                                                            NUM_OF_COMBINATIONS, theta)
 
 if __name__ == "__main__":

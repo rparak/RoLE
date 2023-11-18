@@ -5,11 +5,11 @@ if '../' + 'src' not in sys.path:
     sys.path.append('../..')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Lib.: Industrial Robotics Library for Everyone (IRLE)
-#   ../IRLE/Parameters/Robot
-import IRLE.Parameters.Robot as Parameters
-#   ../IRLE/Kinematics/Core
-import IRLE.Kinematics.Core
+# Custom Lib.: Robotics Library for Everyone (RoLE)
+#   ../RoLE/Parameters/Robot
+import RoLE.Parameters.Robot as Parameters
+#   ../RoLE/Kinematics/Core
+import RoLE.Kinematics.Core
 
 """
 Description:
@@ -35,7 +35,7 @@ def main():
         Find the zero configuration of the homogeneous matrix of each joint using the modified 
         forward kinematics calculation method.
     """
-    Robot_Str.T.Zero_Cfg = IRLE.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
+    Robot_Str.T.Zero_Cfg = RoLE.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
 
     for i, T_i in enumerate(Robot_Str.T.Zero_Cfg):
         # Get the translational and rotational part from the transformation matrix.
