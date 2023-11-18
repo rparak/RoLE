@@ -1,3 +1,3 @@
-# Industrial Robotics Library for Everyone (IRLE)
+# Robotics Library for Everyone (RoLE)
 
 ...
