@@ -3,17 +3,17 @@ import bpy
 # System (Default)
 import sys
 #   Add access if it is not in the system path.
-if '../../' + 'src' not in sys.path:
-    sys.path.append('../../' + 'src')
+if '../../../' + 'src' not in sys.path:
+    sys.path.append('../../../' + 'src')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # Custom Lib.: Robotics Library for Everyone (RoLE)
 #   ../RoLE/Blender/Parameters/Camera
-import RoLE.Blender.Parameters.Camera
+import Blender.Parameters.Camera
 #   ../RoLE/Blender/Utilities
-import RoLE.Blender.Utilities
+import Blender.Utilities
 #   ../RoLE/Blender/Core
-import RoLE.Blender.Core
+import Blender.Core
 #   ../RoLE/Parameters/Robot
 import RoLE.Parameters.Robot as Parameters
 
@@ -36,9 +36,9 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
+CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 # Set the structure of the main parameters of the camera.
-CONST_CAMERA_TYPE = RoLE.Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
+CONST_CAMERA_TYPE = Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 
 def main():
     """
@@ -47,17 +47,17 @@ def main():
     """
     
     # Deselect all objects in the current scene.
-    RoLE.Blender.Utilities.Deselect_All()
+    Blender.Utilities.Deselect_All()
     
     # Remove animation data from objects (Clear keyframes).
-    RoLE.Blender.Utilities.Remove_Animation_Data()
+    Blender.Utilities.Remove_Animation_Data()
 
     # Set the camera (object) transformation and projection.
-    if RoLE.Blender.Utilities.Object_Exist('Camera'):
-        RoLE.Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
+    if Blender.Utilities.Object_Exist('Camera'):
+        Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
     
     # Initialization of the class to work with a robotic arm object in a Blender scene.
-    Robot_ID_0_Cls = RoLE.Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, {'Viewpoint_EE': False, 'Colliders': False, 
+    Robot_ID_0_Cls = Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, {'Viewpoint_EE': False, 'Colliders': False, 
                                                                    'Workspace': False})
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
