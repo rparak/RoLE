@@ -88,7 +88,7 @@ def Remove_Object_Material(name: str) -> None:
             # Remove all materials (material slots) from the object.
             obj.active_material_index = 0
             for _ in range(len(obj.material_slots)):
-                bpy.ops.object.material_slot_remove({'object': obj})
+                bpy.ops.object.material_slot_remove()
 
             # Assign material to the active object.
             bpy.context.view_layer.objects.active = bpy.data.objects[name]

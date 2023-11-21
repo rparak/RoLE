@@ -97,7 +97,7 @@ def main():
         collision_pairs_opt_tmp = []
         for i, Collider_i in enumerate(All_Colliders):
             for j, Collider_j in enumerate(All_Colliders[(i + 1) + Robot_Str.Collider.Offset::], 
-                                        start=(i + 1) + Robot_Str.Collider.Offset):
+                                           start=(i + 1) + Robot_Str.Collider.Offset):
                 if Collider_i.Overlap(Collider_j) == True:
                     # Store the individual parts where the collision occurs.
                     collision_pairs_opt_tmp.append([i, j])
