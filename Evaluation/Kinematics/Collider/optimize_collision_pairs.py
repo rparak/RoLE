@@ -20,7 +20,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_R_Str
+CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
 # Number of randomly generated samples.
 CONST_SIZE = 100000
 
