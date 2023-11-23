@@ -240,6 +240,14 @@ class Mechanism_Cls(object):
             print(f'[ERROR] Information: {error}')
             print(f'[ERROR] The robot object named <{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}> does not exist in the current scene.')
 
+    def Change_Color(self, color: tp.List[float]):
+        # in progress ...
+        for _, collider_name in enumerate(np.concatenate((list(self.__Mechanism_Parameters_Str.Collider.Base), 
+                                                          list(self.__Mechanism_Parameters_Str.Collider.Theta),
+                                                          list(self.__Mechanism_Parameters_Str.Collider.External)), dtype=str)):
+            Blender.Utilities.Set_Object_Material_Color(collider_name, np.append(color[0:3], [1.0]))
+            Blender.Utilities.Set_Object_Material_Transparency(collider_name, color[-1])
+
     @property
     def Parameters(self) -> RoLE.Parameters.Mechanism.Mechanism_Parameters_Str:
         """
