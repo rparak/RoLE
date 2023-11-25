@@ -268,14 +268,6 @@ class Mechanism_Cls(object):
             print(f'[ERROR] Information: {error}')
             print(f'[ERROR] The mechanism object named <{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}> does not exist in the current scene.')
 
-    def Change_Color(self, color: tp.List[float]):
-        # in progress ...
-        for _, collider_name in enumerate(np.concatenate((list(self.__Mechanism_Parameters_Str.Collider.Base), 
-                                                          list(self.__Mechanism_Parameters_Str.Collider.Theta),
-                                                          list(self.__Mechanism_Parameters_Str.Collider.External)), dtype=str)):
-            Blender.Utilities.Set_Object_Material_Color(collider_name, np.append(color[0:3], [1.0]))
-            Blender.Utilities.Set_Object_Material_Transparency(collider_name, color[-1])
-
     @property
     def Parameters(self) -> RoLE.Parameters.Mechanism.Mechanism_Parameters_Str:
         """
@@ -334,7 +326,7 @@ class Mechanism_Cls(object):
 
         # Get the actual homogeneous transformation matrix of the mechanism slider.
         T_Slider = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].matrix_basis, 
-                                                                         np.float64)
+                                                                        np.float64)
 
         return self.__Mechanism_Parameters_Str.T.Base @ T_Slider @ self.__Mechanism_Parameters_Str.T.Shuttle
     
@@ -430,8 +422,8 @@ class Mechanism_Cls(object):
         """
 
         # Get the name of the colliders.
-        collider_name = np.append(list(self.__Mechanism_Parameters_Str.Collider.Base), 
-                                  list(self.__Mechanism_Parameters_Str.Collider.Theta), dtype=str)
+        collider_name = np.concatenate((list(self.__Mechanism_Parameters_Str.Collider.Base), 
+                                        list(self.__Mechanism_Parameters_Str.Collider.Theta)), dtype=str)
 
         for _, (info_i, collider_name_i) in enumerate(zip(info, collider_name)):
             if info_i == True:
@@ -458,16 +450,18 @@ class Mechanism_Cls(object):
             Blender.Utilities.Set_Object_Material_Color(th_ghost_name, np.append(color[0:3], [1.0]))
             Blender.Utilities.Set_Object_Material_Transparency(th_ghost_name, color[-1])
 
-    def __Reset_Ghost_Structure(self, theta: tp.List[float]) -> None:
+    def __Reset_Ghost_Structure(self, theta: tp.List[float]) -> bool:
         """
         Description:
             Function to reset the absolute position of the auxiliary mechanism structure, which is represented as a "ghost".
 
         Args:
-            (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters. Used only in individual 
-                                           mode.
+            (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
                                             Note:
                                                 Where n is the number of joints.
+        Returns:
+            (1) parameter [bool]: The result is 'True' if the mechanism is in the desired position,
+                                  and 'False' if it is not.
         """
 
         bpy.data.objects[self.__mechanism_th_ghost_name].rotation_mode = self.__axes_sequence_cfg
@@ -486,9 +480,12 @@ class Mechanism_Cls(object):
                 bpy.data.objects[self.__mechanism_th_ghost_name].location = (self.__Mechanism_Parameters_Str.T.Slider @ 
                                                                              Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
                                                                                                                    th)).p.all()
+        else:
+            return False
 
         # Update the scene.
         self.__Update()
+        return True
 
     def Reset(self, mode: str, theta: tp.Union[None, float] = None) -> bool:
         """
@@ -583,13 +580,13 @@ class Mechanism_Cls(object):
                     if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
                         # Identification of joint type: R - Revolute
                         bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler = (self.__Mechanism_Parameters_Str.T.Slider @ 
-                                                                                                    Transformation.Get_Rotation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
-                                                                                                                                       th)).Get_Rotation(self.__axes_sequence_cfg).all()
+                                                                                                       Transformation.Get_Rotation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
+                                                                                                                                          th)).Get_Rotation(self.__axes_sequence_cfg).all()
                     elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
                         # Identification of joint type: P - Prismatic
                         bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location = (self.__Mechanism_Parameters_Str.T.Slider @ 
-                                                                                                Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
-                                                                                                                                      th)).p.all()
+                                                                                                 Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
+                                                                                                                                       th)).p.all()
                         
                         # Insert a keyframe of the object (Joint_{i}) into the frame at time t(i). 
                         Blender.Utilities.Insert_Key_Frame(self.__Mechanism_Parameters_Str.Theta.Name, 'matrix_basis', np.int32(t_i * self.__fps), 'ALL')
@@ -606,6 +603,109 @@ class Mechanism_Cls(object):
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
             print('[ERROR] Incorrect value type in the input variable theta. The input variable must be of type float.')
+
+    def __Is_External_Collision(self, theta: float) -> tp.List[bool]:
+        """
+        Description:
+            A function to obtain information about whether a part of the mechanism structure collides 
+            with external objects.
+
+        Args:
+            (1) theta [float]: Desired absolute joint position in radians / meters.
+
+        Returns:
+            (1) parameter [Vector<bool> 1xk]: A vector of information about which part of the robotic structure collides with external objects.
+                                                Note:
+                                                    Where k is the number of all colliders of the robotic structure.
+        """
+
+        # Get a list of colliders.
+        Base_Collider = list(self.__Mechanism_Parameters_Str.Collider.Base.values()); Theta_Collider = list(self.__Mechanism_Parameters_Str.Collider.Theta.values())
+        External_Collider = list(self.__Mechanism_Parameters_Str.Collider.External.values())
+
+        # Transformation of the base collider according to the input homogeneous transformation matrix.
+        Base_Collider[0].Transformation(self.__Mechanism_Parameters_Str.T.Base)
+
+        if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
+            T = self.__Mechanism_Parameters_Str.T.Slider @ Transformation.Get_Rotation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, theta)
+        elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
+            T = self.__Mechanism_Parameters_Str.T.Slider @ Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, theta)
+
+        # Transformation of the colliders according to the input homogeneous transformation matrix.
+        for _, th_collider_i in enumerate(Theta_Collider):
+            th_collider_i.Transformation(T)
+
+        # Concatenate all colliders (base, joint) into single array according to a predefined constraint.
+        All_Colliders = np.concatenate((Base_Collider, Theta_Collider))
+
+        # Check whether the external 3D primitives (bounding boxes AABB, OBB) overlap or do not overlap 
+        # with the mechanism structure.
+        is_collision = np.zeros(All_Colliders.size, dtype=bool)
+        for i, collider_i in enumerate(All_Colliders):
+            for _, external_collider_i in enumerate(External_Collider):
+                if collider_i.Overlap(external_collider_i) == True:
+                    # Set the part of the mechanism structure where the collision occurs.
+                    is_collision[i] = True
+
+        return is_collision
+    
+    def Get_Inverse_Kinematics_Solution(self, T: tp.List[tp.List[float]], enable_ghost: bool) -> tp.Tuple[bool, float]:
+        """
+        Description:
+            A function to compute the solution of the inverse kinematics (IK) of the mechanism structure. 
+
+        Args:
+            (1) T [Matrix<float> 4x4]: Homogeneous transformation matrix of the desired TCP position.
+            (2) enable_ghost [bool]: Enable visibility of the auxiliary mechanism structure, which 
+                                     is represented as a "ghost".
+                                        Note:
+                                            To make the auxiliary mechanism structure visible, the 'Ghost' parameter must 
+                                            also be enabled in the class properties.
+
+        Returns:
+            (1) parameter [bool]: The result is 'True' if the inverse kinematics (IK) has a solution, and 'False' if 
+                                  it does not.
+            (2) parameter [float]: Obtained solution of the absolute positions of the joints in radians / meters.
+        """
+
+        if isinstance(T, (list, np.ndarray)):
+            T = Transformation.Homogeneous_Transformation_Matrix_Cls(T, np.float64)
+
+        # Convert a string axis letter to an identification number.
+        ax_i_id_num = Blender.Utilities.Convert_Ax_Str2Id(self.__Mechanism_Parameters_Str.Theta.Axis)
+
+        # Get the absolute position of the mechanism joint.
+        if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
+            theta = T.Get_Rotation('ZYX').all()[ax_i_id_num]
+        elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
+            theta = T.p.all()[ax_i_id_num]
+
+        # Check whether a part of the mechanism structure collides with external objects.
+        is_collision_info = self.__Is_External_Collision(theta)
+
+        # Set the color of the colliders.
+        #   Note:
+        #       'Red': Collision.
+        #       'Green': No collision.
+        self.__Set_Collider_Color(is_collision_info)
+
+        # Check whether the inverse kinematics (IK) has a solution or not.
+        #   Conditions:
+        #       1\ Within limits.
+        #       2\ Collision-free.
+        if self.__Reset_Ghost_Structure(theta) == True and not is_collision_info.any() == True:
+            successful = True
+        else:
+            successful = False
+
+        # Set the color of the 'ghost' structure.
+        if enable_ghost == True and self.__properties['visibility']['Ghost'] == True:
+            if successful:
+                self.__Set_Ghost_Structure_Color([0.1, 0.1, 0.1, 0.2])
+            else:
+                self.__Set_Ghost_Structure_Color([0.85, 0.60, 0.60, 0.2])
+
+        return (successful, theta)
 
 class Robot_Cls(object):
     """
@@ -915,8 +1015,8 @@ class Robot_Cls(object):
         """
 
         # Get the name of the colliders.
-        collider_name = np.append(list(self.__Robot_Parameters_Str.Collider.Base), 
-                                  list(self.__Robot_Parameters_Str.Collider.Theta), dtype=str)
+        collider_name = np.concatenate((list(self.__Robot_Parameters_Str.Collider.Base), 
+                                        list(self.__Robot_Parameters_Str.Collider.Theta)), dtype=str)
 
         for _, (info_i, collider_name_i) in enumerate(zip(info, collider_name)):
             if info_i == True:
@@ -949,8 +1049,7 @@ class Robot_Cls(object):
             Function to reset the absolute position of the auxiliary robot structure, which is represented as a "ghost".
 
         Args:
-            (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters. Used only in individual 
-                                           mode.
+            (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
                                             Note:
                                                 Where n is the number of joints.
         """

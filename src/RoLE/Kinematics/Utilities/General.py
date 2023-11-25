@@ -147,10 +147,10 @@ def Is_External_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameter
         A function to obtain information about whether a part of the robotic structure collides with external objects.
 
     Args:
-        (2) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
                                         Note:
                                             Where n is the number of joints.
-        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot. 
+        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot. 
 
     Returns:
         (1) parameter [Vector<bool> 1xk]: A vector of information about which part of the robotic structure collides with external objects.
@@ -197,10 +197,10 @@ def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
         A function to obtain information on whether there is a collision between the joints of the robotic structure.
 
     Args:
-        (2) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
+        (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
                                         Note:
                                             Where n is the number of joints.
-        (3) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
+        (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
         (1) parameter [Vector<bool> 1xk]: A vector of errors where a collision occurred between the joints of the robotic structure.
