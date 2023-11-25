@@ -39,6 +39,9 @@ Description:
 CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
+# The properties of the robot structure in the Blender environment.
+CONST_PROPERTIES = {'fps': 100, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
+                                               'Workspace': False, 'Ghost': False}}
 # Animation stop(t_0), start(t_1) time in seconds.
 CONST_T_0 = 0.0
 CONST_T_1 = 2.0
@@ -60,8 +63,7 @@ def main():
         Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
     
     # Initialization of the class to work with a robotic arm object in a Blender scene.
-    Robot_ID_0_Cls = Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, {'Viewpoint_EE': False, 'Colliders': False, 
-                                                                'Workspace': False, 'Ghost': False})
+    Robot_ID_0_Cls = Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, CONST_PROPERTIES)
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
     # Reset the absolute position of the robot joints to the 'Zero'.

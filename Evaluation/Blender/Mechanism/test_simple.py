@@ -39,6 +39,9 @@ Description:
 CONST_MECHANISM_TYPE = Parameters.SMC_LEFB25_14000_0_1_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
+# The properties of the mechanism structure in the Blender environment.
+CONST_PROPERTIES = {'fps': 100, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
+                                               'Ghost': False}}
 # Animation stop(t_0), start(t_1) time in seconds.
 CONST_T_0 = 0.0
 CONST_T_1 = 2.0
@@ -60,8 +63,7 @@ def main():
         Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
 
     # Initialization of the class to work with a mechanism object in a Blender scene.
-    Mechanism_ID_0_1_Cls = Blender.Core.Mechanism_Cls(CONST_MECHANISM_TYPE, {'Viewpoint_EE': False, 'Colliders': False, 
-                                                                             'Ghost': False})
+    Mechanism_ID_0_1_Cls = Blender.Core.Mechanism_Cls(CONST_MECHANISM_TYPE, CONST_PROPERTIES)
     print(f'[INFO] Mechanism Name: {Mechanism_ID_0_1_Cls.Parameters.Name}_ID_{Mechanism_ID_0_1_Cls.Parameters.Id:03}')
     
     # Reset the absolute position of the mechanism joints to the 'Zero'.

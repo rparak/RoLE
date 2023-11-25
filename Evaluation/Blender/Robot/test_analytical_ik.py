@@ -40,6 +40,9 @@ Description:
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
+# The properties of the robot structure in the Blender environment.
+CONST_PROPERTIES = {'fps': 100, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
+                                               'Workspace': False, 'Ghost': False}}
 
 def main():
     """
@@ -53,6 +56,9 @@ def main():
         Note:
             The position and orientation of the 'Viewpoint' object, which is the input to the inverse kinematics 
             function, is set by the user.
+
+            If the 'Viewpoint' object is not part of the environment, copy it from the following Blender file:
+                ../Blender/Helpers/Viewpoint.blend
     """
     
     # Deselect all objects in the current scene.

@@ -182,7 +182,7 @@ class Mechanism_Cls(object):
     Initialization of the Class:
         Args:
             (1) Mechanism_Parameters_Str [Mechanism_Parameters_Str(object)]: The structure of the main parameters of the mechanism.
-            (2) properties [Dictionary {'fps': float, 
+            (2) properties [Dictionary {'fps': int, 
                                         'visibility': {'Viewpoint_EE': bool, 'Colliders': bool, 
                                                        'Ghost': bool}}]: The properties of the mechanism structure 
                                                                          in the Blender environment.
@@ -196,9 +196,9 @@ class Mechanism_Cls(object):
                 # Assignment of the variables.
                 #   Example for the SMC LEFB25UNZS 1400C mechanism.
                 Mechanism_Parameters_Str = RoLE.Parameters.Mechanism.SMC_LEFB25_1400_0_1_Str
-                #   The properties of the Blender environment.
-                properties = {'fps': 100.0, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
-                                                           'Ghost': False}}
+                #   The properties of the mechanism structure in the Blender environment.
+                properties = {'fps': 100, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
+                                                         'Ghost': False}}
 
                 # Initialization of the class.
                 Cls = Mechanism_Cls(Mechanism_Parameters_Str, visibility)
@@ -219,8 +219,10 @@ class Mechanism_Cls(object):
             # << PRIVATE >> #
             self.__Mechanism_Parameters_Str = Mechanism_Parameters_Str
             self.__external_object_id = 0
-            self.__fps = properties['fps']
-            # Modified the name of the robot structure. Addition of robot structure Id (identification number).
+            self.__properties = properties
+            self.__fps = self.__properties['fps']
+
+            # Modified the name of the mechanism structure. Addition of mechanism structure Id (identification number).
             self.__name = f'{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}'
 
             # Set the transformation of the mechanism structure in Blender to the transformation obtained from the parameters.
@@ -238,25 +240,33 @@ class Mechanism_Cls(object):
             # Enable or disable the visibility of additional objects of the mechanism.
             #   1\ End-effector viewpoint.
             if Blender.Utilities.Object_Exist(f'Viewpoint_EE_{self.__name}'):
-                Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', properties['visibility']['Viewpoint_EE'])
+                Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', self.__properties['visibility']['Viewpoint_EE'])
             #   2\ Colliders (base + joints).
             for _, collider_name in enumerate(np.concatenate((list(self.__Mechanism_Parameters_Str.Collider.Base), 
                                                               list(self.__Mechanism_Parameters_Str.Collider.Theta)), dtype=str)):
                 if Blender.Utilities.Object_Exist(collider_name):
-                    Blender.Utilities.Object_Visibility(collider_name, properties['visibility']['Colliders'])
+                    Blender.Utilities.Object_Visibility(collider_name, self.__properties['visibility']['Colliders'])
+
+                # Set to the default colour.
+                Blender.Utilities.Set_Object_Material_Color(collider_name, [0.70, 0.85, 0.60, 1.0])
+                Blender.Utilities.Set_Object_Material_Transparency(collider_name, 0.2)
             #   3\  The 'ghost' of the movable part of the mechanism.
-            self.__mechanism_th_ghost_name = []
+            self.__mechanism_th_ghost_name = None
             for _, th_name in enumerate(self.__Mechanism_Parameters_Str.Collider.Theta.keys()):
                 th_ghost_name = f"{th_name.removesuffix(f'Collider_{self.__name}')}Ghost_{self.__name}"
                 if Blender.Utilities.Object_Exist(th_ghost_name):
-                    Blender.Utilities.Object_Visibility(th_ghost_name, properties['visibility']['Ghost'])
+                    Blender.Utilities.Object_Visibility(th_ghost_name, self.__properties['visibility']['Ghost'])
 
                 if 'Joint' in th_ghost_name:
-                    self.__mechanism_th_ghost_name.append(th_ghost_name)
+                    self.__mechanism_th_ghost_name = th_ghost_name
+
+                # Set to the default colour.
+                Blender.Utilities.Set_Object_Material_Color(th_ghost_name, [0.1, 0.1, 0.1, 1.0])
+                Blender.Utilities.Set_Object_Material_Transparency(th_ghost_name, 0.2)
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
-            print(f'[ERROR] The robot object named <{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}> does not exist in the current scene.')
+            print(f'[ERROR] The mechanism object named <{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}> does not exist in the current scene.')
 
     def Change_Color(self, color: tp.List[float]):
         # in progress ...
@@ -387,7 +397,7 @@ class Mechanism_Cls(object):
             using the 'Add_External_Object' function of the class.
 
             Note:
-                The function also removes external colliders added to the robotic structure.
+                The function also removes external colliders added to the mechanism structure.
         """
 
         i = 0
@@ -402,6 +412,83 @@ class Mechanism_Cls(object):
             i += 1
 
         self.__external_object_id = 0; self.__Mechanism_Parameters_Str.Collider.External = {}
+
+    def __Set_Collider_Color(self, info: tp.List[float]):
+        """
+        Description:
+            Function to set the color of the colliders, which depends on the information vector.
+
+            Note:
+                The index of the vector is equal to the index of the collider. If the index of the information 
+                vector is 'True', that means the collider object is in collision.
+
+        Args:
+            (1) info [Vector<bool> 1xk]: The vector of errors where collisions have occurred between joints of the mechanism structure 
+                                         or with external objects.
+                                            Note:
+                                                Where k is the number of all colliders of the mechanism structure.
+        """
+
+        # Get the name of the colliders.
+        collider_name = np.append(list(self.__Mechanism_Parameters_Str.Collider.Base), 
+                                  list(self.__Mechanism_Parameters_Str.Collider.Theta), dtype=str)
+
+        for _, (info_i, collider_name_i) in enumerate(zip(info, collider_name)):
+            if info_i == True:
+                color = [0.85, 0.60, 0.60, 0.2]
+            else:
+                color = [0.70, 0.85, 0.60, 0.2]
+
+            Blender.Utilities.Set_Object_Material_Color(collider_name_i, np.append(color[0:3], [1.0]))
+            Blender.Utilities.Set_Object_Material_Transparency(collider_name_i, color[-1])
+
+    def __Set_Ghost_Structure_Color(self, color: tp.List[float]) -> None:
+        """
+        Description:
+            Function to set the color of the auxiliary mechanism structure, which is represented as a "ghost".
+
+        Args:
+            (1) color [None or Vector<float> 1x4]: The color of the object.
+                                                    Note:
+                                                        Format: rgba(red, green, blue, alpha).
+        """
+
+        for _, th_name in enumerate(self.__Mechanism_Parameters_Str.Collider.Theta.keys()):
+            th_ghost_name = f"{th_name.removesuffix(f'Collider_{self.__name}')}Ghost_{self.__name}"
+            Blender.Utilities.Set_Object_Material_Color(th_ghost_name, np.append(color[0:3], [1.0]))
+            Blender.Utilities.Set_Object_Material_Transparency(th_ghost_name, color[-1])
+
+    def __Reset_Ghost_Structure(self, theta: tp.List[float]) -> None:
+        """
+        Description:
+            Function to reset the absolute position of the auxiliary mechanism structure, which is represented as a "ghost".
+
+        Args:
+            (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters. Used only in individual 
+                                           mode.
+                                            Note:
+                                                Where n is the number of joints.
+        """
+
+        bpy.data.objects[self.__mechanism_th_ghost_name].rotation_mode = self.__axes_sequence_cfg
+        if self.__Mechanism_Parameters_Str.Theta.Limit[0] <= theta <= self.__Mechanism_Parameters_Str.Theta.Limit[1]:
+
+            # Change of axis direction in individual joints.
+            th = theta * self.__Mechanism_Parameters_Str.Theta.Direction
+
+            if self.__Mechanism_Parameters_Str.Theta.Type == 'R':
+                # Identification of joint type: R - Revolute
+                bpy.data.objects[self.__mechanism_th_ghost_name].rotation_euler = (self.__Mechanism_Parameters_Str.T.Slider @ 
+                                                                                   Transformation.Get_Rotation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
+                                                                                                                      th)).Get_Rotation(self.__axes_sequence_cfg).all()
+            elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
+                # Identification of joint type: P - Prismatic
+                bpy.data.objects[self.__mechanism_th_ghost_name].location = (self.__Mechanism_Parameters_Str.T.Slider @ 
+                                                                             Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
+                                                                                                                   th)).p.all()
+
+        # Update the scene.
+        self.__Update()
 
     def Reset(self, mode: str, theta: tp.Union[None, float] = None) -> bool:
         """
@@ -441,12 +528,12 @@ class Mechanism_Cls(object):
                     # Identification of joint type: R - Revolute
                     bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].rotation_euler = (self.__Mechanism_Parameters_Str.T.Slider @ 
                                                                                                 Transformation.Get_Rotation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
-                                                                                                                                    th)).Get_Rotation(self.__axes_sequence_cfg).all()
+                                                                                                                                   th)).Get_Rotation(self.__axes_sequence_cfg).all()
                 elif self.__Mechanism_Parameters_Str.Theta.Type == 'P':
                     # Identification of joint type: P - Prismatic
                     bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location = (self.__Mechanism_Parameters_Str.T.Slider @ 
                                                                                             Transformation.Get_Translation_Matrix(self.__Mechanism_Parameters_Str.Theta.Axis, 
-                                                                                                                                th)).p.all()
+                                                                                                                                  th)).p.all()
             else:
                 # Update the scene.
                 self.__Update()
@@ -528,7 +615,7 @@ class Robot_Cls(object):
     Initialization of the Class:
         Args:
             (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-            (2) properties [Dictionary {'fps': float, 
+            (2) properties [Dictionary {'fps': int, 
                                         'visibility': {'Viewpoint_EE': bool, 'Colliders': bool, 
                                                        'Workspace': bool, 'Ghost': bool}}]: The properties of the robot structure 
                                                                                             in the Blender environment.
@@ -542,9 +629,9 @@ class Robot_Cls(object):
                 # Assignment of the variables.
                 #   Example for the ABB IRB 120 robot.
                 Robot_Parameters_Str = RoLE.Parameters.Robot.ABB_IRB_120_Str
-                #   The properties of the Blender environment.
-                properties = {'fps': 100.0, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
-                                                           'Workspace': False, 'Ghost': False}}
+                #   The properties of the robot structure in the Blender environment.
+                properties = {'fps': 100, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
+                                                         'Workspace': False, 'Ghost': False}}
 
                 # Initialization of the class.
                 Cls = Robot_Cls(Robot_Parameters_Str, properties)
@@ -565,7 +652,9 @@ class Robot_Cls(object):
             # << PRIVATE >> #
             self.__Robot_Parameters_Str = Robot_Parameters_Str
             self.__external_object_id = 0
-            self.__fps = properties['fps']
+            self.__properties = properties
+            self.__fps = self.__properties['fps']
+
             # Modified the name of the robot structure. Addition of robot structure Id (identification number).
             self.__name = f'{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}'
 
@@ -588,24 +677,32 @@ class Robot_Cls(object):
             # Enable or disable the visibility of additional objects of the mechanism.
             #   1\ End-effector viewpoint.
             if Blender.Utilities.Object_Exist(f'Viewpoint_EE_{self.__name}'):
-                Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', properties['visibility']['Viewpoint_EE'])
+                Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', self.__properties['visibility']['Viewpoint_EE'])
             #   2\ Colliders (base + joints).
             for _, collider_name in enumerate(np.concatenate((list(self.__Robot_Parameters_Str.Collider.Base), 
                                                               list(self.__Robot_Parameters_Str.Collider.Theta)), dtype=str)):
                 if Blender.Utilities.Object_Exist(collider_name):
-                    Blender.Utilities.Object_Visibility(collider_name, properties['visibility']['Colliders'])
+                    Blender.Utilities.Object_Visibility(collider_name, self.__properties['visibility']['Colliders'])
+
+                # Set to the default colour.
+                Blender.Utilities.Set_Object_Material_Color(collider_name, [0.70, 0.85, 0.60, 1.0])
+                Blender.Utilities.Set_Object_Material_Transparency(collider_name, 0.2)
             #   3\ Workspace.
             if Blender.Utilities.Object_Exist(f'Workspace_{self.__name}'):
-                Blender.Utilities.Object_Visibility(f'Workspace_{self.__name}', properties['visibility']['Workspace'])
+                Blender.Utilities.Object_Visibility(f'Workspace_{self.__name}', self.__properties['visibility']['Workspace'])
             #   4\  The 'ghost' of the movable part of the robot.
             self.__robot_th_ghost_name = []
             for _, th_name in enumerate(self.__Robot_Parameters_Str.Collider.Theta.keys()):
                 th_ghost_name = f"{th_name.removesuffix(f'Collider_{self.__name}')}Ghost_{self.__name}"
                 if Blender.Utilities.Object_Exist(th_ghost_name):
-                    Blender.Utilities.Object_Visibility(th_ghost_name, properties['visibility']['Ghost'])
+                    Blender.Utilities.Object_Visibility(th_ghost_name, self.__properties['visibility']['Ghost'])
 
                 if 'Joint' in th_ghost_name:
                     self.__robot_th_ghost_name.append(th_ghost_name)
+
+                # Set to the default colour.
+                Blender.Utilities.Set_Object_Material_Color(th_ghost_name, [0.1, 0.1, 0.1, 1.0])
+                Blender.Utilities.Set_Object_Material_Transparency(th_ghost_name, 0.2)
 
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
@@ -801,6 +898,84 @@ class Robot_Cls(object):
 
         self.__external_object_id = 0; self.__Robot_Parameters_Str.Collider.External = {}
 
+    def __Set_Collider_Color(self, info: tp.List[float]):
+        """
+        Description:
+            Function to set the color of the colliders, which depends on the information vector.
+
+            Note:
+                The index of the vector is equal to the index of the collider. If the index of the information 
+                vector is 'True', that means the collider object is in collision.
+
+        Args:
+            (1) info [Vector<bool> 1xk]: The vector of errors where collisions have occurred between joints of the robotic structure 
+                                         or with external objects.
+                                            Note:
+                                                Where k is the number of all colliders of the robotic structure.
+        """
+
+        # Get the name of the colliders.
+        collider_name = np.append(list(self.__Robot_Parameters_Str.Collider.Base), 
+                                  list(self.__Robot_Parameters_Str.Collider.Theta), dtype=str)
+
+        for _, (info_i, collider_name_i) in enumerate(zip(info, collider_name)):
+            if info_i == True:
+                color = [0.85, 0.60, 0.60, 0.2]
+            else:
+                color = [0.70, 0.85, 0.60, 0.2]
+
+            Blender.Utilities.Set_Object_Material_Color(collider_name_i, np.append(color[0:3], [1.0]))
+            Blender.Utilities.Set_Object_Material_Transparency(collider_name_i, color[-1])
+
+    def __Set_Ghost_Structure_Color(self, color: tp.List[float]) -> None:
+        """
+        Description:
+            Function to set the color of the auxiliary robot structure, which is represented as a "ghost".
+
+        Args:
+            (1) color [None or Vector<float> 1x4]: The color of the object.
+                                                    Note:
+                                                        Format: rgba(red, green, blue, alpha).
+        """
+
+        for _, th_name in enumerate(self.__Robot_Parameters_Str.Collider.Theta.keys()):
+            th_ghost_name = f"{th_name.removesuffix(f'Collider_{self.__name}')}Ghost_{self.__name}"
+            Blender.Utilities.Set_Object_Material_Color(th_ghost_name, np.append(color[0:3], [1.0]))
+            Blender.Utilities.Set_Object_Material_Transparency(th_ghost_name, color[-1])
+
+    def __Reset_Ghost_Structure(self, theta: tp.List[float]) -> None:
+        """
+        Description:
+            Function to reset the absolute position of the auxiliary robot structure, which is represented as a "ghost".
+
+        Args:
+            (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters. Used only in individual 
+                                           mode.
+                                            Note:
+                                                Where n is the number of joints.
+        """
+
+        # Get the zero configuration of each joint.
+        T_zero_cfg = self.__Get_Zero_Joint_Cfg()
+
+        for _, (th_i, th_i_name, T_i_zero_cfg, ax_i, th_i_type, th_i_dir) in enumerate(zip(theta, self.__robot_th_ghost_name, T_zero_cfg, 
+                                                                                           self.__Robot_Parameters_Str.Theta.Axis, self.__Robot_Parameters_Str.Theta.Type, 
+                                                                                           self.__Robot_Parameters_Str.Theta.Direction)): 
+            bpy.data.objects[th_i_name].rotation_mode = self.__axes_sequence_cfg
+
+            # Change of axis direction in individual joints.
+            th_new = th_i * th_i_dir
+
+            if th_i_type == 'R':
+                # Identification of joint type: R - Revolute
+                bpy.data.objects[th_i_name].rotation_euler = (T_i_zero_cfg @ Transformation.Get_Rotation_Matrix(ax_i, th_new)).Get_Rotation(self.__axes_sequence_cfg).all()
+            elif th_i_type == 'P':
+                # Identification of joint type: P - Prismatic
+                bpy.data.objects[th_i_name].location = (Transformation.Get_Translation_Matrix(ax_i, th_new) @ T_i_zero_cfg).p.all()
+
+        # Update the scene.
+        self.__Update()
+
     def Reset(self, mode: str, theta: tp.Union[None, tp.List[float]] = None) -> bool:
         """
         Description:
@@ -849,7 +1024,6 @@ class Robot_Cls(object):
                     elif th_i_type == 'P':
                         # Identification of joint type: P - Prismatic
                         bpy.data.objects[th_i_name].location = (Transformation.Get_Translation_Matrix(ax_i, th_new) @ T_i_zero_cfg).p.all()
-
                 else:
                     # Update the scene.
                     self.__Update()
@@ -929,3 +1103,21 @@ class Robot_Cls(object):
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
             print(f'[ERROR] Incorrect number of values in the input variable theta. The input variable "theta" must contain {self.__Robot_Parameters_Str.Theta.Zero.size} values.')
+
+    def Get_Inverse_Kinematics_Solution(self, T: tp.List[tp.List[float]]) -> tp.Dict[bool, tp.List[float]]:
+        """
+        Description:
+            ...
+        """
+
+        if isinstance(T, (list, np.ndarray)):
+            T = Transformation.Homogeneous_Transformation_Matrix_Cls(T, np.float64)
+
+        # ...
+        # self.__Reset_Ghost_Structure()
+
+        # Set the color of the 'ghost' structure.
+        if True:
+            self.__Set_Ghost_Structure_Color([0.1, 0.1, 0.1, 0.2])
+        else:
+            self.__Set_Ghost_Structure_Color([0.85, 0.60, 0.60, 0.2])
