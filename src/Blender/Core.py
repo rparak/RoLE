@@ -182,17 +182,23 @@ class Mechanism_Cls(object):
     Initialization of the Class:
         Args:
             (1) Mechanism_Parameters_Str [Mechanism_Parameters_Str(object)]: The structure of the main parameters of the mechanism.
-            (2) visibility [Dictionary {'Viewpoint_EE': bool, 'Colliders': bool,
-                                        'Ghost': bool}]: The state to enable/disable the visibility of additional 
-                                                         mechanism objects.
+            (2) properties [Dictionary {'fps': float, 
+                                        'visibility': {'Viewpoint_EE': bool, 'Colliders': bool, 
+                                                       'Ghost': bool}}]: The properties of the mechanism structure 
+                                                                         in the Blender environment.
+                                                                            Note:
+                                                                                'fps': The FPS (Frames Per Seconds) value.
+                                                                                'visibility': The state to enable/disable the visibility 
+                                                                                              of additional mechanism objects.
 
         Example:
             Initialization:
                 # Assignment of the variables.
                 #   Example for the SMC LEFB25UNZS 1400C mechanism.
                 Mechanism_Parameters_Str = RoLE.Parameters.Mechanism.SMC_LEFB25_1400_0_1_Str
-                visibility = {'Viewpoint_EE': False, 'Colliders': False,
-                              'Ghost': False}
+                #   The properties of the Blender environment.
+                properties = {'fps': 100.0, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
+                                                           'Ghost': False}}
 
                 # Initialization of the class.
                 Cls = Mechanism_Cls(Mechanism_Parameters_Str, visibility)
@@ -206,13 +212,14 @@ class Mechanism_Cls(object):
                 Cls.Set_Absolute_Joint_Position(0.0, 0.0, 1.0)
     """
         
-    def __init__(self, Mechanism_Parameters_Str: RoLE.Parameters.Mechanism.Mechanism_Parameters_Str, visibility: tp.Dict[str, str]) -> None:
+    def __init__(self, Mechanism_Parameters_Str: RoLE.Parameters.Mechanism.Mechanism_Parameters_Str, properties: tp.Dict) -> None:
         try:
             assert Blender.Utilities.Object_Exist(f'{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}') == True
             
             # << PRIVATE >> #
             self.__Mechanism_Parameters_Str = Mechanism_Parameters_Str
             self.__external_object_id = 0
+            self.__fps = properties['fps']
             # Modified the name of the robot structure. Addition of robot structure Id (identification number).
             self.__name = f'{Mechanism_Parameters_Str.Name}_ID_{Mechanism_Parameters_Str.Id:03}'
 
@@ -222,8 +229,8 @@ class Mechanism_Cls(object):
             # Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
             self.__axes_sequence_cfg = 'ZYX'
 
-            # Get the FPS (Frames Per Seconds) value from the Blender settings.
-            self.__fps = bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
+            # Set the FPS (frames per second) value of the simulation in Blender.
+            bpy.context.scene.render.fps = self.__fps
             
             # Initialization of the class to generate trajectory.
             self.__Trapezoidal_Cls = RoLE.Trajectory.Utilities.Trapezoidal_Profile_Cls(delta_time=1.0/self.__fps)
@@ -231,17 +238,21 @@ class Mechanism_Cls(object):
             # Enable or disable the visibility of additional objects of the mechanism.
             #   1\ End-effector viewpoint.
             if Blender.Utilities.Object_Exist(f'Viewpoint_EE_{self.__name}'):
-                Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', visibility['Viewpoint_EE'])
+                Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', properties['visibility']['Viewpoint_EE'])
             #   2\ Colliders (base + joints).
             for _, collider_name in enumerate(np.concatenate((list(self.__Mechanism_Parameters_Str.Collider.Base), 
                                                               list(self.__Mechanism_Parameters_Str.Collider.Theta)), dtype=str)):
                 if Blender.Utilities.Object_Exist(collider_name):
-                    Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
+                    Blender.Utilities.Object_Visibility(collider_name, properties['visibility']['Colliders'])
             #   3\  The 'ghost' of the movable part of the mechanism.
+            self.__mechanism_th_ghost_name = []
             for _, th_name in enumerate(self.__Mechanism_Parameters_Str.Collider.Theta.keys()):
                 th_ghost_name = f"{th_name.removesuffix(f'Collider_{self.__name}')}Ghost_{self.__name}"
                 if Blender.Utilities.Object_Exist(th_ghost_name):
-                    Blender.Utilities.Object_Visibility(th_ghost_name, visibility['Ghost'])
+                    Blender.Utilities.Object_Visibility(th_ghost_name, properties['visibility']['Ghost'])
+
+                if 'Joint' in th_ghost_name:
+                    self.__mechanism_th_ghost_name.append(th_ghost_name)
             
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
@@ -517,20 +528,26 @@ class Robot_Cls(object):
     Initialization of the Class:
         Args:
             (1) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
-            (2) visibility [Dictionary {'Viewpoint_EE': bool, 'Colliders': bool,
-                                        'Workspace': bool, 'Ghost': bool}]: The state to enable/disable the visibility of additional 
-                                                                            robot objects.
-
+            (2) properties [Dictionary {'fps': float, 
+                                        'visibility': {'Viewpoint_EE': bool, 'Colliders': bool, 
+                                                       'Workspace': bool, 'Ghost': bool}}]: The properties of the robot structure 
+                                                                                            in the Blender environment.
+                                                                                                Note:
+                                                                                                    'fps': The FPS (Frames Per Seconds) value.
+                                                                                                    'visibility': The state to enable/disable the visibility 
+                                                                                                                  of additional robot objects.
+                                        
         Example:
             Initialization:
                 # Assignment of the variables.
                 #   Example for the ABB IRB 120 robot.
                 Robot_Parameters_Str = RoLE.Parameters.Robot.ABB_IRB_120_Str
-                visibility = {'Viewpoint_EE': False, 'Colliders': False, 'Workspace': False, 
-                              'Ghost': False}
+                #   The properties of the Blender environment.
+                properties = {'fps': 100.0, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
+                                                           'Workspace': False, 'Ghost': False}}
 
                 # Initialization of the class.
-                Cls = Robot_Cls(Robot_Parameters_Str, visibility)
+                Cls = Robot_Cls(Robot_Parameters_Str, properties)
 
             Features:
                 # Properties of the class.
@@ -541,13 +558,14 @@ class Robot_Cls(object):
                 Cls.Set_Absolute_Joint_Position([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 0.0, 1.0)
     """
 
-    def __init__(self, Robot_Parameters_Str: RoLE.Parameters.Robot.Robot_Parameters_Str, visibility: tp.Dict[str, str]) -> None:
+    def __init__(self, Robot_Parameters_Str: RoLE.Parameters.Robot.Robot_Parameters_Str, properties: tp.Dict) -> None:
         try:
             assert Blender.Utilities.Object_Exist(f'{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}') == True
             
             # << PRIVATE >> #
             self.__Robot_Parameters_Str = Robot_Parameters_Str
             self.__external_object_id = 0
+            self.__fps = properties['fps']
             # Modified the name of the robot structure. Addition of robot structure Id (identification number).
             self.__name = f'{Robot_Parameters_Str.Name}_ID_{Robot_Parameters_Str.Id:03}'
 
@@ -561,8 +579,8 @@ class Robot_Cls(object):
             # Rotation axis sequence configuration (e.g. 'ZYX', 'QUATERNION', etc.)
             self.__axes_sequence_cfg = 'ZYX'
 
-            # Get the FPS (Frames Per Seconds) value from the Blender settings.
-            self.__fps = bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
+            # Set the FPS (frames per second) value of the simulation in Blender.
+            bpy.context.scene.render.fps = self.__fps
             
             # Initialization of the class to generate trajectory.
             self.__Polynomial_Cls = RoLE.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=1.0/self.__fps)
@@ -570,20 +588,24 @@ class Robot_Cls(object):
             # Enable or disable the visibility of additional objects of the mechanism.
             #   1\ End-effector viewpoint.
             if Blender.Utilities.Object_Exist(f'Viewpoint_EE_{self.__name}'):
-                Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', visibility['Viewpoint_EE'])
+                Blender.Utilities.Object_Visibility(f'Viewpoint_EE_{self.__name}', properties['visibility']['Viewpoint_EE'])
             #   2\ Colliders (base + joints).
             for _, collider_name in enumerate(np.concatenate((list(self.__Robot_Parameters_Str.Collider.Base), 
                                                               list(self.__Robot_Parameters_Str.Collider.Theta)), dtype=str)):
                 if Blender.Utilities.Object_Exist(collider_name):
-                    Blender.Utilities.Object_Visibility(collider_name, visibility['Colliders'])
+                    Blender.Utilities.Object_Visibility(collider_name, properties['visibility']['Colliders'])
             #   3\ Workspace.
             if Blender.Utilities.Object_Exist(f'Workspace_{self.__name}'):
-                Blender.Utilities.Object_Visibility(f'Workspace_{self.__name}', visibility['Workspace'])
+                Blender.Utilities.Object_Visibility(f'Workspace_{self.__name}', properties['visibility']['Workspace'])
             #   4\  The 'ghost' of the movable part of the robot.
+            self.__robot_th_ghost_name = []
             for _, th_name in enumerate(self.__Robot_Parameters_Str.Collider.Theta.keys()):
                 th_ghost_name = f"{th_name.removesuffix(f'Collider_{self.__name}')}Ghost_{self.__name}"
                 if Blender.Utilities.Object_Exist(th_ghost_name):
-                    Blender.Utilities.Object_Visibility(th_ghost_name, visibility['Ghost'])
+                    Blender.Utilities.Object_Visibility(th_ghost_name, properties['visibility']['Ghost'])
+
+                if 'Joint' in th_ghost_name:
+                    self.__robot_th_ghost_name.append(th_ghost_name)
 
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
