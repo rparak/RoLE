@@ -60,7 +60,8 @@ def main():
         Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
 
     # Initialization of the class to work with a mechanism object in a Blender scene.
-    Mechanism_ID_0_1_Cls = Blender.Core.Mechanism_Cls(CONST_MECHANISM_TYPE, {'Viewpoint_EE': False, 'Colliders': False})
+    Mechanism_ID_0_1_Cls = Blender.Core.Mechanism_Cls(CONST_MECHANISM_TYPE, {'Viewpoint_EE': False, 'Colliders': False, 
+                                                                             'Ghost': False})
     print(f'[INFO] Mechanism Name: {Mechanism_ID_0_1_Cls.Parameters.Name}_ID_{Mechanism_ID_0_1_Cls.Parameters.Id:03}')
     
     # Reset the absolute position of the mechanism joints to the 'Zero'.

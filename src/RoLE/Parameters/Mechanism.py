@@ -127,7 +127,7 @@ SMC_LEFB25_14000_0_1_Str = Mechanism_Parameters_Str(Name='SMC_LEFB25_14000', Id=
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-SMC_LEFB25_14000_0_1_Str.T.Base = HTM_Cls(None, np.float64)
+SMC_LEFB25_14000_0_1_Str.T.Base = HTM_Cls(None, np.float64).Translation(np.array([0.0, 0.0, 0.0], dtype=np.float64))
 # Homogeneous transformation matrix of the slider position.
 #       [[1.0, 0.0, 0.0,      0.0],
 #        [0.0, 1.0, 0.0,      0.0],
@@ -168,7 +168,7 @@ SMC_LEFB25_14000_0_2_Str = Mechanism_Parameters_Str(Name='SMC_LEFB25_14000', Id=
 #        [0.0, 1.0, 0.0, 0.0],
 #        [0.0, 0.0, 1.0, 0.0],
 #        [0.0, 0.0, 0.0, 1.0]]
-SMC_LEFB25_14000_0_2_Str.T.Base = HTM_Cls(None, np.float64)
+SMC_LEFB25_14000_0_2_Str.T.Base = HTM_Cls(None, np.float64).Translation(np.array([0.2, 0.0, 0.0], dtype=np.float64))
 # Homogeneous transformation matrix of the slider position.
 #       [[1.0, 0.0, 0.0,      0.0],
 #        [0.0, 1.0, 0.0,      0.0],
