@@ -1203,20 +1203,70 @@ class Robot_Cls(object):
             print(f'[ERROR] Information: {error}')
             print(f'[ERROR] Incorrect number of values in the input variable theta. The input variable "theta" must contain {self.__Robot_Parameters_Str.Theta.Zero.size} values.')
 
-    def Get_Inverse_Kinematics_Solution(self, T: tp.List[tp.List[float]]) -> tp.Dict[bool, tp.List[float]]:
+    def Get_Inverse_Kinematics_Solution(self, T: tp.List[tp.List[float]], ik_solver_properties: tp.Dict, enable_ghost: bool) -> tp.Dict[bool, tp.List[float]]:
         """
         Description:
-            ...
+            A function to compute the inverse kinematics (IK) solution of the individual robotic 
+            structure using the numerical method.
+
+        Args:
+            (1) T [Matrix<float> 4x4]: Homogeneous transformation matrix of the desired TCP position.
+            (2) ik_solver_properties [Dictionary {'delta_time': float or None, 'num_of_iteration': float, 
+                                                  'tolerance': float}]: The properties of the inverse kinematics solver.
+                                                                            Note:
+                                                                                'delta_time': The difference (spacing) between 
+                                                                                                the time values. If equal to 'None', do not 
+                                                                                                use interpolation between the actual and desired 
+                                                                                                positions.
+                                                                                'num_of_iteration': The number of iterations per 
+                                                                                                    time instant.
+                                                                                'tolerance': The minimum required tolerance per 
+                                                                                                time instant.    
+                                                                                Where time instant is defined by the 'delta_time' variable.
+            (3) enable_ghost [bool]: Enable visibility of the auxiliary mechanism structure, which 
+                                     is represented as a "ghost".
+                                        Note:
+                                            To make the auxiliary mechanism structure visible, the 'Ghost' parameter must 
+                                            also be enabled in the class properties.
+
+        Returns:
+            (1) parameter [bool]: The result is 'True' if the inverse kinematics (IK) has a solution, and 'False' if 
+                                    it does not.
+            (2) parameter [float]: Obtained solution of the absolute positions of the joints in radians / meters.
         """
 
         if isinstance(T, (list, np.ndarray)):
             T = Transformation.Homogeneous_Transformation_Matrix_Cls(T, np.float64)
 
-        # ...
-        # self.__Reset_Ghost_Structure()
+        # A function to compute the inverse kinematics (IK) using the using the chosen numerical method.
+        (info, theta) = Kinematics.Inverse_Kinematics_Numerical(T, self.Theta, 'Levenberg-Marquardt', self.__Robot_Parameters_Str, 
+                                                                ik_solver_properties)
+            
+        # Reset the absolute position of the auxiliary robot structure, which is represented as a "ghost".
+        self.__Reset_Ghost_Structure(theta)
+
+        # Check whether the inverse kinematics (IK) has a solution or not.
+        #   Conditions:
+        #       1\ IK solution within limits.
+        #       2\ Collision-free.
+        #       3\ No singularities.
+        if info['successful'] == True:
+            # Check whether a part of the robotic structure collides with external objects.
+            is_external_collision = Kinematics.General.Is_External_Collision(theta, self.__Robot_Parameters_Str)
+
+            if info['is_self_collision'] == False and info['is_close_singularity'] == False \
+                and not is_external_collision.any() == True:
+                    successful = True
+            else:
+                successful = False
+        else:
+            successful = False
 
         # Set the color of the 'ghost' structure.
-        if True:
-            self.__Set_Ghost_Structure_Color([0.1, 0.1, 0.1, 0.2])
-        else:
-            self.__Set_Ghost_Structure_Color([0.85, 0.60, 0.60, 0.2])
+        if enable_ghost == True and self.__properties['visibility']['Ghost'] == True:
+            if successful:
+                self.__Set_Ghost_Structure_Color([0.1, 0.1, 0.1, 0.2])
+            else:
+                self.__Set_Ghost_Structure_Color([0.85, 0.60, 0.60, 0.2])
+
+        return (successful, theta)
