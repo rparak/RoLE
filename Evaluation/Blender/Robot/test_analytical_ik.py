@@ -80,17 +80,17 @@ def main():
     Robot_ID_0_Cls.Reset('Home')
 
     # Obtain the homogeneous transformation matrix of the 'Viewpoint' object.
-    TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects['TCP_Position_Viewpoint'].matrix_basis, 
+    TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(bpy.data.objects[f'TCP_{Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}'].matrix_basis, 
                                                                         np.float64)
     
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
-    (error, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_ID_0_Cls.Theta, Robot_ID_0_Cls.Parameters, 'Best')
+    (info, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_ID_0_Cls.Theta, Robot_ID_0_Cls.Parameters, 'Best')
     
     # Display results.
     print(f'[INFO] Absolute Joint Positions:')
-    print(f'[INFO] >> position_err = {error["position"]}, orientation_err = {error["orientation"]}')
+    print(f'[INFO] >> position_err = {info["error"]["position"]}, orientation_err = {info["error"]["orientation"]}')
     print(f'[INFO] >> theta = {theta}')
 
     # Reset the absolute position of the robot joints to the 'Individual'.

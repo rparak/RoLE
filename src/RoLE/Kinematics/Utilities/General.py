@@ -141,7 +141,8 @@ def Is_Close_Singularity(J: tp.List[tp.List[float]]) -> bool:
 
     return any(np.isclose(S, 0.0, atol=1e-10, equal_nan=False))
     
-def Is_External_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[bool]:
+def Is_External_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[bool, 
+                                                                                                                    tp.List[bool]]:
     """
     Description:
         A function to obtain information about whether a part of the robotic structure collides with external objects.
@@ -153,7 +154,8 @@ def Is_External_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameter
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot. 
 
     Returns:
-        (1) parameter [Vector<bool> 1xk]: A vector of information about which part of the robotic structure collides with external objects.
+        (1) parameter [bool]: Information about whether a part of the robotic structure collides with external objects.
+        (2) parameter [Vector<bool> 1xk]: A vector of information about which part of the robotic structure collides with external objects.
                                             Note:
                                                 Where k is the number of all colliders of the robotic structure.
     """
@@ -182,16 +184,17 @@ def Is_External_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameter
         
     # Check whether the external 3D primitives (bounding boxes AABB, OBB) overlap or do not overlap 
     # with the robotic structure.
-    is_collision = np.zeros(All_Colliders.size, dtype=bool)
+    collision_info = np.zeros(All_Colliders.size, dtype=bool)
     for i, collider_i in enumerate(All_Colliders):
         for _, external_collider_i in enumerate(External_Collider):
             if collider_i.Overlap(external_collider_i) == True:
                 # Set the part of the robotic structure where the collision occurs.
-                is_collision[i] = True
+                collision_info[i] = True
 
-    return is_collision
+    return (collision_info.any() == True, collision_info)
 
-def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[bool]:
+def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[bool, 
+                                                                                                                tp.List[bool]]:
     """
     Description:
         A function to obtain information on whether there is a collision between the joints of the robotic structure.
@@ -203,7 +206,8 @@ def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
         (2) Robot_Parameters_Str [Robot_Parameters_Str(object)]: The structure of the main parameters of the robot.
 
     Returns:
-        (1) parameter [Vector<bool> 1xk]: A vector of errors where a collision occurred between the joints of the robotic structure.
+        (1) parameter [bool]: Information about whether there are collisions between joints.
+        (2) parameter [Vector<bool> 1xk]: A vector of information where a collision occurred between the joints of the robotic structure.
                                             Note:
                                                 Where k is the number of all colliders of the robotic structure.
     """
@@ -230,13 +234,13 @@ def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
         All_Colliders = np.concatenate((Base_Collider, Theta_Collider))
 
     # Check whether the 3D primitives (bounding boxes AABB, OBB) overlap or not.
-    is_collision = np.zeros(All_Colliders.size, dtype=bool)
+    collision_info = np.zeros(All_Colliders.size, dtype=bool)
     for _, (i, j) in enumerate(Robot_Parameters_Str.Collider.Pairs):
         if All_Colliders[i].Overlap(All_Colliders[j]) == True:
             # Set the individual parts where the collision occurs.
-            is_collision[i] = True; is_collision[j] = True  
+            collision_info[i] = True; collision_info[j] = True  
 
-    return is_collision
+    return (collision_info.any() == True, collision_info)
 
 def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.List[float]], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[float]:
     """
@@ -267,7 +271,7 @@ def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.Li
         # absolute joint positions.
         (th_limit_err, _) = RoLE.Kinematics.Core.Forward_Kinematics(th_sol_i, 'Fast', Robot_Parameters_Str)
 
-        if th_limit_err.any() != True and Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any() != True:
+        if th_limit_err.any() != True and Is_Self_Collision(th_sol_i, Robot_Parameters_Str)[0] == False:
             # Obtain the absolute error of the joint angles.
             error_theta = Mathematics.Euclidean_Norm((theta_0 - th_sol_i))
 

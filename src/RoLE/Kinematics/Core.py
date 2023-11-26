@@ -586,19 +586,23 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
 
     Returns:
         (1) parameter [Dictionary {'successful': bool, 'iteration': int, 'error': {'position': float, 'orientation': float}, 
-                                   'quadratic_error': float, 'is_close_singularity': bool, 
-                                   'is_self_collision': bool}]: Information on the best results that were found.
-                                                                Note:
-                                                                    'successful': Information on whether the result was found 
-                                                                                  within the required tolerance.
-                                                                    'iteration': Information about the iteration in which the best 
-                                                                                 result was found.
-                                                                    'error': Information about the absolute error (position, orientation)
-                                                                    'quadratic_error': Information about Quadratic (angle-axis) error.
-                                                                    'is_close_singularity': Information about whether the Jacobian matrix 
-                                                                                            is close to singularity.
-                                                                    'is_self_collision': Information about whether there are collisions 
-                                                                                         between joints.
+                                   'quadratic_error': float, 'is_close_singularity': bool, 'is_self_collision': bool, 
+                                   'collsion_info': Vector<bool> 1xk}]: Information on the best results that were found.
+                                                                            Note 1:
+                                                                                Where k is the number of all colliders of the robotic structure.
+                                                                            Note 2:
+                                                                                'successful': Information on whether the result was found 
+                                                                                              within the required tolerance.
+                                                                                'iteration': Information about the iteration in which the best 
+                                                                                             result was found.
+                                                                                'error': Information about the absolute error (position, orientation)
+                                                                                'quadratic_error': Information about Quadratic (angle-axis) error.
+                                                                                'is_close_singularity': Information about whether the Jacobian matrix 
+                                                                                                        is close to singularity.
+                                                                                'is_self_collision': Information about whether there are collisions 
+                                                                                                     between joints.
+                                                                                'collision_info': A vector of information where a collision occurred between 
+                                                                                                  the joints of the robotic structure.
         (2) parameter [Vector<float> 1xn]: Obtained the best solution of the absolute positions of the joints in radians / meters.
                                             Note:
                                                 Where n is the number of joints. 
@@ -688,7 +692,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
         # between the joints.
         is_close_singularity = General.Is_Close_Singularity(J)
-        is_self_collision = General.Is_Self_Collision(th_i, Robot_Parameters_Str).any() == True
+        (is_self_collision, collision_info) = General.Is_Self_Collision(th_i, Robot_Parameters_Str)
 
         # Obtain the absolute error of position and orientation.
         error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 
@@ -696,7 +700,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         
         # Write all the information about the results of the IK solution.
         return ({'successful': is_successful, 'iteration': iteration, 'error': error, 'quadratic_error': E, 
-                'is_close_singularity': is_close_singularity, 'is_self_collision': is_self_collision}, th_i)
+                 'is_close_singularity': is_close_singularity, 'is_self_collision': is_self_collision, 'collision_info': collision_info}, th_i)
 
     except AssertionError as error:
         print(f'[ERROR] Information: {error}')
@@ -726,14 +730,19 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
                                     method = 'Best' -> Automatically obtain the best solution.
  
     Returns:
-        (1) parameter [Dictionary {'error': {'position': float, 'orientation': float}, 'is_close_singularity': bool, 
-                                   'is_self_collision': bool}]: Information on the best results that were found.
-                                                                Note:
-                                                                    'error': Information about the absolute error (position, orientation)
-                                                                    'is_close_singularity': Information about whether the Jacobian matrix 
-                                                                                            is close to singularity.
-                                                                    'is_self_collision': Information about whether there are collisions 
-                                                                                         between joints.
+        (1) parameter [Dictionary {'error': {'position': float, 'orientation': float}, 
+                                   'is_close_singularity': bool, 'is_self_collision': bool, 
+                                   'collision_info': Vector<bool> 1xk}]: Information on the best results that were found.
+                                                                            Note 1:
+                                                                                Where k is the number of all colliders of the robotic structure.
+                                                                            Note 2:
+                                                                                'error': Information about the absolute error (position, orientation)
+                                                                                'is_close_singularity': Information about whether the Jacobian matrix 
+                                                                                                        is close to singularity.
+                                                                                'is_self_collision': Information about whether there are collisions 
+                                                                                                     between joints.
+                                                                                'collision_info': A vector of information where a collision occurred between 
+                                                                                                  the joints of the robotic structure.
         (2) parameter [Matrix<float> kxn]: Obtained solution of the absolute positions of the joints in radians / meters.
                                             Note:
                                                 Where k is the number of solutions and n is the number of connections.
@@ -837,7 +846,9 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             info = {'error': {'position': np.zeros(theta_solutions.shape[0], dtype=np.float64), 
                               'orientation': np.zeros(theta_solutions.shape[0], dtype=np.float64)}, 
                               'is_close_singularity': np.zeros(theta_solutions.shape[0], dtype=bool), 
-                              'is_self_collision': np.zeros(theta_solutions.shape[0], dtype=bool)}
+                              'is_self_collision': np.zeros(theta_solutions.shape[0], dtype=bool),
+                              'collision_info': np.zeros((theta_solutions.shape[0], len(Robot_Parameters_Str.Collider.Base) +
+                                                                                    len(Robot_Parameters_Str.Collider.Theta)), dtype=bool)}
             
             for i, th_sol_i in enumerate(theta_solutions):
                 # Get the homogeneous transformation matrix of the robot end-effector from the input 
@@ -854,7 +865,7 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
                 # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
                 # between the joints.
                 info['is_close_singularity'][i] = General.Is_Close_Singularity(J)
-                info['is_self_collision'][i] = General.Is_Self_Collision(th_sol_i, Robot_Parameters_Str).any() == True
+                (info['is_self_collision'][i], info['collision_info'][i]) = General.Is_Self_Collision(th_sol_i, Robot_Parameters_Str)
 
                 # Obtain the absolute error of position and orientation.
                 info['error']['position'][i] = Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all())
@@ -880,15 +891,15 @@ def Inverse_Kinematics_Analytical(TCP_Position: tp.List[tp.List[float]], theta_0
             # Check whether the absolute positions of the joints are close to a singularity or if there are collisions 
             # between the joints.
             is_close_singularity = General.Is_Close_Singularity(J)
-            is_self_collision = General.Is_Self_Collision(theta, Robot_Parameters_Str).any() == True
+            (is_self_collision, collision_info) = General.Is_Self_Collision(theta, Robot_Parameters_Str)
 
             # Obtain the absolute error of position and orientation.
             error = {'position': Mathematics.Euclidean_Norm((TCP_Position.p - T.p).all()), 
                      'orientation': TCP_Position.Get_Rotation('QUATERNION').Distance('Euclidean', T.Get_Rotation('QUATERNION'))}
     
             # Write all the information about the results of the IK solution.
-            return ({'error': error, 'is_close_singularity': is_close_singularity, 'is_self_collision': is_self_collision}, 
-                    theta)
+            return ({'error': error, 'is_close_singularity': is_close_singularity, 
+                     'is_self_collision': is_self_collision, 'collision_info': collision_info}, theta)
 
     except AssertionError as error:
         print(f'[ERROR] Information: {error}')
