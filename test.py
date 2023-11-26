@@ -1,4 +1,6 @@
-a = 'Joint_1_ABB_IRB_120_ID_001'
+import numpy as np
 
-# removesuffix(f'_{self.__Robot_Parameters_Str.Name}_ID_{self.__Robot_Parameters_Str.Id:03}')
-print(a.removesuffix('ABB_IRB_120_ID_001'))
+a = np.array([True, False, False], dtype=bool)
+b = np.array([False, True, True], dtype=bool)
+
+print(a | b)

@@ -1248,6 +1248,7 @@ class Robot_Cls(object):
         """
         # ... add ...
         # ... split to info error to the one. 
+        # a | is_external_collision
         # Set the color of the colliders.
         #   Note:
         #       'Red': Collision.
