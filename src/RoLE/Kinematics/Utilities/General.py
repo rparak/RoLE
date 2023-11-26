@@ -184,14 +184,14 @@ def Is_External_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameter
         
     # Check whether the external 3D primitives (bounding boxes AABB, OBB) overlap or do not overlap 
     # with the robotic structure.
-    collision_info = np.zeros(All_Colliders.size, dtype=bool)
+    external_collision_info = np.zeros(All_Colliders.size, dtype=bool)
     for i, collider_i in enumerate(All_Colliders):
         for _, external_collider_i in enumerate(External_Collider):
             if collider_i.Overlap(external_collider_i) == True:
                 # Set the part of the robotic structure where the collision occurs.
-                collision_info[i] = True
+                external_collision_info[i] = True
 
-    return (collision_info.any() == True, collision_info)
+    return (external_collision_info.any() == True, external_collision_info)
 
 def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.Tuple[bool, 
                                                                                                                 tp.List[bool]]:
@@ -234,13 +234,13 @@ def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
         All_Colliders = np.concatenate((Base_Collider, Theta_Collider))
 
     # Check whether the 3D primitives (bounding boxes AABB, OBB) overlap or not.
-    collision_info = np.zeros(All_Colliders.size, dtype=bool)
+    self_collision_info = np.zeros(All_Colliders.size, dtype=bool)
     for _, (i, j) in enumerate(Robot_Parameters_Str.Collider.Pairs):
         if All_Colliders[i].Overlap(All_Colliders[j]) == True:
             # Set the individual parts where the collision occurs.
-            collision_info[i] = True; collision_info[j] = True  
+            self_collision_info[i] = True; self_collision_info[j] = True  
 
-    return (collision_info.any() == True, collision_info)
+    return (self_collision_info.any() == True, self_collision_info)
 
 def Get_Best_IK_Solution(theta_0: tp.List[float], theta_solutions: tp.List[tp.List[float]], Robot_Parameters_Str: Parameters.Robot_Parameters_Str) -> tp.List[float]:
     """

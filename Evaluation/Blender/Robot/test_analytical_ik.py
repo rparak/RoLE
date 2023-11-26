@@ -72,8 +72,7 @@ def main():
         Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
     
     # Initialization of the class to work with a robotic arm object in a Blender scene.
-    Robot_ID_0_Cls = Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, {'Viewpoint_EE': False, 'Colliders': False, 
-                                                                   'Workspace': False})
+    Robot_ID_0_Cls = Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, CONST_PROPERTIES)
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
     # Reset the absolute position of the robot joints to the 'Home'.

@@ -614,9 +614,10 @@ class Mechanism_Cls(object):
             (1) theta [float]: Desired absolute joint position in radians / meters.
 
         Returns:
-            (1) parameter [Vector<bool> 1xk]: A vector of information about which part of the robotic structure collides with external objects.
+            (1) parameter [bool]: Information about whether there are collisions between joints.
+            (2) parameter [Vector<bool> 1xk]: A vector of information where a collision occurred between the joints of the mechanism structure.
                                                 Note:
-                                                    Where k is the number of all colliders of the robotic structure.
+                                                    Where k is the number of all colliders of the mechanism structure.
         """
 
         # Get a list of colliders.
@@ -640,14 +641,14 @@ class Mechanism_Cls(object):
 
         # Check whether the external 3D primitives (bounding boxes AABB, OBB) overlap or do not overlap 
         # with the mechanism structure.
-        is_collision = np.zeros(All_Colliders.size, dtype=bool)
+        collision_info = np.zeros(All_Colliders.size, dtype=bool)
         for i, collider_i in enumerate(All_Colliders):
             for _, external_collider_i in enumerate(External_Collider):
                 if collider_i.Overlap(external_collider_i) == True:
                     # Set the part of the mechanism structure where the collision occurs.
-                    is_collision[i] = True
+                    collision_info[i] = True
 
-        return is_collision
+        return (collision_info.any() == True, collision_info)
     
     def Get_Inverse_Kinematics_Solution(self, T: tp.List[tp.List[float]], enable_ghost: bool) -> tp.Tuple[bool, float]:
         """
@@ -681,19 +682,19 @@ class Mechanism_Cls(object):
             theta = T.p.all()[ax_i_id_num]
 
         # Check whether a part of the mechanism structure collides with external objects.
-        is_collision_info = self.__Is_External_Collision(theta)
+        (is_collision, collision_info) = self.__Is_External_Collision(theta)
 
         # Set the color of the colliders.
         #   Note:
         #       'Red': Collision.
         #       'Green': No collision.
-        self.__Set_Collider_Color(is_collision_info)
+        self.__Set_Collider_Color(collision_info)
 
         # Check whether the inverse kinematics (IK) has a solution or not.
         #   Conditions:
         #       1\ Within limits.
         #       2\ Collision-free.
-        if self.__Reset_Ghost_Structure(theta) == True and not is_collision_info.any() == True:
+        if self.__Reset_Ghost_Structure(theta) == True and is_collision == False:
             successful = True
         else:
             successful = False
@@ -1245,17 +1246,6 @@ class Robot_Cls(object):
         # Reset the absolute position of the auxiliary robot structure, which is represented as a "ghost".
         self.__Reset_Ghost_Structure(theta)
 
-        """
-        # ... add ...
-        # ... split to info error to the one. 
-        # a | is_external_collision
-        # Set the color of the colliders.
-        #   Note:
-        #       'Red': Collision.
-        #       'Green': No collision.
-        self.__Set_Collider_Color(is_collision_info)
-        """
-
         # Check whether the inverse kinematics (IK) has a solution or not.
         #   Conditions:
         #       1\ IK solution within limits.
@@ -1263,15 +1253,25 @@ class Robot_Cls(object):
         #       3\ No singularities.
         if info['successful'] == True:
             # Check whether a part of the robotic structure collides with external objects.
-            is_external_collision = Kinematics.General.Is_External_Collision(theta, self.__Robot_Parameters_Str)
+            (is_external_collision, external_collision_info) = Kinematics.General.Is_External_Collision(theta, 
+                                                                                                        self.__Robot_Parameters_Str)
 
             if info['is_self_collision'] == False and info['is_close_singularity'] == False \
-                and not is_external_collision.any() == True:
+                and is_external_collision == False:
                     successful = True
             else:
                 successful = False
         else:
             successful = False
+
+        # Set the color of the colliders.
+        #   Note:
+        #       'Red': Collision.
+        #       'Green': No collision.
+        if info['successful'] == True:
+            self.__Set_Collider_Color(info['self_collision_info'])
+        else:
+            self.__Set_Collider_Color(info['self_collision_info'] | external_collision_info[0:info['self_collision_info'].size])
 
         # Set the color of the 'ghost' structure.
         if enable_ghost == True and self.__properties['visibility']['Ghost'] == True:

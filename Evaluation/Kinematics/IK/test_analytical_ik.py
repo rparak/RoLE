@@ -50,7 +50,7 @@ def main():
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
-    (info, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Analytical(T_1, abs_j_pos_0, Robot_Str, 'Best')
+    (info, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Analytical(T_1, abs_j_pos_0, Robot_Str, 'All')
 
     t = time.time() - t_0
     print(f'[INFO] Time: {t:0.05f} in seconds.')
@@ -63,7 +63,7 @@ def main():
     print(f'[INFO] >> is_self_collision = {info["is_self_collision"]}')
 
     # Check that the calculation has been performed successfully.
-    accuracy = info["error"]["position"] + info["error"]["orientation"]
+    accuracy = info['error']['position'] + info['error']['orientation']
     if accuracy <= 1e-5:
         print('[INFO] The IK solution test was successful.')
         print(f'[INFO] Accuracy = {accuracy}')
