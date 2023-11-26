@@ -1245,6 +1245,16 @@ class Robot_Cls(object):
         # Reset the absolute position of the auxiliary robot structure, which is represented as a "ghost".
         self.__Reset_Ghost_Structure(theta)
 
+        """
+        # ... add ...
+        # ... split to info error to the one. 
+        # Set the color of the colliders.
+        #   Note:
+        #       'Red': Collision.
+        #       'Green': No collision.
+        self.__Set_Collider_Color(is_collision_info)
+        """
+
         # Check whether the inverse kinematics (IK) has a solution or not.
         #   Conditions:
         #       1\ IK solution within limits.
