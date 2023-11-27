@@ -1224,10 +1224,10 @@ class Robot_Cls(object):
                                                                                 'tolerance': The minimum required tolerance per 
                                                                                                 time instant.    
                                                                                 Where time instant is defined by the 'delta_time' variable.
-            (3) enable_ghost [bool]: Enable visibility of the auxiliary mechanism structure, which 
+            (3) enable_ghost [bool]: Enable visibility of the auxiliary robotic structure, which 
                                      is represented as a 'ghost'.
                                         Note:
-                                            To make the auxiliary mechanism structure visible, the 'ghost' parameter must 
+                                            To make the auxiliary robotic structure visible, the 'ghost' parameter must 
                                             also be enabled in the class properties.
 
         Returns:
