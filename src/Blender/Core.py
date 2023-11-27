@@ -660,7 +660,7 @@ class Mechanism_Cls(object):
             (2) enable_ghost [bool]: Enable visibility of the auxiliary mechanism structure, which 
                                      is represented as a 'ghost'.
                                         Note:
-                                            To make the auxiliary mechanism structure visible, the 'Ghost' parameter must 
+                                            To make the auxiliary mechanism structure visible, the 'ghost' parameter must 
                                             also be enabled in the class properties.
 
         Returns:
@@ -1233,7 +1233,9 @@ class Robot_Cls(object):
         Returns:
             (1) parameter [bool]: The result is 'True' if the inverse kinematics (IK) has a solution, and 'False' if 
                                     it does not.
-            (2) parameter [float]: Obtained solution of the absolute positions of the joints in radians / meters.
+            (2) parameter [Vector<float> 1xn]: Obtained solution of the absolute positions of the joints in radians / meters.
+                                                Note:
+                                                    Where n is the number of joints.
         """
 
         if isinstance(T, (list, np.ndarray)):
