@@ -1227,7 +1227,7 @@ class Robot_Cls(object):
             (3) enable_ghost [bool]: Enable visibility of the auxiliary mechanism structure, which 
                                      is represented as a 'ghost'.
                                         Note:
-                                            To make the auxiliary mechanism structure visible, the 'Ghost' parameter must 
+                                            To make the auxiliary mechanism structure visible, the 'ghost' parameter must 
                                             also be enabled in the class properties.
 
         Returns:
