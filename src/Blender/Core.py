@@ -437,7 +437,7 @@ class Mechanism_Cls(object):
     def __Set_Ghost_Structure_Color(self, color: tp.List[float]) -> None:
         """
         Description:
-            Function to set the color of the auxiliary mechanism structure, which is represented as a "ghost".
+            Function to set the color of the auxiliary mechanism structure, which is represented as a 'ghost'.
 
         Args:
             (1) color [None or Vector<float> 1x4]: The color of the object.
@@ -453,7 +453,7 @@ class Mechanism_Cls(object):
     def __Reset_Ghost_Structure(self, theta: tp.List[float]) -> bool:
         """
         Description:
-            Function to reset the absolute position of the auxiliary mechanism structure, which is represented as a "ghost".
+            Function to reset the absolute position of the auxiliary mechanism structure, which is represented as a 'ghost'.
 
         Args:
             (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
@@ -658,7 +658,7 @@ class Mechanism_Cls(object):
         Args:
             (1) T [Matrix<float> 4x4]: Homogeneous transformation matrix of the desired TCP position.
             (2) enable_ghost [bool]: Enable visibility of the auxiliary mechanism structure, which 
-                                     is represented as a "ghost".
+                                     is represented as a 'ghost'.
                                         Note:
                                             To make the auxiliary mechanism structure visible, the 'Ghost' parameter must 
                                             also be enabled in the class properties.
@@ -1031,7 +1031,7 @@ class Robot_Cls(object):
     def __Set_Ghost_Structure_Color(self, color: tp.List[float]) -> None:
         """
         Description:
-            Function to set the color of the auxiliary robot structure, which is represented as a "ghost".
+            Function to set the color of the auxiliary robot structure, which is represented as a 'ghost'.
 
         Args:
             (1) color [None or Vector<float> 1x4]: The color of the object.
@@ -1047,7 +1047,7 @@ class Robot_Cls(object):
     def __Reset_Ghost_Structure(self, theta: tp.List[float]) -> None:
         """
         Description:
-            Function to reset the absolute position of the auxiliary robot structure, which is represented as a "ghost".
+            Function to reset the absolute position of the auxiliary robot structure, which is represented as a 'ghost'.
 
         Args:
             (1) theta [Vector<float> 1xn]: Desired absolute joint position in radians / meters.
@@ -1225,7 +1225,7 @@ class Robot_Cls(object):
                                                                                                 time instant.    
                                                                                 Where time instant is defined by the 'delta_time' variable.
             (3) enable_ghost [bool]: Enable visibility of the auxiliary mechanism structure, which 
-                                     is represented as a "ghost".
+                                     is represented as a 'ghost'.
                                         Note:
                                             To make the auxiliary mechanism structure visible, the 'Ghost' parameter must 
                                             also be enabled in the class properties.
@@ -1243,7 +1243,7 @@ class Robot_Cls(object):
         (info, theta) = Kinematics.Inverse_Kinematics_Numerical(T, self.Theta, 'Levenberg-Marquardt', self.__Robot_Parameters_Str, 
                                                                 ik_solver_properties)
             
-        # Reset the absolute position of the auxiliary robot structure, which is represented as a "ghost".
+        # Reset the absolute position of the auxiliary robot structure, which is represented as a 'ghost'.
         self.__Reset_Ghost_Structure(theta)
 
         # Check whether the inverse kinematics (IK) has a solution or not.
