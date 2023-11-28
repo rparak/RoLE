@@ -52,9 +52,9 @@ from RoLE.Primitives.Core import Box_Cls, Point_Cls
 from RoLE.Collider.Utilities import Get_Min_Max
 #       ../RoLE/Primitives/Core
 from RoLE.Collider.Core import AABB_Cls
-#   Gym
-#       ../Gym/Utilities
-import Gym.Utilities
+#   PyBullet
+#       ../PyBullet/Utilities
+import PyBullet.Utilities
 
 """
 Description:
@@ -63,7 +63,7 @@ Description:
 # Gravitational Constant.
 CONST_GRAVITY = 9.81
 # Locate the path to the project folder.
-CONST_PROJECT_FOLDER = os.getcwd().split('PyBullet_Industrial_Robotics_Gym')[0] + 'PyBullet_Industrial_Robotics_Gym'
+CONST_PROJECT_FOLDER = os.getcwd().split('RoLE')[0] + 'RoLE'
 
 class Robot_Cls(object):
     """
@@ -177,23 +177,16 @@ class Robot_Cls(object):
             pb.changeDynamics(self.__robot_id_ghost, linkIndex=i, linearDamping=0, angularDamping=0, jointDamping=0, mass=0)
 
         # Obtain the structure of the main parameters of the environment for the defined robotic arm.
-        self.__Env_Structure = Gym.Utilities.Get_Environment_Structure(self.__Robot_Parameters_Str.Name, properties['Env_ID'])
+        self.__Env_Structure = PyBullet.Utilities.Get_Environment_Structure(self.__Robot_Parameters_Str.Name, properties['Env_ID'])
         #   Add the cube of the search (configuration) space and get the vertices of the defined cube.
-        self.__vertices_C_search = Gym.Utilities.Add_Wireframe_Cuboid(self.__Env_Structure.C.Search.T, self.__Env_Structure.C.Search.Size, 
-                                                                      self.__Env_Structure.C.Search.Color, 1.0)
+        self.__vertices_C_search = PyBullet.Utilities.Add_Wireframe_Cuboid(self.__Env_Structure.C.Search.T, self.__Env_Structure.C.Search.Size, 
+                                                                           self.__Env_Structure.C.Search.Color, 1.0)
         #   Add the cube of the target (configuration) space and get the vertices of the defined cube.
-        self.__vertices_C_target = Gym.Utilities.Add_Wireframe_Cuboid(self.__Env_Structure.C.Target.T, self.__Env_Structure.C.Target.Size, 
-                                                                      self.__Env_Structure.C.Target.Color, 1.0)
-        
-        # Represent the search (configuration) space as Axis-aligned Bounding Boxes (AABB).
-        self.__AABB_C_search = AABB_Cls(Box_Cls([0.0, 0.0, 0.0], self.__Env_Structure.C.Search.Size))
-        self.__AABB_C_search.Transformation(self.__Env_Structure.C.Search.T)
-        #   Initialize a point that will be used to check whether the homogeneous transformation matrix 
-        #   of the end-effector is inside the search (configuration) space or not.
-        self.__P_EE = Point_Cls([0.0, 0.0, 0.0])
+        self.__vertices_C_target = PyBullet.Utilities.Add_Wireframe_Cuboid(self.__Env_Structure.C.Target.T, self.__Env_Structure.C.Target.Size, 
+                                                                           self.__Env_Structure.C.Target.Color, 1.0)
 
         # Get the home absolute joint positions of a specific environment for a defined robotic arm.
-        Robot_Parameters_Str.Theta.Home = Gym.Utilities.Get_Robot_Structure_Theta_Home(self.__Robot_Parameters_Str.Name, properties['Env_ID'])
+        Robot_Parameters_Str.Theta.Home = PyBullet.Utilities.Get_Robot_Structure_Theta_Home(self.__Robot_Parameters_Str.Name, properties['Env_ID'])
 
         # Get the homogeneous transformation matrix of the robot end-effector in the 'Home' position.
         T_Home = Kinematics.Forward_Kinematics(self.__Robot_Parameters_Str.Theta.Home, 'Fast', 
@@ -206,8 +199,8 @@ class Robot_Cls(object):
             self.Add_External_Object(f'{CONST_PROJECT_FOLDER}/URDFs/Primitives/{self.__Env_Structure.Collision_Object.Type}/{self.__Env_Structure.Collision_Object.Type}.urdf', 
                                      f'{self.__Env_Structure.Collision_Object.Type}_Collision', self.__Env_Structure.Collision_Object.T, self.__Env_Structure.Collision_Object.Color,
                                      self.__Env_Structure.Collision_Object.Scale, True)
-            _ = Gym.Utilities.Add_Wireframe_Cuboid(self.__Env_Structure.Collision_Object.T, 3 * [self.__Env_Structure.Collision_Object.Scale * 2.0], 
-                                                   self.__Env_Structure.Collision_Object.Color[0:3], 1.0)
+            _ = PyBullet.Utilities.Add_Wireframe_Cuboid(self.__Env_Structure.Collision_Object.T, 3 * [self.__Env_Structure.Collision_Object.Scale * 2.0], 
+                                                        self.__Env_Structure.Collision_Object.Color[0:3], 1.0)
 
     def __Set_Env_Parameters(self, enable_gui: int, camera_parameters: tp.Dict) -> None:
         """
@@ -660,10 +653,6 @@ class Robot_Cls(object):
             A function to compute the inverse kinematics (IK) solution of the individual robotic 
             structure using the numerical method.
 
-            Note:
-                The function also includes verification to determine if the TCP input position 
-                is within the search area.
-
         Args:
             (1) T [Matrix<float> 4x4]: Homogeneous transformation matrix of the desired TCP position.
             (2) ik_solver_properties [Dictionary {'delta_time': float or None, 'num_of_iteration': float, 
@@ -691,44 +680,34 @@ class Robot_Cls(object):
         if isinstance(T, (list, np.ndarray)):
             T = HTM_Cls(T, np.float64)
 
-        # Transformation of point position in X, Y, Z axes.
-        self.__P_EE.Transformation(T.p.all())
+        # A function to compute the inverse kinematics (IK) using the using the chosen numerical method.
+        (info, theta) = Kinematics.Inverse_Kinematics_Numerical(T, self.Theta, 'Levenberg-Marquardt', self.__Robot_Parameters_Str, 
+                                                                ik_solver_properties)
+            
+        # Check whether the inverse kinematics (IK) has a solution or not.
+        #   Conditions:
+        #       1\ IK solution within limits.
+        #       2\ Collision-free.
+        #       3\ No singularities.
+        if info['successful'] == True:
+            # Check whether a part of the robotic structure collides with external objects.
+            (is_external_collision, _) = Kinematics.General.Is_External_Collision(theta, self.__Robot_Parameters_Str)
 
-        # Determine if a given point is inside a search area.
-        if self.__AABB_C_search.Is_Point_Inside(self.__P_EE) == True:
-            # A function to compute the inverse kinematics (IK) using the using the chosen numerical method.
-            (info, theta) = Kinematics.Inverse_Kinematics_Numerical(T, self.Theta, 'Levenberg-Marquardt', self.__Robot_Parameters_Str, 
-                                                                    ik_solver_properties)
-                
-            # Check whether the inverse kinematics (IK) has a solution or not.
-            #   Conditions:
-            #       1\ IK solution within limits.
-            #       2\ Collision-free.
-            #       3\ No singularities.
-            if info['successful'] == True:
-                # Check whether a part of the robotic structure collides with external objects.
-                (is_external_collision, _) = Kinematics.General.Is_External_Collision(theta, self.__Robot_Parameters_Str)
-
-                if info['is_self_collision'] == False and info['is_close_singularity'] == False \
-                    and is_external_collision == False:
-                        successful = True
-                else:
-                    successful = False
+            if info['is_self_collision'] == False and info['is_close_singularity'] == False \
+                and is_external_collision == False:
+                    successful = True
             else:
                 successful = False
-
-            # Reset the absolute position of the auxiliary robot structure, which is represented as a 'ghost'.
-            #   Note:
-            #       'Red': Collision.
-            #       'Green': No collision.
-            if successful:
-                self.__Reset_Ghost_Structure(theta, enable_ghost, [0.70, 0.85, 0.60])
-            else:
-                self.__Reset_Ghost_Structure(theta, enable_ghost, [0.85, 0.60, 0.60])
-
-            return (successful, theta)
         else:
-            # Set the color of the 'ghost' structure to 'red' to indicate that something is wrong.
-            self.__Reset_Ghost_Structure(self.Theta, enable_ghost, [0.85, 0.60, 0.60])
+            successful = False
 
-            return (False, self.Theta)
+        # Reset the absolute position of the auxiliary robot structure, which is represented as a 'ghost'.
+        #   Note:
+        #       'Red': Collision.
+        #       'Green': No collision.
+        if successful:
+            self.__Reset_Ghost_Structure(theta, enable_ghost, [0.70, 0.85, 0.60])
+        else:
+            self.__Reset_Ghost_Structure(theta, enable_ghost, [0.85, 0.60, 0.60])
+
+        return (successful, theta)
