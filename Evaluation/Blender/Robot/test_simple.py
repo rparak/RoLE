@@ -13,8 +13,8 @@ import numpy as np
 import Blender.Parameters.Camera
 #       ../RoLE/Blender/Utilities
 import Blender.Utilities
-#       ../RoLE/Blender/Core
-import Blender.Core
+#       ../RoLE/Blender/Robot/Core
+import Blender.Robot.Core
 #   Robotics Library for Everyone (RoLE)
 #       ../RoLE/Parameters/Robot
 import RoLE.Parameters.Robot as Parameters
@@ -63,7 +63,7 @@ def main():
         Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
     
     # Initialization of the class to work with a robotic arm object in a Blender scene.
-    Robot_ID_0_Cls = Blender.Core.Robot_Cls(CONST_ROBOT_TYPE, CONST_PROPERTIES)
+    Robot_ID_0_Cls = Blender.Robot.Core.Robot_Cls(CONST_ROBOT_TYPE, CONST_PROPERTIES)
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
     # Reset the absolute position of the robot joints to the 'Zero'.

@@ -13,8 +13,8 @@ import numpy as np
 import Blender.Parameters.Camera
 #       ../Blender/Utilities
 import Blender.Utilities
-#       ../Blender/Core
-import Blender.Core
+#       ../Blender/Mechanism/Core
+import Blender.Mechanism.Core
 #   Robotics Library for Everyone (RoLE)
 #       ../RoLE/Parameters/Mechanism
 import RoLE.Parameters.Mechanism as Parameters
@@ -63,7 +63,7 @@ def main():
         Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
 
     # Initialization of the class to work with a mechanism object in a Blender scene.
-    Mechanism_ID_0_1_Cls = Blender.Core.Mechanism_Cls(CONST_MECHANISM_TYPE, CONST_PROPERTIES)
+    Mechanism_ID_0_1_Cls = Blender.Mechanism.Core.Mechanism_Cls(CONST_MECHANISM_TYPE, CONST_PROPERTIES)
     print(f'[INFO] Mechanism Name: {Mechanism_ID_0_1_Cls.Parameters.Name}_ID_{Mechanism_ID_0_1_Cls.Parameters.Id:03}')
     
     # Reset the absolute position of the mechanism joints to the 'Zero'.
