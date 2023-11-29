@@ -32,13 +32,13 @@ CONST_IK_PROPERTIES = {'delta_time': 0.1, 'num_of_iteration': 500,
 # Visibility of the target position as the 'ghost' of the robotic model.
 CONST_VISIBILITY_GHOST = True
 # Locate the path to the project folder.
-CONST_PROJECT_FOLDER = os.getcwd().split('PyBullet_Industrial_Robotics_Gym')[0] + 'PyBullet_Industrial_Robotics_Gym'
+CONST_PROJECT_FOLDER = os.getcwd().split('RoLE')[0] + 'RoLE'
 # The properties of the PyBullet environment.
 #   Note:
 #      ABB_IRB_14000_{L, R}_Str:
 #       'External_Base': f'{CONST_PROJECT_FOLDER}/URDFs/Robots/ABB_IRB_14000_Base/ABB_IRB_14000_Base.urdf'
 CONST_PYBULLET_ENV_PROPERTIES = {'Enable_GUI': 0, 'fps': 100, 
-                                 'External_Base': None, 'Env_ID': 1,
+                                 'External_Base': None, 'Env_ID': 0,
                                  'Camera': {'Yaw': 70.0, 'Pitch': -32.0, 'Distance': 1.3, 
                                             'Position': [0.05, -0.10, 0.06]}}
 
@@ -100,7 +100,7 @@ def main():
         PyBullet_Robot_Cls.Reset('Home')
 
         # If index 'i' is out of range, reset the counter.
-        i = i + 1 if i < C_vertices.shape[0] - 1 else 0
+        i = i + 1 if i < PyBullet_Robot_Cls.C.shape[0] - 1 else 0
 
         # Remove the specified model from the PyBullet environment.
         PyBullet_Robot_Cls.Remove_External_Object('Viewpoint_i')

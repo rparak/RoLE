@@ -34,6 +34,8 @@ import pybullet as pb
 import pybullet_data
 # Time (Time access and conversions)
 import time
+# OS (Operating system interfaces)
+import os
 # Custom Lib.: 
 #   Robotics Library for Everyone (RoLE)
 #       ../RoLE/Parameters/Mechanism
@@ -49,6 +51,8 @@ Description:
 """
 # Gravitational Constant.
 CONST_GRAVITY = 9.81
+# Locate the path to the project folder.
+CONST_PROJECT_FOLDER = os.getcwd().split('RoLE')[0] + 'RoLE'
 
 class Mechanism_Cls(object):
     """
@@ -159,9 +163,9 @@ class Mechanism_Cls(object):
         pb.configureDebugVisualizer(pb.COV_ENABLE_MOUSE_PICKING, 0)
 
         # Load a physics model of the plane.
-        plane_id = pb.loadURDF('/../../../URDFs/Primitives/Plane/Plane.urdf', globalScaling=0.20, useMaximalCoordinates=True, useFixedBase=True)
+        plane_id = pb.loadURDF(f'{CONST_PROJECT_FOLDER}/URDFs/Primitives/Plane/Plane.urdf', globalScaling=0.20, useMaximalCoordinates=True, useFixedBase=True)
         #   Change the texture of the loaded object.
-        pb.changeVisualShape(plane_id, -1, textureUniqueId=pb.loadTexture('/../../../Textures/Plane.png'))
+        pb.changeVisualShape(plane_id, -1, textureUniqueId=pb.loadTexture(f'{CONST_PROJECT_FOLDER}/Textures/Plane.png'))
         pb.changeVisualShape(plane_id, -1, rgbaColor=[0.55, 0.55, 0.55, 0.95])
 
     @property

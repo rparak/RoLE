@@ -28,7 +28,7 @@ CONST_IK_PROPERTIES = {'delta_time': 0.1, 'num_of_iteration': 500,
 # Visibility of the target position as the 'ghost' of the robotic model.
 CONST_VISIBILITY_GHOST = True
 # Locate the path to the project folder.
-CONST_PROJECT_FOLDER = os.getcwd().split('PyBullet_Industrial_Robotics_Gym')[0] + 'PyBullet_Industrial_Robotics_Gym'
+CONST_PROJECT_FOLDER = os.getcwd().split('RoLE')[0] + 'RoLE'
 # The properties of the PyBullet environment.
 #   Note:
 #      ABB_IRB_14000_{L, R}_Str:
