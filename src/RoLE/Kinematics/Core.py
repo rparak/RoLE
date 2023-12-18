@@ -641,7 +641,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         Description:
             Calculate the numerical inverse kinematics using linear interpolation between the actual and desired positions defined by the time 't.'
         """
-        iteration = 0.0; th_i = theta_0.copy(); th_i_tmp = theta_0.copy(); T = HTM_Cls(T_0.all(), np.float64)
+        iteration = 1; th_i = theta_0.copy(); th_i_tmp = theta_0.copy(); T = HTM_Cls(T_0.all(), np.float64)
         for _, t_i in enumerate(t):
             # Obtain the interpolation (Lerp, Slerp) between the given positions and orientations.
             p_i = RoLE.Interpolation.Utilities.Lerp('Explicit', p_0, p_1, t_i)

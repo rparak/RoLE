@@ -18,7 +18,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
+CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
 # Number of randomly generated samples.
 CONST_SIZE = 1000
 
@@ -76,14 +76,14 @@ def main():
     Description:
         Evaluation of the correctness of calculations.
     """
-    num_of_decimals = 2
+    tolerance = 2
     for _, th in enumerate(theta_rand):
         T_Standard = np.round(np.array(RoLE.Kinematics.Core.Forward_Kinematics(th, 'Standard', Robot_Str)[1].all(), dtype=np.float64), 
-                              num_of_decimals)
+                              tolerance)
         T_Modified = np.round(np.array(RoLE.Kinematics.Core.Forward_Kinematics(th, 'Modified', Robot_Str)[1].all(), dtype=np.float64), 
-                              num_of_decimals)
+                              tolerance)
         T_Fast = np.round(np.array(RoLE.Kinematics.Core.Forward_Kinematics(th, 'Fast', Robot_Str)[1].all(), dtype=np.float64), 
-                          num_of_decimals)
+                          tolerance)
 
         if (np.array_equal(T_Standard, T_Modified) and np.array_equal(T_Modified, T_Fast)) == False:
            # Warning: Something wrong!

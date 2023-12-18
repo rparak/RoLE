@@ -287,6 +287,25 @@ class Robot_Cls(object):
         return theta_out
     
     @property
+    def Theta_v(self) -> tp.List[float]:
+        """
+        Description:
+            Get the velocity of the robot's joints.
+
+        Returns:
+            (1) parameter [Vector<float> 1xn]: Current velocities in radians / meters per second.
+                                                Note:
+                                                    Where n is the number of joints.
+        """
+
+        theta_v_out = np.zeros(self.__Robot_Parameters_Str.Theta.Zero.size, 
+                               dtype=np.float64)
+        for i, th_index in enumerate(self.__theta_index):
+            theta_v_out[i] = pb.getJointState(self.__robot_id, th_index)[1]
+
+        return theta_v_out
+    
+    @property
     def T_EE(self) -> tp.List[tp.List[float]]:
         """
         Description:
@@ -298,6 +317,27 @@ class Robot_Cls(object):
                 
         return Kinematics.Forward_Kinematics(self.Theta, 'Fast', self.__Robot_Parameters_Str)[1]
 
+    @property
+    def T_EE_v(self):
+        """
+        Description:
+            Get the linear and angular velocity of the robot's end-effector.
+
+        Returns:
+            (1) paramter [Vector<float> 1x6]: The linear (Vector<float> 1x3) and angular (Vector<float> 1x3) velocity 
+                                              of the robot's end effector.
+        """
+
+        # Get the matrix of the geometric Jacobian.
+        J = Kinematics.Get_Geometric_Jacobian(self.Theta, self.__Robot_Parameters_Str)
+        #   Linear Velocity of the End-Effector.
+        J_P = J[0:3, 0::]
+        #   Angular Velocity of the End-Effector.
+        J_O = J[3::, 0::]
+
+        return np.concatenate(((J_P @ self.Theta_v).flatten(), 
+                               (J_O @ self.Theta_v).flatten()))
+    
     @property
     def C(self):
         """

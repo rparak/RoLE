@@ -3,8 +3,6 @@ import sys
 #   Add access if it is not in the system path.
 if '../../../' + 'src' not in sys.path:
     sys.path.append('../../../' + 'src')
-# Numpy (Array computing) [pip3 install numpy]
-import numpy as np
 # Time (Time access and conversions)
 import time
 # Custom Lib.:

@@ -7,6 +7,8 @@ if '../../../' + 'src' not in sys.path:
 import numpy as np
 # OS (Operating system interfaces)
 import os
+# Time (Time access and conversions)
+import time
 # Custom Lib.:
 #   Robotics Library for Everyone (RoLE)
 #       ../RoLE/Parameters/Robot
@@ -31,10 +33,12 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 #   Name of the numerical method to be used to calculate the IK solution.
 #       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
 #       'Levenberg-Marquardt'
-CONST_NIK_METHOD = 'Newton-Raphson'
+CONST_NIK_METHOD = 'Jacobian-Transpose'
 #   The properties of the inverse kinematics solver.
+#       'tolerance': 1e-03 -> 'Jacobian-Transpose'
+#       'tolerance': 1e-30 -> 'Newton-Raphson', 'Gauss-Newton', and 'Levenberg-Marquardt'
 CONST_IK_PROPERTIES = {'delta_time': 0.1, 'num_of_iteration': 500, 
-                       'tolerance': 1e-10}
+                       'tolerance': 1e-30}
 
 def main():
     """
@@ -48,13 +52,13 @@ def main():
     """
     
     # Locate the path to the project folder.
-    project_folder = os.getcwd().split('Open_Industrial_Robotics')[0] + 'Open_Industrial_Robotics'
+    project_folder = os.getcwd().split('RoLE')[0] + 'RoLE'
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
     # The name of the path where the file will be saved.
-    file_path = f'{project_folder}/src/Data/Inverse_Kinematics/{Robot_Str.Name}'
+    file_path = f'{project_folder}/Data/Inverse_Kinematics/{Robot_Str.Name}'
 
     # Remove the '*.txt' file if it already exists.
     for _, file_i in enumerate([f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP_Desired',
@@ -103,12 +107,18 @@ def main():
         #       Theta --> T
         T_i = RoLE.Kinematics.Core.Forward_Kinematics(theta_arr_i, 'Fast', Robot_Str)[1]
 
+        # Start time.
+        t_0 = np.float64(time.time())
+
         # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
         #   IK:
         #       Theta <-- T
         (info, theta_i) = RoLE.Kinematics.Core.Inverse_Kinematics_Numerical(T_i, theta_0, CONST_NIK_METHOD, Robot_Str, 
                                                                            CONST_IK_PROPERTIES)
         
+        # Stop time.
+        t = np.float64(time.time() - t_0)
+
         # Check the calculation.
         if info["successful"] == False:
             print(f'[WARNING] The calculation of IK stopped in iteration {i}.')
@@ -129,9 +139,14 @@ def main():
         File_IO.Save(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Error', [info['error']['position'], 
                                                                                    info['error']['orientation'],
                                                                                    info['quadratic_error']], 'txt', ',')
+        File_IO.Save(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Iteration', [info["iteration"]], 'txt', ',')
+        File_IO.Save(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Time', [t], 'txt', ',')
         
         # Obtain the last absolute position of the joint.
         theta_0 = theta_i.copy()
+
+        # Release.
+        t_0 = 0.0; t = 0.0
 
     # Display information.
     print(f'[INFO] The files have been successfully saved to the folder:')

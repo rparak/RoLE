@@ -7,6 +7,8 @@ if '../../../' + 'src' not in sys.path:
 import numpy as np
 # OS (Operating system interfaces)
 import os
+# Time (Time access and conversions)
+import time
 # Custom Lib.:
 #   Robotics Library for Everyone (RoLE)
 #       ../RoLE/Parameters/Robot
@@ -44,13 +46,13 @@ def main():
     """
     
     # Locate the path to the project folder.
-    project_folder = os.getcwd().split('Open_Industrial_Robotics')[0] + 'Open_Industrial_Robotics'
+    project_folder = os.getcwd().split('RoLE')[0] + 'RoLE'
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
     # The name of the path where the file will be saved.
-    file_path = f'{project_folder}/src/Data/Inverse_Kinematics/{Robot_Str.Name}'
+    file_path = f'{project_folder}/Data/Inverse_Kinematics/{Robot_Str.Name}'
 
     # Remove the '*.txt' file if it already exists.
     for _, file_i in enumerate([f'{file_path}/Method_Analytical_IK_TCP_Desired', 
@@ -93,10 +95,16 @@ def main():
         #       Theta --> T
         T_i = RoLE.Kinematics.Core.Forward_Kinematics(theta_arr_i, 'Fast', Robot_Str)[1]
         
+        # Start time.
+        t_0 = np.float64(time.time())
+
         # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
         #   IK:
         #       Theta <-- T
         (info, theta_i) = RoLE.Kinematics.Core.Inverse_Kinematics_Analytical(T_i, theta_0, Robot_Str, 'Best')
+
+        # Stop time.
+        t = np.float64(time.time() - t_0)
 
         # Obtain the translation and rotation part from the desired/predicted homogeneous 
         # transformation matrix.
@@ -112,9 +120,13 @@ def main():
         File_IO.Save(f'{file_path}/Method_Analytical_IK_Absolute_Joint_Positions', theta_i, 'txt', ',')
         File_IO.Save(f'{file_path}/Method_Analytical_IK_Error', [info['error']['position'], 
                                                                  info['error']['orientation']], 'txt', ',')
+        File_IO.Save(f'{file_path}/Method_Analytical_IK_Time', [t], 'txt', ',')
         
         # Obtain the last absolute position of the joint.
         theta_0 = theta_i.copy()
+
+        # Release.
+        t_0 = 0.0; t = 0.0
 
     # Display information.
     print(f'[INFO] The files have been successfully saved to the folder:')

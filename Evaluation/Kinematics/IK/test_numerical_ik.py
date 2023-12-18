@@ -22,7 +22,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_14000_R_Str
+CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Numerical IK Parameters.
 #   Name of the numerical method to be used to calculate the IK solution.
 #       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
@@ -55,7 +55,7 @@ def main():
     #   IK:
     #       Theta <-- T
     (info, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Numerical(T_1, abs_j_pos_0, CONST_NIK_METHOD, Robot_Str, 
-                                                                     CONST_IK_PROPERTIES)
+                                                                      CONST_IK_PROPERTIES)
     
     t = time.time() - t_0
     print(f'[INFO] Time: {t:0.05f} in seconds.')
