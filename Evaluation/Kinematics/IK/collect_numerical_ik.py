@@ -114,7 +114,7 @@ def main():
         #   IK:
         #       Theta <-- T
         (info, theta_i) = RoLE.Kinematics.Core.Inverse_Kinematics_Numerical(T_i, theta_0, CONST_NIK_METHOD, Robot_Str, 
-                                                                           CONST_IK_PROPERTIES)
+                                                                            CONST_IK_PROPERTIES)
         
         # Stop time.
         t = np.float64(time.time() - t_0)
