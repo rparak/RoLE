@@ -42,7 +42,7 @@ def main():
     Robot_Str = CONST_ROBOT_TYPE
 
     # The name of the path where the file will be saved.
-    file_path = f'{project_folder}/src/Data/Inverse_Kinematics/{Robot_Str.Name}'
+    file_path = f'{project_folder}/Data/Inverse_Kinematics/{Robot_Str.Name}'
 
     # Set the parameters for the scientific style.
     plt.style.use('science')

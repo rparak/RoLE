@@ -45,14 +45,14 @@ def main():
     Robot_Str = CONST_ROBOT_TYPE
 
     # The name of the path where the file will be saved.
-    file_path = f'{project_folder}/src/Data/Inverse_Kinematics/{Robot_Str.Name}'
+    file_path = f'{project_folder}/Data/Inverse_Kinematics/{Robot_Str.Name}'
 
     # Set the parameters for the scientific style.
     plt.style.use('science')
 
     # Read data from the file.
     data = File_IO.Load(f'{file_path}/Method_Analytical_IK_Error', 'txt', ',')
-
+    
     # Get the normalized time.
     t_hat = np.linspace(0.0, 1.0, len(data[:, 0]))
 
@@ -63,17 +63,13 @@ def main():
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(t_hat, data_i, 'x', color='#8d8d8d', linewidth=3.0, markersize=8.0, markeredgewidth=3.0, markerfacecolor='#8d8d8d', label=label[i])
+        ax.plot(t_hat, data_i, '.', color='#8d8d8d', alpha=0.5, markersize=8.0, markeredgewidth=3.0, markerfacecolor='#8d8d8d', label=label[i])
         ax.plot(t_hat, [np.mean(data_i)] * t_hat.size, '--', color='#8d8d8d', linewidth=1.5, label=f'Mean Absolute Error (MAE)')
 
         # Set parameters of the graph (plot).
         ax.set_title(f'{title[i]}', fontsize=25, pad=25.0)
         #   Set the x ticks.
         ax.set_xticks(np.arange(np.min(t_hat) - 0.1, np.max(t_hat) + 0.1, 0.1))
-        #   Set the y ticks.
-        tick_y_tmp = (np.max(data_i) - np.min(data_i))/10.0
-        tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
-        ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
         #   Label
         ax.set_xlabel(r'Normalized time $\hat{t}$ in the range of [0.0, 1.0]', fontsize=15, labelpad=10)
         ax.set_ylabel(f'Absolute error {label[i]} in millimeters', fontsize=15, labelpad=10) 
@@ -102,6 +98,6 @@ def main():
         else:
             # Show the result.
             plt.show()
-
+            
 if __name__ == "__main__":
     sys.exit(main())
