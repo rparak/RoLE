@@ -31,9 +31,9 @@ def Get_Absolute_Joint_Positions(name: str) -> tp.Tuple[tp.List[float],
     """
 
     return {
-        'Universal_Robots_UR3': (Mathematics.Degree_To_Radian(np.array([110.0, -125.0, 85.0, -70.0,-50.0, -45.0], 
+        'Universal_Robots_UR3': (Mathematics.Degree_To_Radian(np.array([-110.0, -55.0, -85.0, -105.0, 80.0, 45.0], 
                                                                        dtype=np.float64)),
-                                 Mathematics.Degree_To_Radian(np.array([40.0, -55.0, 85.0, -80.0, -110.0, 15.0], 
+                                 Mathematics.Degree_To_Radian(np.array([-60.0, -95.0, -115.0, -10.0, 40.0, 15.0], 
                                                                        dtype=np.float64))),
         'ABB_IRB_120': (Mathematics.Degree_To_Radian(np.array([-60.0, -20.0, 25.0, 40.0, 50.0, -45.0], 
                                                               dtype=np.float64)),

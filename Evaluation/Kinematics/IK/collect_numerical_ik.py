@@ -28,7 +28,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
+CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
 # Numerical IK Parameters.
 #   Name of the numerical method to be used to calculate the IK solution.
 #       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
@@ -38,7 +38,7 @@ CONST_NIK_METHOD = 'Jacobian-Transpose'
 #       'tolerance': 1e-03 -> 'Jacobian-Transpose'
 #       'tolerance': 1e-30 -> 'Newton-Raphson', 'Gauss-Newton', and 'Levenberg-Marquardt'
 CONST_IK_PROPERTIES = {'delta_time': 0.1, 'num_of_iteration': 500, 
-                       'tolerance': 1e-30}
+                       'tolerance': 1e-03}
 
 def main():
     """
@@ -81,7 +81,7 @@ def main():
     #   IK:
     #       Theta <-- T
     (info, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Numerical(T_1, abs_j_pos_0, CONST_NIK_METHOD, Robot_Str, 
-                                                                     CONST_IK_PROPERTIES)
+                                                                      CONST_IK_PROPERTIES)
 
     # Check the calculation.
     if info["successful"] == False:
@@ -154,6 +154,8 @@ def main():
     print(f'[INFO] >> {file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP_Predicted.txt')
     print(f'[INFO] >> {file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Absolute_Joint_Positions.txt')
     print(f'[INFO] >> {file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Error.txt')
+    print(f'[INFO] >> {file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Iteration.txt')
+    print(f'[INFO] >> {file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Time.txt')
 
 if __name__ == '__main__':
     sys.exit(main())

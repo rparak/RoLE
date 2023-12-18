@@ -134,6 +134,7 @@ def main():
     print(f'[INFO] >> {file_path}/Method_Analytical_IK_TCP_Predicted.txt')
     print(f'[INFO] >> {file_path}/Method_Analytical_IK_Absolute_Joint_Positions.txt')
     print(f'[INFO] >> {file_path}/Method_Analytical_IK_Error.txt')
+    print(f'[INFO] >> {file_path}/Method_Analytical_IK_Time.txt')
     
 if __name__ == '__main__':
     sys.exit(main())
