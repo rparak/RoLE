@@ -64,7 +64,9 @@ def main():
     for _, file_i in enumerate([f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP_Desired',
                                 f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP_Predicted',
                                 f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Absolute_Joint_Positions',
-                                f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Error']):
+                                f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Error',
+                                f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Iteration',
+                                f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Time']):
       if os.path.isfile(f'{file_i}.txt'):
           os.remove(f'{file_i}.txt')
 

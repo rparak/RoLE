@@ -23,18 +23,18 @@ Description:
 """
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
-# Save the data to a file.
-CONST_SAVE_DATA = False
 
 def main():
     """
     Description:
-        A program to visualize the absolute error in trajectory calculation using the analytical 
+        A program to compare the absolute error in trajectory calculation using the analytical 
         method of inverse kinematics.
 
+        The comparison is tested on trajectories generated using a multi-axis polynomial profile.
+
         Note:
-            The program for the generation of the absolute errors from the calculation 
-            can be found here.
+            The program for the generation of the absolute/quadratic errors
+            can be found here:
                 ../IK/collect_analytical_ik.py
     """
 

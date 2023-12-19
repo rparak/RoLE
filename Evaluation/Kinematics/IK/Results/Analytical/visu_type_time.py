@@ -32,7 +32,17 @@ CONST_METHOD = ['Analytical', 'Newton-Raphson', 'Gauss-Newton',
 
 def main():
     """
-        ...
+    Description:
+        A program to compare the calculation time for each successfully achieved goal within trajectory 
+        calculation using both analytical method and numerical method of inverse kinematics.
+
+        The comparison is tested on trajectories generated using a multi-axis polynomial profile.
+
+        Note:
+            The program for the generation of the calculation time 
+            can be found here:
+                ../IK/collect_analytical_ik.py
+                ../IK/collect_numerical_ik.py
     """
 
     # Locate the path to the project folder.

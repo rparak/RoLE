@@ -26,21 +26,19 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Name of the numerical methods used to calculate the IK solution.
 CONST_NIK_METHOD = ['Newton-Raphson', 'Gauss-Newton',
                     'Levenberg-Marquardt']
-# Save the data to a file.
-CONST_SAVE_DATA = False
 
 def main():
     """
     Description:
-        A program to visualize the absolute/quadratic error in trajectory calculation using the numerical 
-        method of inverse kinematics.
+        A program to compare the absolute/quadratic error in trajectory calculation using the numerical 
+        method of inverse kinematics. 
+
+        The comparison is tested on trajectories generated using a multi-axis polynomial profile.
 
         Note:
-            The program for the generation of the absolute/quadratic errors from the calculation 
-            can be found here.
+            The program for the generation of the absolute/quadratic errors
+            can be found here:
                 ../IK/collect_numerical_ik.py
-
-        Comparison ....
     """
 
     # Locate the path to the project folder.

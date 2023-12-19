@@ -32,7 +32,15 @@ CONST_SAVE_DATA = False
 def main():
     """
     Description:
-        ...
+        The program to visualize both the desired and predicted homogeneous transformation matrix of the
+        robot's end-effector in the following format:
+            Position: 
+                x, y, and z in meters
+            Orientation(quaternion): 
+                q_w, q_x, q_y, and q_z in [-]
+
+        The observation is tested on trajectories of the absolute positions of the robot's joints, generated 
+        using a multi-axis polynomial profile.
     """
 
     # Locate the path to the project folder.

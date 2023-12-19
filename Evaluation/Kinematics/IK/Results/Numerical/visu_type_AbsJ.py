@@ -26,13 +26,19 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Name of the numerical methods used to calculate the IK solution.
 CONST_NIK_METHOD = ['Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton',
                     'Levenberg-Marquardt']
-# Save the data to a file.
-CONST_SAVE_DATA = False
 
 def main():
     """
     Description:
-        ...
+        The program to visualize the predicted absolute positions of the robot's 
+        joints in the following format:
+            Joints:
+                theta_0 .. theta_n,
+
+                where n is equal to the number of joints of an individual robotic structure.
+
+        The observation is tested on trajectories of the absolute positions of the robot's joints, generated 
+        using a multi-axis polynomial profile.
     """
 
     # Locate the path to the project folder.
