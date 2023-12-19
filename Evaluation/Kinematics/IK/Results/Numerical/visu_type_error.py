@@ -85,7 +85,6 @@ def main():
         # Set the properties of the box plot.
         for j, (color_face_i, color_edge_i) in enumerate(zip(['#afaf98', '#98afa7', '#88a1b6'], 
                                                              ['#dbdbbf', '#bfdbd1', '#abcae4'])):
-            print(j)
             #   Boxes.
             plt.setp(box_plot_out['boxes'][j], color=color_edge_i, facecolor=color_face_i)
             #   Whiskers.
@@ -124,6 +123,8 @@ def main():
 
         # Set parameters of the graph (plot).
         ax.set_title(f'{title[i]}', fontsize=25, pad=25.0)
+        # ...
+        #ax.set_ylim(-1e-30, 1e-30)
         #   Label
         ax.set_xlabel(r'Numerical Inverse Kinematics (IK) Method', fontsize=15, labelpad=10)
         ax.set_ylabel(f'{error_name[i]} error {label[i]} in millimeters', fontsize=15, labelpad=10) 
