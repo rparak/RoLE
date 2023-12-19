@@ -64,7 +64,7 @@ def main():
     iteration = []
     for i, data_i in enumerate(np.array(data, dtype=np.float64)):
         iteration.append(data_i[:, 0])
-
+        
         # Display the results as the values shown in the console.
         print(f'[INFO] Iteration: {i}')
         print(f'[INFO] Method: {CONST_NIK_METHOD[i]}')

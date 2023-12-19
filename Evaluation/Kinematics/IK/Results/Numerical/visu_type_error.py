@@ -106,8 +106,6 @@ def main():
 
         # Set parameters of the graph (plot).
         ax.set_title(f'{title[i]}', fontsize=25, pad=25.0)
-        # ...
-        #ax.set_ylim(-1e-30, 1e-30)
         #   Label
         ax.set_xlabel(r'Numerical Inverse Kinematics (IK) Method', fontsize=15, labelpad=10)
         ax.set_ylabel(f'{label[i]}', fontsize=15, labelpad=10) 
