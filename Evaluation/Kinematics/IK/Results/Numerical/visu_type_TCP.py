@@ -65,12 +65,12 @@ def main():
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(t_hat, data_desired_i, '.-', color='#d0d0d0', linewidth=1.0, markerfacecolor = '#d0d0d0', 
+        ax.plot(t_hat, data_desired_i, '-', color='#8d8d8d', linewidth=1.5, markerfacecolor='#8d8d8d', 
                 label=f'Desired data')
         
         for j, (data_i, c_i) in enumerate(zip(np.array(data, dtype=np.float64),
                                               ['#a64d79', '#dbdbbf', '#bfdbd1', '#abcae4'])):
-            ax.plot(t_hat, data_i[:, i], '.-', color=c_i, linewidth=1.0, markerfacecolor=c_i, 
+            ax.plot(t_hat, data_i[:, i], '--', color=c_i, linewidth=1.0, markerfacecolor=c_i, 
                     label=f'{CONST_NIK_METHOD[j]} Method: Predicted data')
             
             # Set parameters of the graph (plot).
@@ -92,16 +92,8 @@ def main():
             # Show the labels (legends) of the graph.
             ax.legend(legend.values(), legend.keys(), fontsize=10.0)
 
-        if CONST_SAVE_DATA == True:
-            # Set the full scree mode.
-            plt.get_current_fig_manager().full_screen_toggle()
-
-            # Save the results.
-            plt.savefig(f'{project_folder}/images/IK/{Robot_Str.Name}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP.png', 
-                        format='png', dpi=300)
-        else:
-            # Show the result.
-            plt.show()
+        # Show the result.
+        plt.show()
 
 if __name__ == "__main__":
     sys.exit(main())

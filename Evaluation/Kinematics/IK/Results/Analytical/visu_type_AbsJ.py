@@ -56,7 +56,7 @@ def main():
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(t_hat, data_i, '.-', color='#d0d0d0', linewidth=1.0, markersize = 3.0, 
+        ax.plot(t_hat, data_i, '--', color='#8d8d8d', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'Analytical Method')
 
         # Set parameters of the graph (plot).
@@ -79,16 +79,8 @@ def main():
         # Show the labels (legends) of the graph.
         ax.legend(legend.values(), legend.keys(), fontsize=10.0)
 
-        if CONST_SAVE_DATA == True:
-            # Set the full scree mode.
-            plt.get_current_fig_manager().full_screen_toggle()
-
-            # Save the results.
-            plt.savefig(f'{project_folder}/images/IK/{Robot_Str.Name}/Method_Analytical_IK_Absolute_Joint_Positions.png', 
-                        format='png', dpi=300)
-        else:
-            # Show the result.
-            plt.show()
+        # Show the result.
+        plt.show()
 
 if __name__ == "__main__":
     sys.exit(main())

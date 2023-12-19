@@ -72,7 +72,7 @@ def main():
         ax.set_xticks(np.arange(np.min(t_hat) - 0.1, np.max(t_hat) + 0.1, 0.1))
         #   Label
         ax.set_xlabel(r'Normalized time $\hat{t}$ in the range of [0.0, 1.0]', fontsize=15, labelpad=10)
-        ax.set_ylabel(f'Absolute error {label[i]} in millimeters', fontsize=15, labelpad=10) 
+        ax.set_ylabel(f'{label[i]}', fontsize=15, labelpad=10) 
         #   Set parameters of the visualization.
         ax.grid(which='major', linewidth = 0.15, linestyle = '--')
         # Get handles and labels for the legend.
@@ -84,20 +84,12 @@ def main():
 
         # Display the results as the values shown in the console.
         print(f'[INFO] Iteration: {i}')
-        print(f'[INFO] max(label{i}) = {np.max(data_i)} in mm')
-        print(f'[INFO] min(label{i}) = {np.min(data_i)} in mm')
+        print(f'[INFO] max(label{i}) = {np.max(data_i)} in meters')
+        print(f'[INFO] min(label{i}) = {np.min(data_i)} in meters')
         print(f'[INFO] MAE = {np.mean(data_i)} in mm')
 
-        if CONST_SAVE_DATA == True:
-            # Set the full scree mode.
-            plt.get_current_fig_manager().full_screen_toggle()
-
-            # Save the results.
-            plt.savefig(f'{project_folder}/images/IK/{Robot_Str.Name}/Method_Analyrtical_IK_Error_{label[i]}.png', 
-                        format='png', dpi=300)
-        else:
-            # Show the result.
-            plt.show()
+        # Show the result.
+        plt.show()
             
 if __name__ == "__main__":
     sys.exit(main())
