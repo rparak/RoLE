@@ -577,7 +577,7 @@ def Add_Viewpoints(viewpoint_name: str, T: tp.List[tp.List[tp.List[float]]]) -> 
         
     Args:
         (1) viewpoint_name [string]: Name of the main object.
-        (2) T [Matrix<float> nx(4x4)]: Configuration homogeneous matrix of each joint.
+        (2) T [Matrix<float> nx(4x4)]: Configuration homogeneous transformation matrix of each joint.
                                        Note:
                                         Where n is the number of joints.
     """

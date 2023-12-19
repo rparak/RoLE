@@ -283,7 +283,7 @@ class URDF_Generator_Cls(object):
         # Get the URDF configuration of the base (id - 0) of the robotic structure.
         self.__configuration['Base_0'] = self.__Configure_Base_0()
 
-        # Find the zero configuration of the homogeneous matrix of each joint using the modified 
+        # Find the zero configuration of the homogeneous transformation matrix of each joint using the modified 
         # forward kinematics calculation method.
         self.__Robot_Parameters_Str.T.Zero_Cfg = RoLE.Kinematics.Core.Get_Individual_Joint_Configuration(self.__Robot_Parameters_Str.Theta.Zero, 'Modified', 
                                                                                                         self.__Robot_Parameters_Str)[1]

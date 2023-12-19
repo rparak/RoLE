@@ -167,7 +167,7 @@ def Is_External_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameter
     # Transformation of the base collider according to the input homogeneous transformation matrix.
     Base_Collider[0].Transformation(Robot_Parameters_Str.T.Base)
 
-    # Obtain the individual (theta) configuration of the homogeneous matrix of each joint using forward kinematics
+    # Obtain the individual (theta) configuration of the homogeneous transformation matrix of each joint using forward kinematics
     T_Arr = RoLE.Kinematics.Core.Get_Individual_Joint_Configuration(theta, 'Modified', Robot_Parameters_Str)[1]
 
     # Transformation of the joint colliders according to the input homogeneous transformation matrix.
@@ -218,7 +218,7 @@ def Is_Self_Collision(theta: tp.List[float], Robot_Parameters_Str: Parameters.Ro
     # Transformation of the base collider according to the input homogeneous transformation matrix.
     Base_Collider[0].Transformation(Robot_Parameters_Str.T.Base)
 
-    # Obtain the individual (theta) configuration of the homogeneous matrix of each joint using forward kinematics
+    # Obtain the individual (theta) configuration of the homogeneous transformation matrix of each joint using forward kinematics
     T_Arr = RoLE.Kinematics.Core.Get_Individual_Joint_Configuration(theta, 'Modified', Robot_Parameters_Str)[1]
 
     # Transformation of the joint colliders according to the input homogeneous transformation matrix.

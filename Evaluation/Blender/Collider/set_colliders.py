@@ -64,7 +64,7 @@ def main():
     # Set the collision object transformation of the base robot.
     Blender.Utilities.Set_Object_Transformation(f'Base_Collider_{Robot_Str.Name}_ID_{Robot_Str.Id:03}', Robot_Str.T.Base)
     
-    # Get the configuration of the homogeneous matrix of each joint using forward kinematics.
+    # Get the configuration of the homogeneous transformation matrix of each joint using forward kinematics.
     #   Note:
     #       The absolute position of the joints must be the same as in the Robot_Cls reset function at the top.
     T_Arr = RoLE.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]

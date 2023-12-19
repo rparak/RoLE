@@ -32,7 +32,7 @@ def main():
 
     """
     Description:
-        Find the zero configuration of the homogeneous matrix of each joint using the modified 
+        Find the zero configuration of the homogeneous transformation matrix of each joint using the modified 
         forward kinematics calculation method.
     """
     Robot_Str.T.Zero_Cfg = RoLE.Kinematics.Core.Get_Individual_Joint_Configuration(Robot_Str.Theta.Zero, 'Modified', Robot_Str)[1]
@@ -42,9 +42,9 @@ def main():
         p = np.round(T_i.p.all(), 5) + [0.0, 0.0, 0.0]; Euler_Angles = np.round(T_i.Get_Rotation('ZYX').all(), 5) + [0.0, 0.0, 0.0]
         Quaternions = np.round(T_i.Get_Rotation('QUATERNION').all(), 5) + [0.0, 0.0, 0.0, 0.0]
 
-        # Zero configuration of the homogeneous matrix in the current episode.
+        # Zero configuration of the homogeneous transformation matrix in the current episode.
         #   Joint_{i}: p, R (Euler Angles and Quaternions)
-        print(f'[INFO] Homogeneous matrix T_{i} in iteration {i}:')
+        print(f'[INFO] Homogeneous transformation matrix T_{i} in iteration {i}:')
         print(f'[INFO] >> p: [{p[0]:.05f}, {p[1]:.05f}, {p[2]:.05f}]')
         print(f'[INFO] >> Euler Angles: [{Euler_Angles[0]:.05f}, {Euler_Angles[1]:.05f}, {Euler_Angles[2]:.05f}]')
         print(f'[INFO] >> Quaternions: [{Quaternions[0]:.05f}, {Quaternions[1]:.05f}, {Quaternions[2]:.05f}, {Quaternions[3]:.05f}]')
