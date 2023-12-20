@@ -18,6 +18,8 @@ import Blender.Robot.Core
 #   Robotics Library for Everyone (RoLE)
 #       ../RoLE/Parameters/Robot
 import RoLE.Parameters.Robot as Parameters
+#       ../RoLE/Transformation/Core
+from RoLE.Transformation.Core import Homogeneous_Transformation_Matrix_Cls as HTM_Cls
 
 """
 Description:
@@ -42,6 +44,9 @@ CONST_CAMERA_TYPE = Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 # The properties of the robot structure in the Blender environment.
 CONST_PROPERTIES = {'fps': 100, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
                                                'Workspace': False, 'Ghost': False}}
+# If the value is 'True', the homogeneous transformation matrix of the robot 
+# base will be obtained from the Blender environment.
+CONST_USE_BLENDER_ROBOT_BASE = False
 # Animation stop(t_0), start(t_1) time in seconds.
 CONST_T_0 = 0.0
 CONST_T_1 = 2.0
@@ -62,8 +67,29 @@ def main():
     if Blender.Utilities.Object_Exist('Camera'):
         Blender.Utilities.Set_Camera_Properties('Camera', CONST_CAMERA_TYPE)
     
+    # Initialization of the structure of the main parameters of the robot.
+    Robot_Str = CONST_ROBOT_TYPE
+
+    # Modification of the robot base.
+    if CONST_USE_BLENDER_ROBOT_BASE == True:
+        if 'ABB_IRB_14000' in Robot_Str.Name:
+            Robot_Str.T.Base @= HTM_Cls(bpy.data.objects['ABB_IRB_14000_ID_001'].matrix_basis, 
+                                    np.float64)
+        else:
+            Robot_Str.T.Base = HTM_Cls(bpy.data.objects[f'{Robot_Str.Parameters.Name}_ID_{Robot_Str.Parameters.Id:03}'].matrix_basis, 
+                                    np.float64)  
+                                    
+    # Modification of the robot base.
+    if CONST_USE_BLENDER_ROBOT_BASE == True:
+        if 'ABB_IRB_14000' in Robot_Str.Name:
+            Robot_Str.T.Base @= HTM_Cls(bpy.data.objects['ABB_IRB_14000_ID_001'].matrix_basis, 
+                                    np.float64)
+        else:
+            Robot_Str.T.Base = HTM_Cls(bpy.data.objects[f'{Robot_Str.Parameters.Name}_ID_{Robot_Str.Parameters.Id:03}'].matrix_basis, 
+                                    np.float64)  
+
     # Initialization of the class to work with a robotic arm object in a Blender scene.
-    Robot_ID_0_Cls = Blender.Robot.Core.Robot_Cls(CONST_ROBOT_TYPE, CONST_PROPERTIES)
+    Robot_ID_0_Cls = Blender.Robot.Core.Robot_Cls(Robot_Str, CONST_PROPERTIES)
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
     # Reset the absolute position of the robot joints to the 'Zero'.
