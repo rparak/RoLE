@@ -25,11 +25,14 @@ import RoLE.Kinematics.Core
 
 """
 Description:
-    Open EPSON_LS3_B401S.blend from the Blender folder and copy + paste this script and run it.
+    Open {robot_name}.blend from the Blender folder and copy + paste this script and run it.
 
     Terminal:
         $ cd Documents/GitHub/RoLE/Blender/Robot
-        $ blender EPSON_LS3_B401S.blend
+        $ blender {robot_name}.blend
+
+    Note:
+        Where the variable 'robot_name' is the name of the controlled robot to be used.
 """
 
 """
@@ -43,15 +46,21 @@ CONST_CAMERA_TYPE = Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 # The properties of the robot structure in the Blender environment.
 CONST_PROPERTIES = {'fps': 100, 'visibility': {'Viewpoint_EE': False, 'Colliders': False, 
                                                'Workspace': False, 'Ghost': False}}
+# Numerical IK Parameters.
+#   Name of the numerical method to be used to calculate the IK solution.
+#       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
+#       'Levenberg-Marquardt'
+CONST_NIK_METHOD = 'Levenberg-Marquardt'
+#   The properties of the inverse kinematics solver.
+#       'tolerance': 1e-03 -> 'Jacobian-Transpose'
+#       'tolerance': 1e-30 -> 'Newton-Raphson', 'Gauss-Newton', and 'Levenberg-Marquardt'
+CONST_IK_PROPERTIES = {'delta_time': 0.1, 'num_of_iteration': 500, 
+                       'tolerance': 1e-30}
 
 def main():
     """
     Description:
-        A program to calculate the inverse kinematics (IK) of the RRPR robotic structure (called SCARA) using an analytical method.
-
-        Two methods can be used to obtain IK solutions: 'All' or 'Best'.
-            1\ 'All': Obtain the all possible solutions.
-            2\ 'Best': Automatically obtain the best solution.
+        A program to calculate the inverse kinematics (IK) of the individual robotic structure using a numerical method.
 
         Note:
             The position and orientation of the 'Viewpoint' object, which is the input to the inverse kinematics 
@@ -88,22 +97,24 @@ def main():
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
-    (info, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_ID_0_Cls.Theta, Robot_ID_0_Cls.Parameters, 'Best')
-    
+    (info, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Numerical(TCP_Position, Robot_ID_0_Cls.Theta, CONST_NIK_METHOD, Robot_ID_0_Cls.Parameters, 
+                                                                      CONST_IK_PROPERTIES)
     
     # Reset the absolute position of the robot joints to the 'Individual'.
     Robot_ID_0_Cls.Reset('Individual', theta)
 
     # Display results.
     print(f'[INFO] Absolute Joint Positions:')
+    print(f'[INFO] >> successful = {info["successful"]}')
+    print(f'[INFO] >> iteration = {info["iteration"]}')
     print(f'[INFO] >> position_err = {info["error"]["position"]}, orientation_err = {info["error"]["orientation"]}')
     print(f'[INFO] >> theta = {theta}')
     print(f'[INFO] >> is_close_singularity = {info["is_close_singularity"]}')
     print(f'[INFO] >> is_self_collision = {info["is_self_collision"]}')
 
     # Check that the calculation has been performed successfully.
-    accuracy = info['error']['position'] + info['error']['orientation']
-    if accuracy <= 1e-5:
+    accuracy = info["error"]["position"] + info["error"]["orientation"]
+    if info["successful"] == True:
         print('[INFO] The IK solution test was successful.')
         print(f'[INFO] Accuracy = {accuracy}')
     else:
