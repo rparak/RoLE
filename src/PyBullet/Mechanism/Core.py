@@ -65,11 +65,11 @@ class Mechanism_Cls(object):
             (2) urdf_file_path [string]: The specified path of the mechanism structure file with an extension '*.urdf'.
                                             Note:
                                                 urdf: Unified Robotics Description Format
-            (3) properties [Dictionary {'Enable_GUI': int, 'fps': int, 
+            (3) properties [Dictionary {'Enable_GUI': bool, 'fps': int, 
                                         'Camera': {'Yaw': float, 
                                                    'Pitch': float, 
                                                    'Distance': float, 
-                                                   'Position': Vector<float> 1x3}}]: The properties of the PyBullet environment.
+                                                   'Position': Vector<float> 1x3}}]: The properties of the PyBullet GUI.
                                                                                         Note:
                                                                                             'Enable_GUI': Enable/disable the PyBullet explorer view.
                                                                                             'fps': The FPS (Frames Per Seconds) value.
@@ -82,7 +82,7 @@ class Mechanism_Cls(object):
                 #   Example for the SMC LEFB25UNZS 1400C mechanism.
                 Mechanism_Parameters_Str = Lib.Parameters.Mechanism.SMC_LEFB25_1400_0_1_Str
                 #   The properties of the PyBullet environment.
-                env_properties = {'Enable_GUI': 0, 'fps': 100, 
+                env_properties = {'Enable_GUI': True, 'fps': 100, 
                                   'Camera': {'Yaw': 70.0, 'Pitch': -32.0, 'Distance':1.3, 
                                              'Position': [0.05, -0.10, 0.06]}}
 
@@ -126,13 +126,13 @@ class Mechanism_Cls(object):
                 self.__theta_index = i
                 break
 
-    def __Set_Env_Parameters(self, enable_gui: int, camera_parameters: tp.Dict) -> None:
+    def __Set_Env_Parameters(self, enable_gui: bool, camera_parameters: tp.Dict) -> None:
         """
         Description:
             A function to set the parameters of the PyBullet environment.
 
         Args:
-            (1) enable_gui [int]: Enable/disable the PyBullet explorer view.
+            (1) enable_gui [bool]: Enable/disable the PyBullet GUI.
             (2) camera_parameters [Dictionary {'Yaw': float, 'Pitch': float, 'Distance': float, 
                                                'Position': Vector<float> 1x3}]: The parameters of the camera.
                                                                                     Note:
@@ -145,7 +145,11 @@ class Mechanism_Cls(object):
         """
 
         # Connect to the physics simulation and create an environment with additional properties.
-        pb.connect(pb.GUI, options='--background_color_red=0.0 --background_color_green=0.0 --background_color_blue=0.0')
+        if enable_gui == 1:
+            pb.connect(pb.GUI, options='--background_color_red=0.0 --background_color_green=0.0 --background_color_blue=0.0')
+        else:
+            pb.connect(pb.DIRECT)
+        #   Additional properties.
         pb.setTimeStep(self.__delta_time)
         pb.setRealTimeSimulation(0)
         pb.resetSimulation()
@@ -159,7 +163,7 @@ class Mechanism_Cls(object):
         # Configure settings for the built-in OpenGL visualizer.
         pb.configureDebugVisualizer(pb.COV_ENABLE_RENDERING, 1)
         pb.configureDebugVisualizer(pb.COV_ENABLE_SHADOWS, 1)
-        pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, enable_gui)
+        pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 0)
         pb.configureDebugVisualizer(pb.COV_ENABLE_MOUSE_PICKING, 0)
 
         # Load a physics model of the plane.
