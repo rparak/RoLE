@@ -100,7 +100,7 @@ class Robot_Cls(object):
                 #   Example for the ABB IRB 120 robot.
                 Robot_Parameters_Str = RoLE.Parameters.Robot.ABB_IRB_120_Str
                 #   The properties of the PyBullet environment.
-                env_properties = {'Enable_GUI': 0, 'fps': 100, 'External_Base': None,
+                env_properties = {'Enable_GUI': True, 'fps': 100, 'External_Base': None,
                                   'Camera': {'Yaw': 70.0, 'Pitch': -32.0, 'Distance':1.3, 
                                              'Position': [0.05, -0.10, 0.06]}}
 
@@ -205,7 +205,7 @@ class Robot_Cls(object):
             A function to set the parameters of the PyBullet environment.
 
         Args:
-            (1) enable_gui [int]: Enable/disable the PyBullet GUI.
+            (1) enable_gui [bool]: Enable/disable the PyBullet GUI.
             (2) camera_parameters [Dictionary {'Yaw': float, 'Pitch': float, 'Distance': float, 
                                                'Position': Vector<float> 1x3}]: The parameters of the camera.
                                                                                     Note:
