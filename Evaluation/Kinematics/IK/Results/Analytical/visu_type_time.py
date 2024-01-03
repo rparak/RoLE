@@ -51,7 +51,7 @@ def main():
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
-    # The name of the path where the file will be saved.
+    # The name of the path where the file was saved.
     file_path = f'{project_folder}/Data/Inverse_Kinematics/{Robot_Str.Name}'
 
     # Set the parameters for the scientific style.
