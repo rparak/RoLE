@@ -77,7 +77,7 @@ def main():
                 label=f'Desired data')
         
         for j, (data_i, c_i) in enumerate(zip(np.array(data, dtype=np.float64),
-                                              ['#a64d79', '#dbdbbf', '#bfdbd1', '#abcae4'])):
+                                              ['#e69138', '#8ca8c5', '#a64d79'])):
             ax.plot(t_hat, data_i[:, i], '--', color=c_i, linewidth=1.0, markerfacecolor=c_i, 
                     label=f'{CONST_NIK_METHOD[j]} Method: Predicted data')
             

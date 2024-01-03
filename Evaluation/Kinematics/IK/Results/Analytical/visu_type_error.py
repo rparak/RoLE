@@ -63,8 +63,8 @@ def main():
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(t_hat, data_i, '.', color='#8d8d8d', alpha=0.5, markersize=8.0, markeredgewidth=3.0, markerfacecolor='#8d8d8d', label=label[i])
-        ax.plot(t_hat, [np.mean(data_i)] * t_hat.size, '--', color='#8d8d8d', linewidth=1.5, label=f'Mean Absolute Error (MAE)')
+        ax.plot(t_hat, [np.mean(data_i)] * t_hat.size, '--', color='#bababa', linewidth=1.0, label=f'Mean Absolute Error (MAE)')
+        ax.plot(t_hat, data_i, '.', color='#8d8d8d', alpha=1.0, markersize=8.0, markeredgewidth=2.0, markerfacecolor='#ffffff', label=label[i])
 
         # Set parameters of the graph (plot).
         ax.set_title(f'{title[i]}', fontsize=25, pad=25.0)

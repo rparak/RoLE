@@ -24,8 +24,7 @@ Description:
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Name of the numerical methods used to calculate the IK solution.
-CONST_NIK_METHOD = ['Newton-Raphson', 'Gauss-Newton',
-                    'Levenberg-Marquardt']
+CONST_NIK_METHOD = ['Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt']
 
 def main():
     """
@@ -82,27 +81,27 @@ def main():
         
         # Set the properties of the box plot.
         #   Boxes.
-        plt.setp(box_plot_out['boxes'][0], color='#afaf98', facecolor='#dbdbbf')
-        plt.setp(box_plot_out['boxes'][1], color='#98afa7', facecolor='#bfdbd1')
-        plt.setp(box_plot_out['boxes'][2], color='#88a1b6', facecolor='#abcae4')
+        plt.setp(box_plot_out['boxes'][0], color='#e69138', facecolor='#f2c89b')
+        plt.setp(box_plot_out['boxes'][1], color='#8ca8c5', facecolor='#c5d3e2')
+        plt.setp(box_plot_out['boxes'][2], color='#a64d79', facecolor='#d2a6bc')
         #   Whiskers.
-        plt.setp(box_plot_out['whiskers'][0], color='#afaf98')
-        plt.setp(box_plot_out['whiskers'][1], color='#afaf98')
-        plt.setp(box_plot_out['whiskers'][2], color='#98afa7')
-        plt.setp(box_plot_out['whiskers'][3], color='#98afa7')
-        plt.setp(box_plot_out['whiskers'][4], color='#88a1b6')
-        plt.setp(box_plot_out['whiskers'][5], color='#88a1b6')
+        plt.setp(box_plot_out['whiskers'][0], color='#e69138')
+        plt.setp(box_plot_out['whiskers'][1], color='#e69138')
+        plt.setp(box_plot_out['whiskers'][2], color='#8ca8c5')
+        plt.setp(box_plot_out['whiskers'][3], color='#8ca8c5')
+        plt.setp(box_plot_out['whiskers'][4], color='#a64d79')
+        plt.setp(box_plot_out['whiskers'][5], color='#a64d79')
         #   Means.
-        plt.setp(box_plot_out['means'][0], color='#afaf98')
-        plt.setp(box_plot_out['means'][1], color='#98afa7')
-        plt.setp(box_plot_out['means'][2], color='#88a1b6')
+        plt.setp(box_plot_out['means'][0], color='#e69138')
+        plt.setp(box_plot_out['means'][1], color='#8ca8c5')
+        plt.setp(box_plot_out['means'][2], color='#a64d79')
         #   Caps.
-        plt.setp(box_plot_out['caps'][0], color='#afaf98')
-        plt.setp(box_plot_out['caps'][1], color='#afaf98')
-        plt.setp(box_plot_out['caps'][2], color='#98afa7')
-        plt.setp(box_plot_out['caps'][3], color='#98afa7')
-        plt.setp(box_plot_out['caps'][4], color='#88a1b6')
-        plt.setp(box_plot_out['caps'][5], color='#88a1b6')
+        plt.setp(box_plot_out['caps'][0], color='#e69138')
+        plt.setp(box_plot_out['caps'][1], color='#e69138')
+        plt.setp(box_plot_out['caps'][2], color='#8ca8c5')
+        plt.setp(box_plot_out['caps'][3], color='#8ca8c5')
+        plt.setp(box_plot_out['caps'][4], color='#a64d79')
+        plt.setp(box_plot_out['caps'][5], color='#a64d79')
 
         # Set parameters of the graph (plot).
         ax.set_title(f'{title[i]}', fontsize=25, pad=25.0)

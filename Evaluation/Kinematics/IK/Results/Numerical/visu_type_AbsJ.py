@@ -24,8 +24,7 @@ Description:
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Name of the numerical methods used to calculate the IK solution.
-CONST_NIK_METHOD = ['Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton',
-                    'Levenberg-Marquardt']
+CONST_NIK_METHOD = ['Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt']
 
 def main():
     """
@@ -67,7 +66,7 @@ def main():
         _, ax = plt.subplots()
 
         for j, (data_i, c_i) in enumerate(zip(np.array(data, dtype=np.float64),
-                                              ['#a64d79', '#dbdbbf', '#bfdbd1', '#abcae4'])):
+                                              ['#e69138', '#8ca8c5', '#a64d79'])):
             # Visualization of relevant structures.
             ax.plot(t_hat, data_i[:, i], '--', color=c_i, linewidth=1.0, markerfacecolor=c_i, 
                     label=f'{CONST_NIK_METHOD[j]} Method')

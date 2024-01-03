@@ -65,9 +65,9 @@ def main():
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(t_hat, data_i, '-', color='#8d8d8d', linewidth=1.5, markerfacecolor='#8d8d8d', 
+        ax.plot(t_hat, data_i, '-', color='#bababa', linewidth=1.5, markerfacecolor='#bababa', 
                 label=f'Desired data')
-        ax.plot(t_hat, data_p_i, '--', color='#ffbf80', linewidth=1.0, markerfacecolor='#ffbf80', 
+        ax.plot(t_hat, data_p_i, '--', color='#8d8d8d', linewidth=1.0, markerfacecolor='#8d8d8d', 
                 label=f'Analytical Method: Predicted data')
 
         # Set parameters of the graph (plot).
