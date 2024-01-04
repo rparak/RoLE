@@ -24,8 +24,7 @@ Description:
 # Set the structure of the main parameters of the controlled robot.
 CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 # Name of the numerical methods used to calculate the IK solution.
-CONST_NIK_METHOD = ['Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton',
-                    'Levenberg-Marquardt']
+CONST_NIK_METHOD = ['Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt']
 # Save the data to a file.
 CONST_SAVE_DATA = False
 
