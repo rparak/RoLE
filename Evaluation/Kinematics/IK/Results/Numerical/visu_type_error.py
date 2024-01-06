@@ -107,7 +107,7 @@ def main():
         ax.set_title(f'{title[i]}', fontsize=25, pad=25.0)
         #   Label
         ax.set_xlabel(r'Numerical Inverse Kinematics (IK) Method', fontsize=15, labelpad=10)
-        ax.set_ylabel(f'{label[i]}', fontsize=15, labelpad=10) 
+        ax.set_ylabel(f'{label_i}', fontsize=15, labelpad=10) 
         #   Set parameters of the visualization.
         ax.grid(which='major', linewidth = 0.15, linestyle = '--')
         # Get handles and labels for the legend.
