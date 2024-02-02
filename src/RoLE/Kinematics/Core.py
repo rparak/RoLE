@@ -21,7 +21,7 @@ import RoLE.Interpolation.Utilities
 """
 Description:
     FORWARD KINEMATICS (FK)
-        Forward kinematics kinematics refers to the use of the robot's kinematic equations to calculate 
+        Forward kinematics refers to the use of the robot's kinematic equations to calculate 
         the position of the end-effector from specified values of the joint orientations.
 
     INVERSE KINEMATICS (IK)
