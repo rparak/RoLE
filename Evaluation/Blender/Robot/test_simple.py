@@ -78,15 +78,6 @@ def main():
         else:
             Robot_Str.T.Base = HTM_Cls(bpy.data.objects[f'{Robot_Str.Parameters.Name}_ID_{Robot_Str.Parameters.Id:03}'].matrix_basis, 
                                     np.float64)  
-                                    
-    # Modification of the robot base.
-    if CONST_USE_BLENDER_ROBOT_BASE == True:
-        if 'ABB_IRB_14000' in Robot_Str.Name:
-            Robot_Str.T.Base @= HTM_Cls(bpy.data.objects['ABB_IRB_14000_ID_001'].matrix_basis, 
-                                    np.float64)
-        else:
-            Robot_Str.T.Base = HTM_Cls(bpy.data.objects[f'{Robot_Str.Parameters.Name}_ID_{Robot_Str.Parameters.Id:03}'].matrix_basis, 
-                                    np.float64)  
 
     # Initialization of the class to work with a robotic arm object in a Blender scene.
     Robot_ID_0_Cls = Blender.Robot.Core.Robot_Cls(Robot_Str, CONST_PROPERTIES)
