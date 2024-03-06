@@ -37,7 +37,7 @@ def Get_Number_of_Samples(name: str) -> tp.List[float]:
     """
     
     return {
-        'Universal_Robots_UR3': [30 + 1, 30 + 1, 30 + 1, 3, 3, 0],
+        'Universal_Robots_UR3': [30 + 1, 30 + 1, 30 + 1, 6, 6, 0],
         'ABB_IRB_120': [30 + 1, 30 + 1, 30 + 1, 3, 3, 0],
         'ABB_IRB_120_L_Ax': [10 + 1, 30 + 1, 30 + 1, 30 + 1, 3, 3, 0],
         'ABB_IRB_14000_R': [30 + 1, 30 + 1, 30 + 1, 10 + 1, 3, 3, 0],

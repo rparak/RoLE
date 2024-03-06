@@ -31,7 +31,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
 # The name of the input file and folder.
 CONST_FILE_NAME = 'tool0_workspace_data'
 
@@ -50,7 +50,7 @@ def main():
     Blender.Utilities.Deselect_All()
 
     # Locate the path to the project folder.
-    project_folder = os.getcwd().split('Kinematics')[0] + 'Kinematics'
+    project_folder = os.getcwd().split('RoLE')[0] + 'RoLE'
 
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
