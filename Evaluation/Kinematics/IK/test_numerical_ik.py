@@ -27,12 +27,12 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 #   Name of the numerical method to be used to calculate the IK solution.
 #       'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
 #       'Levenberg-Marquardt'
-CONST_NIK_METHOD = 'Jacobian-Transpose'
+CONST_NIK_METHOD = 'Levenberg-Marquardt'
 #   The properties of the inverse kinematics solver.
 #       'tolerance': 1e-03 -> 'Jacobian-Transpose'
 #       'tolerance': 1e-30 -> 'Newton-Raphson', 'Gauss-Newton', and 'Levenberg-Marquardt'
 CONST_IK_PROPERTIES = {'delta_time': 0.1, 'num_of_iteration': 500, 
-                       'tolerance': 1e-03}
+                       'tolerance': 1e-30}
 
 def main():
     """
