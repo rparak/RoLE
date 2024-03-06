@@ -20,7 +20,7 @@ Description:
 # Set the structure of the main parameters of the robot.
 CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
 # Number of randomly generated samples.
-CONST_SIZE = 1000
+CONST_SIZE = 100000
 
 def main():
     """

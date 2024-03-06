@@ -56,7 +56,7 @@ def main():
 
     # Set the structure of the main parameters of the controlled robot.
     Robot_ID_0_Cls = Blender.Core.Robot_Cls(Robot_Str, {'Viewpoint_EE': False, 'Colliders': True, 
-                                                             'Workspace': False})
+                                                        'Workspace': False})
 
     # Reset the absolute position of the robot joints to the 'Zero'.
     Robot_ID_0_Cls.Reset('Zero')

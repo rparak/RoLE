@@ -59,6 +59,8 @@ def main():
 
             If the 'Viewpoint' object is not part of the environment, copy it from the following Blender file:
                 ../Blender/Helpers/Viewpoint.blend
+
+            and change the name from 'Viewpoint' to 'TCP_EPSON_LS3_B401S_ID_001'.
     """
     
     # Deselect all objects in the current scene.
