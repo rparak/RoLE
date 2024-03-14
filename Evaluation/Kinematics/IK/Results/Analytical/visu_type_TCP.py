@@ -35,7 +35,7 @@ def main():
                 q_w, q_x, q_y, and q_z in [-]
 
         The observation is tested on trajectories of the absolute positions of the robot's joints, generated 
-        using a multi-axis polynomial profile.
+        using a multi-axis trapezoidal profile.
     """
 
     # Locate the path to the project folder.
@@ -65,10 +65,10 @@ def main():
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(t_hat, data_i, '-', color='#bababa', linewidth=1.5, markerfacecolor='#bababa', 
+        ax.plot(t_hat, data_i, '.--', color='#8d8d8d', alpha=1.0, markersize=8.0, markeredgewidth=2.0, markerfacecolor='#ffffff',
                 label=f'Desired data')
-        ax.plot(t_hat, data_p_i, '--', color='#8d8d8d', linewidth=1.0, markerfacecolor='#8d8d8d', 
-                label=f'Analytical Method: Predicted data')
+        ax.plot(t_hat, data_p_i, '-', color='#8d8d8d', linewidth=1.0, markerfacecolor='#8d8d8d', 
+                label=f'Predicted data: Analytical Method')
 
         # Set parameters of the graph (plot).
         #   Set the x ticks.

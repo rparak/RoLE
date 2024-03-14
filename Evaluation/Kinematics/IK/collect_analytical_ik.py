@@ -41,7 +41,7 @@ def main():
             2\ 'Best': Automatically obtain the best solution.
 
         Note:
-            The test will be performed by generating a trajectory using a polynomial 
+            The test will be performed by generating a trajectory using a trapezoidal 
             profile, on which the calculation will be verified.
     """
     
@@ -63,7 +63,7 @@ def main():
           os.remove(f'{file_i}.txt')
 
     # Initialization of the class to generate trajectory.
-    Polynomial_Cls = RoLE.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
+    Trapezoidal_Cls = RoLE.Trajectory.Utilities.Trapezoidal_Profile_Cls(delta_time=0.01)
 
     # Obtain the constraints for absolute joint positions in order to generate multi-axis position trajectories.
     (abs_j_pos_0, abs_j_pos_1) = Configuration.Parameters.Get_Absolute_Joint_Positions(Robot_Str.Name)
@@ -81,8 +81,8 @@ def main():
     #       Demonstration of joint interpolation instead of linear interpolation.
     theta_arr = []
     for _, (th_actual, th_desired) in enumerate(zip(abs_j_pos_0, theta)):
-        (theta_arr_i, _, _) = Polynomial_Cls.Generate(th_actual, th_desired, 0.0, 0.0, 0.0, 0.0,
-                                                      Configuration.Parameters.CONST_T_0, Configuration.Parameters.CONST_T_1)
+        (theta_arr_i, _, _) = Trapezoidal_Cls.Generate(th_actual, th_desired, 0.0, 0.0,
+                                                       Configuration.Parameters.CONST_T_0, Configuration.Parameters.CONST_T_1)
         theta_arr.append(theta_arr_i)
 
     print('[INFO] The calculation is in progress.')

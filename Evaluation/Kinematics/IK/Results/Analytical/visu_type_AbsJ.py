@@ -35,7 +35,7 @@ def main():
                 where n is equal to the number of joints of an individual robotic structure.
 
         The observation is tested on trajectories of the absolute positions of the robot's joints, generated 
-        using a multi-axis polynomial profile.
+        using a multi-axis trapezoidal profile.
     """
 
     # Locate the path to the project folder.

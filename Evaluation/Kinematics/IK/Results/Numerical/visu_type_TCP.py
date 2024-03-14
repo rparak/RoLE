@@ -22,11 +22,11 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
-# Name of the numerical methods used to calculate the IK solution.
-CONST_NIK_METHOD = ['Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt']
-# Save the data to a file.
-CONST_SAVE_DATA = False
+CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
+# Name of the numerical method used to calculate the IK solution.
+#   'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
+#   'Levenberg-Marquardt'
+CONST_NIK_METHOD = 'Levenberg-Marquardt'
 
 def main():
     """
@@ -39,7 +39,7 @@ def main():
                 q_w, q_x, q_y, and q_z in [-]
 
         The observation is tested on trajectories of the absolute positions of the robot's joints, generated 
-        using a multi-axis polynomial profile.
+        using a multi-axis trapezoidal profile.
     """
 
     # Locate the path to the project folder.
@@ -55,49 +55,43 @@ def main():
     plt.style.use('science')
 
     # Read data from the file.
-    data = []
-    for _, nik_name in enumerate(CONST_NIK_METHOD):
-        data.append(File_IO.Load(f'{file_path}/Method_Numerical_IK_{nik_name}_TCP_Predicted', 'txt', ','))
-    # The desired data are the same for each method.
-    data_desired = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD[-1]}_TCP_Desired', 'txt', ',')
+    data = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP_Predicted', 'txt', ',')
+    data_predicted = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_TCP_Desired', 'txt', ',')
 
     # Get the normalized time.
-    t_hat = np.linspace(0.0, 1.0, len(data[0][:, 0]))
+    t_hat = np.linspace(0.0, 1.0, len(data[:, 0]))
 
     # Display TCP(Tool Center Point) parameters.
     y_label = [r'$x(\hat{t})$ in meters', r'$y(\hat{t})$ in meters', r'$z(\hat{t})$ in meters', r'$q_{w}(\hat{t})$ in [-]', 
                r'$q_{x}(\hat{t})$ in [-]', r'$q_{y}(\hat{t})$ in [-]', r'$q_{z}(\hat{t})$ in [-]']
-    for i, (data_desired_i, y_label_i) in enumerate(zip(data_desired.T, y_label)):
+    for i, (data_i, data_p_i) in enumerate(zip(data.T, data_predicted.T)):
         # Create a figure.
         _, ax = plt.subplots()
 
         # Visualization of relevant structures.
-        ax.plot(t_hat, data_desired_i, '-', color='#8d8d8d', linewidth=1.5, markerfacecolor='#8d8d8d', 
+        ax.plot(t_hat, data_i, '.--', color='#8d8d8d', alpha=1.0, markersize=8.0, markeredgewidth=2.0, markerfacecolor='#ffffff', 
                 label=f'Desired data')
-        
-        for j, (data_i, c_i) in enumerate(zip(np.array(data, dtype=np.float64),
-                                              ['#e69138', '#8ca8c5', '#a64d79'])):
-            ax.plot(t_hat, data_i[:, i], '--', color=c_i, linewidth=1.0, markerfacecolor=c_i, 
-                    label=f'{CONST_NIK_METHOD[j]} Method: Predicted data')
-            
-            # Set parameters of the graph (plot).
-            #   Set the x ticks.
-            ax.set_xticks(np.arange(np.min(t_hat) - 0.1, np.max(t_hat) + 0.1, 0.1))
-            #   Set the y ticks.
-            tick_y_tmp = (np.max(data_desired_i) - np.min(data_desired_i))/10.0
-            tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
-            ax.set_yticks(np.arange(np.min(data_desired_i) - tick_y, np.max(data_desired_i) + tick_y, tick_y))
-            #   Label.
-            ax.set_xlabel(r'Normalized time $\hat{t}$ in the range of [0.0, 1.0]', fontsize=15, labelpad=10)
-            ax.set_ylabel(f'{y_label_i}', fontsize=15, labelpad=10) 
-            #   Set parameters of the visualization.
-            ax.grid(which='major', linewidth = 0.15, linestyle = '--')
-            # Get handles and labels for the legend.
-            handles, labels = plt.gca().get_legend_handles_labels()
-            # Remove duplicate labels.
-            legend = dict(zip(labels, handles))
-            # Show the labels (legends) of the graph.
-            ax.legend(legend.values(), legend.keys(), fontsize=10.0)
+        ax.plot(t_hat, data_p_i, '-', color='#8d8d8d', linewidth=1.0, markerfacecolor='#8d8d8d', 
+                label=f'Predicted data: {CONST_NIK_METHOD} Method')
+
+        # Set parameters of the graph (plot).
+        #   Set the x ticks.
+        ax.set_xticks(np.arange(np.min(t_hat) - 0.1, np.max(t_hat) + 0.1, 0.1))
+        #   Set the y ticks.
+        tick_y_tmp = (np.max(data_i) - np.min(data_i))/10.0
+        tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
+        ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
+        #   Label.
+        ax.set_xlabel(r'Normalized time $\hat{t}$ in the range of [0.0, 1.0]', fontsize=15, labelpad=10)
+        ax.set_ylabel(f'{y_label[i]}', fontsize=15, labelpad=10) 
+        #   Set parameters of the visualization.
+        ax.grid(which='major', linewidth = 0.15, linestyle = '--')
+        # Get handles and labels for the legend.
+        handles, labels = plt.gca().get_legend_handles_labels()
+        # Remove duplicate labels.
+        legend = dict(zip(labels, handles))
+        # Show the labels (legends) of the graph.
+        ax.legend(legend.values(), legend.keys(), fontsize=10.0)
 
         # Show the result.
         plt.show()

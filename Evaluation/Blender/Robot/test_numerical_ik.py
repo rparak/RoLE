@@ -40,7 +40,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
+CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
 # Set the structure of the main parameters of the camera.
 CONST_CAMERA_TYPE = Blender.Parameters.Camera.Right_View_Camera_Parameters_Str
 # The properties of the robot structure in the Blender environment.

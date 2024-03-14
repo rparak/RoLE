@@ -16,7 +16,7 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the robot.
-CONST_ROBOT_TYPE = Parameters.ABB_IRB_120_Str
+CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
 # Use a mesh to represent a visual/collision object.
 CONST_ENABLE_MESH = True
 

@@ -22,9 +22,11 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
-# Name of the numerical methods used to calculate the IK solution.
-CONST_NIK_METHOD = ['Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt']
+CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
+# Name of the numerical method used to calculate the IK solution.
+#   'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
+#   'Levenberg-Marquardt'
+CONST_NIK_METHOD = 'Levenberg-Marquardt'
 
 def main():
     """
@@ -37,7 +39,7 @@ def main():
                 where n is equal to the number of joints of an individual robotic structure.
 
         The observation is tested on trajectories of the absolute positions of the robot's joints, generated 
-        using a multi-axis polynomial profile.
+        using a multi-axis trapezoidal profile.
     """
 
     # Locate the path to the project folder.
@@ -53,43 +55,39 @@ def main():
     plt.style.use('science')
 
     # Read data from the file.
-    data = []
-    for _, nik_name in enumerate(CONST_NIK_METHOD):
-        data.append(File_IO.Load(f'{file_path}/Method_Numerical_IK_{nik_name}_Absolute_Joint_Positions', 'txt', ','))
+    data = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Absolute_Joint_Positions', 'txt', ',')
 
     # Get the normalized time.
-    t_hat = np.linspace(0.0, 1.0, len(data[0][:, 0]))
+    t_hat = np.linspace(0.0, 1.0, len(data[:, 0]))
 
     # Display absolute joint position parameters.
-    for i in range(Robot_Str.Theta.Home.size):
+    for i, data_i in enumerate(data.T):
         # Create a figure.
         _, ax = plt.subplots()
 
-        for j, (data_i, c_i) in enumerate(zip(np.array(data, dtype=np.float64),
-                                              ['#e69138', '#8ca8c5', '#a64d79'])):
-            # Visualization of relevant structures.
-            ax.plot(t_hat, data_i[:, i], '--', color=c_i, linewidth=1.0, markerfacecolor=c_i, 
-                    label=f'{CONST_NIK_METHOD[j]} Method')
+        # Visualization of relevant structures.
+        ax.plot(t_hat, data_i, '-', color='#8d8d8d', linewidth=1.0, markersize = 3.0, 
+                markeredgewidth = 1.5, markerfacecolor = '#ffffff', label=f'{CONST_NIK_METHOD} Method')
 
-            # Set parameters of the graph (plot).
-            #   Set the x ticks.
-            ax.set_xticks(np.arange(np.min(t_hat) - 0.1, np.max(t_hat) + 0.1, 0.1))
-            #   Set the y ticks.
-            tick_y_tmp = (np.max(data_i[:, i]) - np.min( data_i[:, i]))/10.0
-            tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
-            ax.set_yticks(np.arange(np.min( data_i[:, i]) - tick_y, np.max( data_i[:, i]) + tick_y, tick_y))
-            #   Label.
-            ax.set_xlabel(r'Normalized time $\hat{t}$ in the range of [0.0, 1.0]', fontsize=15, labelpad=10)
-            ax.set_ylabel(r'$\theta_{%d}(t)$ in %s' % ((i + 1), 'radians' if Robot_Str.Theta.Type[i] == 'R' else 'meters'), 
-                        fontsize=15, labelpad=10) 
-            #   Set parameters of the visualization.
-            ax.grid(which='major', linewidth = 0.15, linestyle = '--')
-            # Get handles and labels for the legend.
-            handles, labels = plt.gca().get_legend_handles_labels()
-            # Remove duplicate labels.
-            legend = dict(zip(labels, handles))
-            # Show the labels (legends) of the graph.
-            ax.legend(legend.values(), legend.keys(), fontsize=10.0)
+        # Set parameters of the graph (plot).
+        #   Set the x ticks.
+        ax.set_xticks(np.arange(np.min(t_hat) - 0.1, np.max(t_hat) + 0.1, 0.1))
+        #   Set the y ticks.
+        tick_y_tmp = (np.max(data_i) - np.min(data_i))/10.0
+        tick_y = tick_y_tmp if tick_y_tmp != 0.0 else 0.1
+        ax.set_yticks(np.arange(np.min(data_i) - tick_y, np.max(data_i) + tick_y, tick_y))
+        #   Label.
+        ax.set_xlabel(r'Normalized time $\hat{t}$ in the range of [0.0, 1.0]', fontsize=15, labelpad=10)
+        ax.set_ylabel(r'$\theta_{%d}(\hat{t})$ in %s' % ((i + 1), 'radians' if Robot_Str.Theta.Type[i] == 'R' else 'meters'), 
+                      fontsize=15, labelpad=10) 
+        #   Set parameters of the visualization.
+        ax.grid(which='major', linewidth = 0.15, linestyle = '--')
+        # Get handles and labels for the legend.
+        handles, labels = plt.gca().get_legend_handles_labels()
+        # Remove duplicate labels.
+        legend = dict(zip(labels, handles))
+        # Show the labels (legends) of the graph.
+        ax.legend(legend.values(), legend.keys(), fontsize=10.0)
 
         # Show the result.
         plt.show()

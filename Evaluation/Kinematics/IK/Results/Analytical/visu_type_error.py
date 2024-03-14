@@ -27,10 +27,10 @@ CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
 def main():
     """
     Description:
-        A program to compare the absolute error in trajectory calculation using the analytical 
+        A program to visualize the absolute error in trajectory calculation using the analytical 
         method of inverse kinematics.
 
-        The comparison is tested on trajectories generated using a multi-axis polynomial profile.
+        The observation is tested on trajectories generated using a multi-axis trapezoidal profile.
 
         Note:
             The program for the generation of the absolute/quadratic errors

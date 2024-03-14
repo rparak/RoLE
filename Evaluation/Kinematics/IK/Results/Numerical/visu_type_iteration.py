@@ -22,17 +22,19 @@ Description:
     Initialization of constants.
 """
 # Set the structure of the main parameters of the controlled robot.
-CONST_ROBOT_TYPE = Parameters.EPSON_LS3_B401S_Str
-# Name of the numerical methods used to calculate the IK solution.
-CONST_NIK_METHOD = ['Newton-Raphson', 'Gauss-Newton', 'Levenberg-Marquardt']
+CONST_ROBOT_TYPE = Parameters.Universal_Robots_UR3_Str
+# Name of the numerical method used to calculate the IK solution.
+#   'Jacobian-Transpose', 'Newton-Raphson', 'Gauss-Newton', 
+#   'Levenberg-Marquardt'
+CONST_NIK_METHOD = 'Levenberg-Marquardt'
 
 def main():
     """
     Description:
-        A program to compare the number of interations for each successfully achieved goal within trajectory 
+        A program to visualize the number of interations for each successfully achieved within trajectory 
         calculation using the numerical method of inverse kinematics.
 
-        The comparison is tested on trajectories generated using a multi-axis polynomial profile.
+        The observation is tested on trajectories generated using a multi-axis trapezoidal profile.
 
         Note:
             The program for the generation of the number of interations
@@ -52,69 +54,43 @@ def main():
     # Set the parameters for the scientific style.
     plt.style.use('science')
 
-    data = []
-    for _, nik_name in enumerate(CONST_NIK_METHOD):
-        # Read data from the file.
-        data.append(File_IO.Load(f'{file_path}/Method_Numerical_IK_{nik_name}_Iteration', 'txt', ','))
 
-    # Create a figure.
-    _, ax = plt.subplots()
+    # Read data from the file.
+    data = File_IO.Load(f'{file_path}/Method_Numerical_IK_{CONST_NIK_METHOD}_Iteration', 'txt', ',')
 
-    iteration = []
-    for i, data_i in enumerate(np.array(data, dtype=np.float64)):
-        iteration.append(data_i[:, 0])
-        
+    label = [r'Number of Interations per Successfully Achieved Target']; title = ['Observed Number of Iteration in Each Successfully Achieved Target']
+    for i, data_i in enumerate(data.T):
+        # Create a figure.
+        _, ax = plt.subplots()
+
+        # Visualization of relevant structures.
+        ax.plot([np.mean(data_i)] * len(data[:, 0]), '--', color='#bababa', linewidth=1.0)
+        ax.plot(data_i, '.', color='#8d8d8d', alpha=1.0, markersize=8.0, markeredgewidth=2.0, markerfacecolor='#ffffff')
+
+        # Set parameters of the graph (plot).
+        ax.set_title(f'{title[i]}', fontsize=25, pad=25.0)
+        #   Set the x ticks.
+        ax.set_xticks(np.arange(np.min(0), len(data[:, 0]), 10.0))
+        #   Label
+        ax.set_xlabel(r'Identification Number of the Successfully Achieved Target', fontsize=15, labelpad=10)
+        ax.set_ylabel(f'{label[i]}', fontsize=15, labelpad=10) 
+        #   Set parameters of the visualization.
+        ax.grid(which='major', linewidth = 0.15, linestyle = '--')
+        # Get handles and labels for the legend.
+        handles, labels = plt.gca().get_legend_handles_labels()
+        # Remove duplicate labels.
+        legend = dict(zip(labels, handles))
+        # Show the labels (legends) of the graph.
+        ax.legend(legend.values(), legend.keys(), fontsize=10.0)
+
         # Display the results as the values shown in the console.
         print(f'[INFO] Iteration: {i}')
-        print(f'[INFO] Method: {CONST_NIK_METHOD[i]}')
-        print(f'[INFO] max(t) = {np.max(data_i[:, 0])}')
-        print(f'[INFO] min(t) = {np.min(data_i[:, 0])}')
-        print(f'[INFO] Mean = {np.mean(data_i[:, 0])}')
+        print(f'[INFO] max(label{i}) = {np.max(data_i)} in meters')
+        print(f'[INFO] min(label{i}) = {np.min(data_i)} in meters')
+        print(f'[INFO] MAE = {np.mean(data_i)} in mm')
 
-    # Visualization of relevant structures.
-    box_plot_out = ax.boxplot(iteration, labels=CONST_NIK_METHOD, showmeans=True, patch_artist=True, meanline = True, medianprops = dict(linestyle=None, linewidth=0.0),
-                              showfliers=False)
-    
-    # Set the properties of the box plot.
-    #   Boxes.
-    plt.setp(box_plot_out['boxes'][0], color='#e69138', facecolor='#f2c89b')
-    plt.setp(box_plot_out['boxes'][1], color='#8ca8c5', facecolor='#c5d3e2')
-    plt.setp(box_plot_out['boxes'][2], color='#a64d79', facecolor='#d2a6bc')
-    #   Whiskers.
-    plt.setp(box_plot_out['whiskers'][0], color='#e69138')
-    plt.setp(box_plot_out['whiskers'][1], color='#e69138')
-    plt.setp(box_plot_out['whiskers'][2], color='#8ca8c5')
-    plt.setp(box_plot_out['whiskers'][3], color='#8ca8c5')
-    plt.setp(box_plot_out['whiskers'][4], color='#a64d79')
-    plt.setp(box_plot_out['whiskers'][5], color='#a64d79')
-    #   Means.
-    plt.setp(box_plot_out['means'][0], color='#e69138')
-    plt.setp(box_plot_out['means'][1], color='#8ca8c5')
-    plt.setp(box_plot_out['means'][2], color='#a64d79')
-    #   Caps.
-    plt.setp(box_plot_out['caps'][0], color='#e69138')
-    plt.setp(box_plot_out['caps'][1], color='#e69138')
-    plt.setp(box_plot_out['caps'][2], color='#8ca8c5')
-    plt.setp(box_plot_out['caps'][3], color='#8ca8c5')
-    plt.setp(box_plot_out['caps'][4], color='#a64d79')
-    plt.setp(box_plot_out['caps'][5], color='#a64d79')
-
-    # Set parameters of the graph (plot).
-    ax.set_title(r'Number of Interations per Successfully Achieved Goal', fontsize=25, pad=25.0)
-    #   Label
-    ax.set_xlabel(r'Numerical Inverse Kinematics (IK) Method', fontsize=15, labelpad=10)
-    ax.set_ylabel(r'Iteration', fontsize=15, labelpad=10) 
-    #   Set parameters of the visualization.
-    ax.grid(which='major', linewidth = 0.15, linestyle = '--')
-    # Get handles and labels for the legend.
-    handles, labels = plt.gca().get_legend_handles_labels()
-    # Remove duplicate labels.
-    legend = dict(zip(labels, handles))
-    # Show the labels (legends) of the graph.
-    ax.legend(legend.values(), legend.keys(), fontsize=10.0)
-
-    # Show the result.
-    plt.show()
+        # Show the result.
+        plt.show()
 
 if __name__ == "__main__":
     sys.exit(main())
