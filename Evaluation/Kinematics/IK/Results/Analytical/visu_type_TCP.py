@@ -66,9 +66,9 @@ def main():
 
         # Visualization of relevant structures.
         ax.plot(t_hat, data_i, '.--', color='#8d8d8d', alpha=1.0, markersize=8.0, markeredgewidth=2.0, markerfacecolor='#ffffff',
-                label=f'Desired data')
+                label=f'Desired Data')
         ax.plot(t_hat, data_p_i, '-', color='#8d8d8d', linewidth=1.0, markerfacecolor='#8d8d8d', 
-                label=f'Predicted data: Analytical Method')
+                label=f'Predicted Data: Analytical Method')
 
         # Set parameters of the graph (plot).
         #   Set the x ticks.
