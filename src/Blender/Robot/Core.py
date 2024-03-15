@@ -118,7 +118,7 @@ class Robot_Cls(object):
             bpy.context.scene.render.fps = self.__fps
             
             # Initialization of the class to generate trajectory.
-            self.__Polynomial_Cls = RoLE.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=1.0/self.__fps)
+            self.__Trapezoidal_Cls = RoLE.Trajectory.Utilities.Trapezoidal_Profile_Cls(delta_time=1.0/self.__fps)
 
             # Enable or disable the visibility of additional objects of the mechanism.
             #   1\ End-effector viewpoint.
@@ -509,11 +509,11 @@ class Robot_Cls(object):
             # Generation of multi-axis position trajectories from input parameters.
             theta_arr = []
             for _, (th_actual, th_desired) in enumerate(zip(self.Theta, theta)):
-                (theta_arr_i, _, _) = self.__Polynomial_Cls.Generate(th_actual, th_desired, 0.0, 0.0, 0.0, 0.0,
+                (theta_arr_i, _, _) = self.__Trapezoidal_Cls.Generate(th_actual, th_desired, 0.0, 0.0, 0.0, 0.0,
                                                                      t_0, t_1)
                 theta_arr.append(theta_arr_i)
 
-            for _, (t_i, theta_arr_i) in enumerate(zip(self.__Polynomial_Cls.t, np.array(theta_arr, dtype=np.float64).T)):
+            for _, (t_i, theta_arr_i) in enumerate(zip(self.__Trapezoidal_Cls.t, np.array(theta_arr, dtype=np.float64).T)):
                 # Get the zero configuration of each joint.
                 T_zero_cfg = self.__Get_Zero_Joint_Cfg()
 
