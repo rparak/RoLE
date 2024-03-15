@@ -510,7 +510,7 @@ class Robot_Cls(object):
             theta_arr = []
             for _, (th_actual, th_desired) in enumerate(zip(self.Theta, theta)):
                 (theta_arr_i, _, _) = self.__Trapezoidal_Cls.Generate(th_actual, th_desired, 0.0, 0.0,
-                                                                     t_0, t_1)
+                                                                      t_0, t_1)
                 theta_arr.append(theta_arr_i)
 
             for _, (t_i, theta_arr_i) in enumerate(zip(self.__Trapezoidal_Cls.t, np.array(theta_arr, dtype=np.float64).T)):
