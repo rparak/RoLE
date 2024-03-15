@@ -509,7 +509,7 @@ class Robot_Cls(object):
             # Generation of multi-axis position trajectories from input parameters.
             theta_arr = []
             for _, (th_actual, th_desired) in enumerate(zip(self.Theta, theta)):
-                (theta_arr_i, _, _) = self.__Trapezoidal_Cls.Generate(th_actual, th_desired, 0.0, 0.0, 0.0, 0.0,
+                (theta_arr_i, _, _) = self.__Trapezoidal_Cls.Generate(th_actual, th_desired, 0.0, 0.0,
                                                                      t_0, t_1)
                 theta_arr.append(theta_arr_i)
 
