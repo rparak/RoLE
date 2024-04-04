@@ -61,7 +61,7 @@ Roman.Parak@outlook.com
 
 ## Citation (BibTex)
 ```bash
-@misc{RomanParak_TrajectoryGeneration,
+@misc{RomanParak_RoLE,
   author = {Roman Parak},
   title = {Robotics Library for Everyone (RoLE)},
   year = {2024},
