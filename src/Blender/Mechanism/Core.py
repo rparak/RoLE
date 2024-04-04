@@ -187,7 +187,7 @@ class Mechanism_Cls(object):
             # Identification of joint type: P - Prismatic
             theta = bpy.data.objects[self.__Mechanism_Parameters_Str.Theta.Name].location[ax_i_id_num]
 
-        return theta * self.__Mechanism_Parameters_Str.Theta.Direction
+        return np.round(theta * self.__Mechanism_Parameters_Str.Theta.Direction, 5)
         
     @property
     def T_EE(self) -> tp.List[tp.List[float]]:

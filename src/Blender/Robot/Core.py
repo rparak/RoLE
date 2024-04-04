@@ -255,7 +255,7 @@ class Robot_Cls(object):
     
                 th[i] = th_actual - th_init
 
-        return th * self.__Robot_Parameters_Str.Theta.Direction
+        return np.round(th * self.__Robot_Parameters_Str.Theta.Direction, 5)
     
     @property
     def T_EE(self) -> tp.List[tp.List[float]]:

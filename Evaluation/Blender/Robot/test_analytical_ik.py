@@ -15,6 +15,8 @@ import Blender.Parameters.Camera
 import Blender.Utilities
 #       ../RoLE/Blender/Robot/Core
 import Blender.Robot.Core
+#       ../Blender/Configuration/Parameters
+import Blender.Configuration.Parameters
 # Robotics Library for Everyone (RoLE)
 #       ../RoLE/Parameters/Robot
 import RoLE.Parameters.Robot as Parameters
@@ -46,6 +48,9 @@ CONST_PROPERTIES = {'fps': 100, 'visibility': {'Viewpoint_EE': False, 'Colliders
 # If the value is 'True', the homogeneous transformation matrix of the robot 
 # base will be obtained from the Blender environment.
 CONST_USE_BLENDER_ROBOT_BASE = False
+# Animation stop(t_0), start(t_1) time in seconds.
+CONST_T_0 = 0.0
+CONST_T_1 = 2.0
 
 def main():
     """
@@ -55,13 +60,6 @@ def main():
         Two methods can be used to obtain IK solutions: 'All' or 'Best'.
             1\ 'All': Obtain the all possible solutions.
             2\ 'Best': Automatically obtain the best solution.
-
-        Note:
-            The position and orientation of the 'Viewpoint' object, which is the input to the inverse kinematics 
-            function, is set by the user.
-
-            If the 'Viewpoint' object is not part of the environment, copy it from the following Blender file:
-                ../Blender/Helpers/Viewpoint.blend
     """
     
     # Deselect all objects in the current scene.
@@ -77,30 +75,40 @@ def main():
     # Initialization of the structure of the main parameters of the robot.
     Robot_Str = CONST_ROBOT_TYPE
 
+    # Obtain the constraints for absolute joint positions in order to generate multi-axis position trajectories.
+    (abs_j_pos_0, abs_j_pos_1) = Blender.Configuration.Parameters.Get_Absolute_Joint_Positions(Robot_Str.Name)
+
+    # Obtain the desired homogeneous transformation matrix T of the tool center point (TCP).
+    TCP_Position = RoLE.Kinematics.Core.Forward_Kinematics(abs_j_pos_1, 'Fast', Robot_Str)[1]
+
     # Modification of the robot base.
     if CONST_USE_BLENDER_ROBOT_BASE == True:
-        Robot_Str.T.Base = HTM_Cls(bpy.data.objects[f'{Robot_Str.Parameters.Name}_ID_{Robot_Str.Parameters.Id:03}'].matrix_basis, 
+        Robot_Str.T.Base = HTM_Cls(bpy.data.objects[f'{Robot_Str.Name}_ID_{Robot_Str.Id:03}'].matrix_basis, 
                                 np.float64)  
 
     # Initialization of the class to work with a robotic arm object in a Blender scene.
     Robot_ID_0_Cls = Blender.Robot.Core.Robot_Cls(Robot_Str, CONST_PROPERTIES)
     print(f'[INFO] Robot Name: {Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}')
 
-    # Reset the absolute position of the robot joints to the 'Home'.
-    Robot_ID_0_Cls.Reset('Home')
-
-    # Obtain the homogeneous transformation matrix of the 'Viewpoint' object.
-    TCP_Position = HTM_Cls(bpy.data.objects[f'TCP_{Robot_ID_0_Cls.Parameters.Name}_ID_{Robot_ID_0_Cls.Parameters.Id:03}'].matrix_basis, 
-                           np.float64)
+    # Reset the absolute position of the robot joints to the intial position.
+    Robot_ID_0_Cls.Reset('Individual', abs_j_pos_0)
     
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
     (info, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Analytical(TCP_Position, Robot_ID_0_Cls.Theta, Robot_ID_0_Cls.Parameters, 'Best')
     
-    
-    # Reset the absolute position of the robot joints to the 'Individual'.
-    Robot_ID_0_Cls.Reset('Individual', theta)
+    # Get the FPS (Frames Per Seconds) value from the Blender settings.
+    fps = bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
+
+    # The first frame on which the animation starts.
+    bpy.context.scene.frame_start = np.int32(CONST_T_0 * fps)
+
+    # Set the absolute position of the robot joints.
+    Robot_ID_0_Cls.Set_Absolute_Joint_Position(theta, CONST_T_0, CONST_T_1)
+
+    # The last frame on which the animation stops.
+    bpy.context.scene.frame_end = np.int32(CONST_T_1 * fps)
 
     # Display results.
     print(f'[INFO] Absolute Joint Positions:')

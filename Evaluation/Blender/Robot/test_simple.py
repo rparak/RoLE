@@ -76,7 +76,7 @@ def main():
             Robot_Str.T.Base @= HTM_Cls(bpy.data.objects['ABB_IRB_14000_ID_001'].matrix_basis, 
                                     np.float64)
         else:
-            Robot_Str.T.Base = HTM_Cls(bpy.data.objects[f'{Robot_Str.Parameters.Name}_ID_{Robot_Str.Parameters.Id:03}'].matrix_basis, 
+            Robot_Str.T.Base = HTM_Cls(bpy.data.objects[f'{Robot_Str.Name}_ID_{Robot_Str.Id:03}'].matrix_basis, 
                                     np.float64)  
 
     # Initialization of the class to work with a robotic arm object in a Blender scene.

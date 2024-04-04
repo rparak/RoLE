@@ -206,7 +206,7 @@ class Mechanism_Cls(object):
             (1) parameter [Vector<float>]: Current absolute joint position in radians / meters.
         """
                 
-        return pb.getJointState(self.__mechanism_id, self.__theta_index)[0]
+        return np.round(pb.getJointState(self.__mechanism_id, self.__theta_index)[0], 5)
     
     @property
     def T_EE(self) -> tp.List[tp.List[float]]:

@@ -288,7 +288,7 @@ class Robot_Cls(object):
         for i, th_index in enumerate(self.__theta_index):
             theta_out[i] = pb.getJointState(self.__robot_id, th_index)[0]
 
-        return theta_out
+        return np.round(theta_out, 5)
     
     @property
     def Theta_v(self) -> tp.List[float]:
