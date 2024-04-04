@@ -617,7 +617,7 @@ class Robot_Cls(object):
         if info['successful'] == True:
             self.__Set_Collider_Color(info['self_collision_info'])
         else:
-            self.__Set_Collider_Color(info['self_collision_info'] | external_collision_info[0:info['self_collision_info'].size])
+            self.__Set_Collider_Color(info['self_collision_info'])
 
         # Set the color of the 'ghost' structure.
         if enable_ghost == True and self.__properties['visibility']['Ghost'] == True:

@@ -632,6 +632,10 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
         if isinstance(TCP_Position, (list, np.ndarray)):
             TCP_Position = Transformation.Homogeneous_Transformation_Matrix_Cls(TCP_Position, np.float64)
 
+        T_old = Robot_Parameters_Str.T.Base
+        TCP_Position_new = Robot_Parameters_Str.T.Base.Inverse() @ TCP_Position
+        Robot_Parameters_Str.T.Base = HTM_Cls(None, np.float64)
+
         # Diagonal weight matrix.
         #   Note:
         #       Translation(x, y, z) part + Rotation(x, y, z) part.
@@ -642,9 +646,9 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
 
         # Express the actual/desired position and orientation of the tool center point (TCP).
         #   Position: p = x, y, z in meters.
-        p_0 = T_0.p.all(); p_1 = TCP_Position.p.all()
+        p_0 = T_0.p.all(); p_1 = TCP_Position_new.p.all()
         #   Orientation: q = w, x, y, z in [-] -> [-1.0, 1.0].
-        q_0 = T_0.Get_Rotation('QUATERNION'); q_1 = TCP_Position.Get_Rotation('QUATERNION')
+        q_0 = T_0.Get_Rotation('QUATERNION'); q_1 = TCP_Position_new.Get_Rotation('QUATERNION')
 
         # If the variable 'delta_time' is not defined, set the variable 't' to 1.0.
         if ik_solver_properties['delta_time'] == None:
@@ -678,7 +682,6 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
                 # Get the quadratic (angle-axis) error which is weighted by the diagonal 
                 # matrix W_e.
                 E = General.Get_Quadratic_Angle_Axis_Error(e_i, W_e)
-
                 if E < ik_solver_properties['tolerance']:
                     is_successful = True; th_i_tmp = th_i.copy()
                     break
@@ -705,6 +708,7 @@ def Inverse_Kinematics_Numerical(TCP_Position: tp.List[tp.List[float]], theta_0:
             if is_successful != True:
                 break
 
+        Robot_Parameters_Str.T.Base = T_old
         # Get the best TCP position of the robotic arm using Forward Kinematics (FK).
         T = Forward_Kinematics(th_i, 'Fast', Robot_Parameters_Str)[1]
 

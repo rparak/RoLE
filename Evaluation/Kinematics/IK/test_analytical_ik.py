@@ -48,7 +48,7 @@ def main():
     # Obtain the absolute positions of the joints from the input homogeneous transformation matrix of the robot's end-effector.
     #   IK:
     #       Theta <-- T
-    (info, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Analytical(T_1, abs_j_pos_0, Robot_Str, 'All')
+    (info, theta) = RoLE.Kinematics.Core.Inverse_Kinematics_Analytical(T_1, abs_j_pos_0, Robot_Str, 'Best')
 
     t = time.time() - t_0
     print(f'[INFO] Time: {t:0.05f} in seconds.')
