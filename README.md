@@ -55,3 +55,18 @@ $ ../user_name> conda info --envs
 Rename the environment from the old name to the new one.
 $ ../user_name> conda rename -n {old_name} {name_name}
 ```
+
+## Contact Info
+Roman.Parak@outlook.com
+
+## Citation (BibTex)
+```bash
+@misc{RomanParak_TrajectoryGeneration,
+  author = {Roman Parak},
+  title = {Robotics Library for Everyone (RoLE)},
+  year = {2024},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/rparak/RoLE}}
+}
+
