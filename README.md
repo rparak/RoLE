@@ -1,5 +1,9 @@
 # Robotics Library for Everyone (RoLE)
 
+<p align="center">
+  <img src=https://github.com/rparak/RoLE/blob/main/images/RoLE.png width="800" height="450">
+</p>
+
 ## Requirements
 
 **Programming Language**
