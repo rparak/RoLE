@@ -22,6 +22,9 @@ the 'Installation Dependencies' section located at the bottom of the Readme.md f
 ```bash
 Linux, macOS, Windows
 ```
+## Project Description
+
+In progress ...
 
 ## Installation Dependencies
 
