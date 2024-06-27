@@ -80,4 +80,4 @@ Roman.Parak@outlook.com
   journal = {GitHub repository},
   howpublished = {\url{https://github.com/rparak/RoLE}}
 }
-
+```
