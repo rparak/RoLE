@@ -24,7 +24,11 @@ Linux, macOS, Windows
 ```
 ## Project Description
 
-In progress ...
+Text ...
+
+## Project Hierarchy
+
+Text ...
 
 ## Installation Dependencies
 
