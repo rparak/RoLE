@@ -542,18 +542,6 @@ Bullet real-time physics simulator. The PyBullet demos live under `Evaluation/Py
   <img src=https://github.com/rparak/RoLE/blob/main/images/I4C_Robots_Workspace.png width="800">
 </p>
 
-*Forward and inverse kinematics of the supported robotic structures.*
-
-<p align="center">
-  <img src=https://github.com/rparak/RoLE/blob/main/images/I4C_Robots_Colliders.png width="800">
-</p>
-
-*Oriented and axis-aligned bounding-box colliders used for self- and external-collision detection.*
-
-<p align="center">
-  <img src=https://github.com/rparak/RoLE/blob/main/images/I4C_Robots_Workspace.png width="800">
-</p>
-
 *Sampled reachable workspace of the robotic structures.*
 
 <p align="center">
@@ -561,12 +549,6 @@ Bullet real-time physics simulator. The PyBullet demos live under `Evaluation/Py
 </p>
 
 *Trajectory generation and Bézier / B-spline interpolation.*
-
-<p align="center">
-  <img src=https://github.com/rparak/RoLE/blob/main/images/I4C_PyBullet.png width="800">
-</p>
-
-*Robots loaded from their URDF descriptions in the PyBullet simulation environment.*
 
 ## Contact Info
 Roman.Parak@outlook.com
