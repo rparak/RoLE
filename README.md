@@ -115,15 +115,15 @@ The following structures are predefined in `src/RoLE/Parameters/Robot.py` and
 `Theta.Type` fields (`R` – revolute, `P` – prismatic). Analytical inverse kinematics is currently
 implemented only for the SCARA structure; all other robots use the numerical solvers.
 
-| Robot / Mechanism | Type | DoF | URDF | Blender | Analytical IK |
-|---|---|---|---|---|---|
-| `Universal_Robots_UR3` | 6-DoF serial (6R) | 6 | ✓ | ✓ | ✗ |
-| `ABB_IRB_120` | 6-DoF serial (6R) | 6 | ✓ | ✓ | ✗ |
-| `ABB_IRB_120_L_Ax` | 6-DoF serial on linear axis (1P + 6R) | 7 | ✓ | ✓ | ✗ |
-| `ABB_IRB_14000_R` | 7-DoF serial, dual-arm right (7R) | 7 | ✓ | ✓ | ✗ |
-| `ABB_IRB_14000_L` | 7-DoF serial, dual-arm left (7R) | 7 | ✓ | ✓ | ✗ |
-| `EPSON_LS3_B401S` | 4-DoF SCARA (RRPR) | 4 | ✓ | ✓ | ✓ |
-| `SMC_LEFB25_14000` | Linear axis mechanism (1P) | 1 | ✓ | ✓ | — |
+| Robot / Mechanism | Type | DoF | URDF | Blender | Numerical IK | Analytical IK |
+|---|---|---|---|---|---|---|
+| `Universal_Robots_UR3` | 6-DoF serial (6R) | 6 | ✓ | ✓ | ✓ | ✗ |
+| `ABB_IRB_120` | 6-DoF serial (6R) | 6 | ✓ | ✓ | ✓ | ✗ |
+| `ABB_IRB_120_L_Ax` | 6-DoF serial on linear axis (1P + 6R) | 7 | ✓ | ✓ | ✓ | ✗ |
+| `ABB_IRB_14000_R` | 7-DoF serial, dual-arm right (7R) | 7 | ✓ | ✓ | ✓ | ✗ |
+| `ABB_IRB_14000_L` | 7-DoF serial, dual-arm left (7R) | 7 | ✓ | ✓ | ✓ | ✗ |
+| `EPSON_LS3_B401S` | 4-DoF SCARA (RRPR) | 4 | ✓ | ✓ | ✓ | ✓ |
+| `SMC_LEFB25_14000` | Linear axis mechanism (1P) | 1 | ✓ | ✓ | — | — |
 
 *The two ABB IRB 14000 arms are the left and right arms of the dual-arm YuMi platform; their shared base is
 provided separately as `ABB_IRB_14000_Base`. The `SMC_LEFB25_14000` mechanism is defined with two instances
