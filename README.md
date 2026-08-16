@@ -21,6 +21,7 @@ A readable, dependency-light Python library for the kinematics, collision detect
 - [Installation Dependencies](#installation-dependencies)
 - [Getting Started / Usage](#getting-started--usage)
 - [Evaluation / Examples Overview](#evaluation--examples-overview)
+- [Results and Validation](#results-and-validation)
 - [Gallery](#gallery)
 - [Contact Info](#contact-info)
 - [Citation (BibTex)](#citation-bibtex)
@@ -399,10 +400,146 @@ URDF_Generator.Generate()
 | `Evaluation/URDF` | Generates and loads URDF files for robots and mechanisms | URDF files under `URDFs/` |
 | `Evaluation/Workspace` | Generates joint positions and XYZ workspace, then plots it | Data in `Data/Workspace/`; 3D plot |
 
-## Gallery
+## Results and Validation
+
+The results in this section were obtained in the author's doctoral thesis and are reproduced here as
+reported there; they are not figures produced by a continuous-integration run. The library's kinematics,
+collision handling and simulation layers were validated across a portfolio of structurally different
+manipulators — under-articulated (SCARA), articulated (6-axis) and over-articulated (7-axis and
+linear-axis-extended) — as documented in:
+
+> PARÁK, Roman. *Design of Advanced Methods in the Field of Industrial Robotics fitting into the Concept of
+> Industry 4.0.* Doctoral Thesis. Brno University of Technology, Faculty of Mechanical Engineering, Institute
+> of Automation and Computer Science, Brno, Czech Republic, 2024. Supervisor: prof. Ing. Radomil Matoušek,
+> Ph.D. Co-supervisor: Ing. et Ing. Stanislav Lang, Ph.D.
+
+### Robot portfolio
+
+The thesis evaluated the following manipulators. Each maps to one or more predefined structures in
+`src/RoLE/Parameters/Robot.py` and `URDFs/Robots/`.
+
+| Manipulator (thesis) | Category | Identifier in RoLE |
+|---|---|---|
+| ABB IRB 120 | 6-axis industrial robot | `ABB_IRB_120` |
+| ABB IRB 120 + SMC LEJSH63NZA-800 | industrial robot extended with a 7th linear axis (over-articulated) | `ABB_IRB_120_L_Ax` |
+| ABB IRB 14000 (YuMi) | dual-arm 7-axis collaborative robot | `ABB_IRB_14000_L`, `ABB_IRB_14000_R`, `ABB_IRB_14000_Base` |
+| EPSON LS3-B401S | SCARA (under-articulated) | `EPSON_LS3_B401S` |
+| Universal Robots UR3 | 6-axis collaborative robot | `Universal_Robots_UR3` |
+
+The 7th-axis actuator used in the thesis (SMC LEJSH63NZA-800) is a different part from the standalone linear
+slider shipped in the repository as `URDFs/Mechanisms/SMC_LEFB25_14000` (an SMC LEF-series mechanism).
+
+<p align="center">
+  <img src=https://github.com/rparak/RoLE/blob/main/images/I4C_Robots.png width="800">
+</p>
+
+*The robot portfolio used for validation.*
+
+### Forward kinematics benchmark
+
+Forward kinematics is available through the standard and modified Denavit–Hartenberg conventions
+(`Forward_Kinematics` in `src/RoLE/Kinematics/Core.py`) and through per-robot simplified closed-form
+solutions (`FKFast_Solution` in `src/RoLE/Kinematics/Utilities/Forward_Kinematics.py`, symbolically derived
+in `src/RoLE/Simplification/`). The `'Simplified DH'` column corresponds to the closed-form `FKFast_Solution`
+path.
+
+*Total computation time in seconds for 100,000 random targets.*
+
+| Robot | Standard DH | Modified DH | Simplified DH |
+|---|---|---|---|
+| Universal Robots UR3 | 13.32 | 13.55 | 5.66 |
+| ABB IRB 120 | 13.88 | 14.39 | 5.69 |
+| ABB IRB 120 Ext. | 16.34 | 16.80 | 5.98 |
+| ABB IRB 14000 (L) | 17.33 | 17.78 | 7.59 |
+| ABB IRB 14000 (R) | 17.32 | 17.75 | 7.57 |
+| Epson LS3-B401S | 10.17 | 10.45 | 3.38 |
+
+The simplified closed-form solution is the fastest path for every structure in the portfolio. The absolute
+timings are hardware-dependent, so the columns are meaningful as a relative comparison rather than as
+portable figures. The benchmark can be reproduced with `Evaluation/Kinematics/FK/test_fk.py`.
 
 <p align="center">
   <img src=https://github.com/rparak/RoLE/blob/main/images/I4C_Robots_Kinematics.png width="800">
+</p>
+
+*Forward and inverse kinematics of the supported robotic structures.*
+
+### Collision structure and collision-pair optimisation
+
+Each part of the robot is approximated by a bounding box. The static parts that form the base are
+represented by Axis-Aligned Bounding Boxes (AABBs), while the dynamic parts such as the joints use Oriented
+Bounding Boxes (OBBs); both classes live in `src/RoLE/Collider/Core.py`. The boxes are approximated
+automatically and aligned to the structure through homogeneous transformation matrices, and each robot's
+colliders are stored in `Collider.Base` and `Collider.Theta` in `src/RoLE/Parameters/Robot.py`.
+
+The set of collider pairs that must be tested for self-collision is reduced by an optimisation run over
+100,000 random targets, which cuts the number of tests substantially for every structure. The optimised
+pairs are stored per robot in `Collider.Pairs`, and the counts below match the length of those arrays in the
+code.
+
+*Reduction of the number of collision pairs through optimisation performed on 100,000 random targets.*
+
+| Robot | Base colliders | Joint colliders | Initial pairs | Optimised pairs |
+|---|---|---|---|---|
+| Universal Robots UR3 | 1 | 6 | 21 | 8 |
+| ABB IRB 120 | 1 | 6 | 21 | 7 |
+| ABB IRB 120 Ext. | 2 | 7 | 36 | 14 |
+| ABB IRB 14000 (L) | 6 | 7 | 78 | 26 |
+| ABB IRB 14000 (R) | 6 | 7 | 78 | 26 |
+| Epson LS3-B401S | 1 | 4 | 10 | 2 |
+
+The optimisation is performed by `Evaluation/Kinematics/Collider/optimize_collision_pairs.py`.
+
+<p align="center">
+  <img src=https://github.com/rparak/RoLE/blob/main/images/I4C_Robots_Colliders.png width="800">
+</p>
+
+*Oriented and axis-aligned bounding-box colliders used for self- and external-collision detection.*
+
+### Informed Levenberg–Marquardt inverse kinematics
+
+The numerical inverse-kinematics layer offers the Jacobian-Transpose, Newton–Raphson, Gauss–Newton and
+Levenberg–Marquardt methods (`Inverse_Kinematics_Numerical` in `src/RoLE/Kinematics/Core.py`). The thesis
+develops an *informed* Levenberg–Marquardt variant, extended with self-collision detection,
+external-collision avoidance and singularity control. Each iteration is driven by the spatial velocity
+(angle-axis error) between the current and desired end-effector pose, with a quadratic error measure
+weighted by the diagonal matrix `W_e`.
+
+*Results of the kinematic solution obtained with the informed Levenberg–Marquardt method over one hundred
+generated points, tolerance set to 1e-30; position error in metres.*
+
+| Robot | Mean position error | Mean orientation error | Mean quadratic error | Mean iterations |
+|---|---|---|---|---|
+| Universal Robots UR3 | 4.012e-16 | 1.060e-14 | 2.608e-31 | 7.633 |
+| ABB IRB 120 | 1.227e-16 | 1.230e-14 | 4.602e-32 | 6.861 |
+| ABB IRB 120 Ext. | 2.460e-16 | 1.601e-14 | 1.168e-31 | 6.514 |
+| ABB IRB 14000 (L) | 2.466e-16 | 2.077e-05 | 1.281e-31 | 6.683 |
+| ABB IRB 14000 (R) | 1.879e-16 | 1.538e-05 | 8.873e-32 | 6.792 |
+| Epson LS3-B401S | 4.386e-16 | 2.880e-14 | 1.673e-31 | 10.702 |
+
+Convergence takes roughly 6–11 iterations on average across the portfolio. The two ABB IRB 14000 arms show
+a mean orientation error several orders of magnitude larger than the other structures, which is worth noting.
+The solver can be exercised with `Evaluation/Kinematics/IK/test_numerical_ik.py` and
+`Evaluation/Kinematics/IK/collect_numerical_ik.py` (see the `CONST_NIK_METHOD` and `CONST_IK_PROPERTIES`
+constants), and the collected data is stored under `Data/Inverse_Kinematics/`.
+
+### Physics-based validation
+
+URDF files are generated automatically from the Denavit–Hartenberg-based parameter structure
+(`src/RoLE/URDF/Core.py`, driven by `Evaluation/URDF/gen_urdf_file.py`), and the kinematics, the
+collision-avoidance mechanism and trajectory generation are validated for the whole portfolio inside the
+Bullet real-time physics simulator. The PyBullet demos live under `Evaluation/PyBullet/`.
+
+<p align="center">
+  <img src=https://github.com/rparak/RoLE/blob/main/images/I4C_PyBullet.png width="800">
+</p>
+
+*Robots loaded from their URDF descriptions in the PyBullet simulation environment.*
+
+## Gallery
+
+<p align="center">
+  <img src=https://github.com/rparak/RoLE/blob/main/images/I4C_Robots_Workspace.png width="800">
 </p>
 
 *Forward and inverse kinematics of the supported robotic structures.*
