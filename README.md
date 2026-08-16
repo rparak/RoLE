@@ -427,13 +427,8 @@ The thesis evaluated the following manipulators. Each maps to one or more predef
 | Universal Robots UR3 | 6-axis collaborative robot | `Universal_Robots_UR3` |
 
 The 7th-axis actuator used in the thesis (SMC LEJSH63NZA-800) is a different part from the standalone linear
-slider shipped in the repository as `URDFs/Mechanisms/SMC_LEFB25_14000` (an SMC LEF-series mechanism).
-
-<p align="center">
-  <img src=https://github.com/rparak/RoLE/blob/main/images/I4C_Robots.png width="800">
-</p>
-
-*The robot portfolio used for validation.*
+slider shipped in the repository as `URDFs/Mechanisms/SMC_LEFB25_14000` (an SMC LEF-series mechanism). The
+portfolio is illustrated in the [Supported Robots and Mechanisms](#supported-robots-and-mechanisms) section.
 
 ### Forward kinematics benchmark
 
@@ -562,6 +557,16 @@ Roman.Parak@outlook.com
   publisher = {GitHub},
   journal = {GitHub repository},
   howpublished = {\url{https://github.com/rparak/RoLE}}
+}
+```
+
+```bibtex
+@phdthesis{RomanParak_PhDThesis,
+  author  = {Roman Par\'{a}k},
+  title   = {Design of Advanced Methods in the Field of Industrial Robotics fitting into the Concept of Industry 4.0},
+  school  = {Brno University of Technology, Faculty of Mechanical Engineering},
+  address = {Brno, Czech Republic},
+  year    = {2024}
 }
 ```
 
